@@ -1,20 +1,25 @@
 package NotBox2D;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.mygdx.game.JSONDemo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class BodyFactory {
-    World world;
-    public BodyFactory(World world){
-        this.world=world;
+    GameWorld gameWorld;
+    public static String BODY_TYPE="body_type";
+    public static String BODY_POSITION="position";
+    public static String BODY_SHAPE="shape";
+
+    public static String CIRCLE_RADIUS="radius";
+
+    public BodyFactory(GameWorld world){
+        this.gameWorld =world;
     }
     public Body get_body(JSONObject jo){
         // First we create a body definition
         BodyDef bodyDef = new BodyDef();
-        if (jo.has("body_type")){
-            String body_type=jo.getString("body_type");
+        if (jo.has(BODY_TYPE)){
+            String body_type=jo.getString(BODY_TYPE);
             if (body_type.equalsIgnoreCase("dynamic")){
                 bodyDef.type=BodyDef.BodyType.DynamicBody;
             } else if (body_type.equalsIgnoreCase("static")) {
@@ -23,23 +28,21 @@ public class BodyFactory {
                 bodyDef.type=BodyDef.BodyType.KinematicBody;
             }
         }
-        if (jo.has("position")){
-            JSONArray ja=jo.getJSONArray("position");
+        if (jo.has(BODY_POSITION)){
+            JSONArray ja=jo.getJSONArray(BODY_POSITION);
             bodyDef.position.set(ja.getFloat(0),ja.getFloat(1));
         }
 
         // Create our fixture and attach it to the body
-        Body body = world.createBody(bodyDef);
+        Body body = gameWorld.world.createBody(bodyDef);
 
         FixtureDef fixtureDef = new FixtureDef();
         Shape shape1=null;
-        if (jo.has("shape")){
-            String shape=jo.getString("shape");
+        if (jo.has(BODY_SHAPE)){
+            String shape=jo.getString(BODY_SHAPE);
             if (shape.equalsIgnoreCase("circle")){
-                // Create a circle shape and set its radius to 6
-                System.out.println("shape1");
                 shape1 = new CircleShape();
-                shape1.setRadius(jo.getFloat("radius"));
+                shape1.setRadius(jo.getFloat(CIRCLE_RADIUS));
                 fixtureDef.shape = shape1;
             }
         }
@@ -53,6 +56,7 @@ public class BodyFactory {
 
         body.createFixture(fixtureDef);
 
+        assert shape1 != null;
         shape1.dispose();
 
         return body;
