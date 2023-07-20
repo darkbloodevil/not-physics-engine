@@ -1,0 +1,21 @@
+{
+  "character": {
+    "body_type": "dynamic",
+    "shape": "circle",
+    "radius": 1,
+    "position": [
+      0,
+      0
+    ]
+  },
+  "ground": {
+    "body_type": "static",
+    "shape": "polygon",
+    "width": 10,
+    "height": 2,
+    "position": [
+      0,
+      -10
+    ]
+  }
+}
