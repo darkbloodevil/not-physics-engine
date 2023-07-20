@@ -59,6 +59,8 @@ public class NotPhysicsEngineMain extends Game {
 
 
         bf.get_body(game.getJSONObject("ground"));
+
+        bf.get_body(game.getJSONObject("enemy"));
     }
 
     @Override
