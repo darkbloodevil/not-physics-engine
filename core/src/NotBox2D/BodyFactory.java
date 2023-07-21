@@ -4,6 +4,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+
 public class BodyFactory {
     GameWorld gameWorld;
     public static String BODY_TYPE="body_type";
@@ -51,6 +53,26 @@ public class BodyFactory {
                 shape1 = new PolygonShape();
                 ((PolygonShape)shape1).setAsBox(jo.getFloat(POLYGON_WIDTH), jo.getFloat(POLYGON_HEIGHT));
                 fixtureDef.shape = shape1;
+            }else if (shape.equalsIgnoreCase("chain")){
+                shape1 = new ChainShape();
+                double[] temp=jo.getJSONArray("vertices").toList().stream().mapToDouble(i->Double.parseDouble((i).toString())).toArray();
+                float[] temp_f=new float[temp.length];
+                for (int i = 0; i < temp.length; i++) {
+                    temp_f[i]=(float) temp[i];
+                }
+                ((ChainShape)shape1).createChain(temp_f);
+                fixtureDef.shape = shape1;
+
+            }else if (shape.equalsIgnoreCase("edge")){
+                shape1 = new EdgeShape();
+                double[] temp=jo.getJSONArray("vertices").toList().stream().mapToDouble(i->Double.parseDouble((i).toString())).toArray();
+                float[] temp_f=new float[temp.length];
+                for (int i = 0; i < temp.length; i++) {
+                    temp_f[i]=(float) temp[i];
+                }
+                ((EdgeShape)shape1).set(temp_f[0],temp_f[1],temp_f[2],temp_f[3]);
+                fixtureDef.shape = shape1;
+
             }
         }
 
