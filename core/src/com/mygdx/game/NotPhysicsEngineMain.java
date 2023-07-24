@@ -46,7 +46,7 @@ public class NotPhysicsEngineMain extends Game {
 
         BodyFactory bf=new BodyFactory(gameWorld);
 
-        String game_content="{}";
+        String game_content;
         try {
             game_content = new String(Files.readAllBytes(Paths.get("game.json")));
         } catch (IOException e) {
@@ -60,9 +60,13 @@ public class NotPhysicsEngineMain extends Game {
 
         bf.get_body(game.getJSONObject("ground"));
 
-        bf.get_body(game.getJSONObject("chain_test"));
+//        bf.get_body(game.getJSONObject("chain_test")).setAwake(true);
 
-        bf.get_body(game.getJSONObject("edge_test"));
+        bf.get_body(game.getJSONObject("edge_test")).setAwake(true);
+
+        bf.get_body(game.getJSONObject("wall"));
+
+
     }
 
     @Override
