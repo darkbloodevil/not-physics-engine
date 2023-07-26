@@ -26,6 +26,11 @@ public class JsonReader {
     static private final char LEFT_BRACKET = '(', RIGHT_BRACKET = '(', ADD = '+', MINUS = '-',
             MULTIPLY = '*', DIVIDE = '/', MOD = '%', TO_NUM = '$', LEFT_ARRAY = '[', RIGHT_ARR = ']', LEFT_DICT = '{', RIGHT_DICT = '}';
 
+    /**
+     *
+     * @param src_str
+     * @return
+     */
     public static JSONObject read_str_json(String src_str) {
         JSONObject result = new JSONObject();
         JSONObject source = new JSONObject(src_str);

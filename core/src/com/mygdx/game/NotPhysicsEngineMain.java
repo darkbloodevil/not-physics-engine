@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ScreenUtils;
 import org.json.Cookie;
@@ -62,10 +63,14 @@ public class NotPhysicsEngineMain extends Game {
 
 //        bf.get_body(game.getJSONObject("chain_test")).setAwake(true);
 
-        bf.get_body(game.getJSONObject("edge_test")).setAwake(true);
+        Body bodyA=bf.get_body(game.getJSONObject("edge_test"));
+        bodyA.setAwake(true);
 
-        bf.get_body(game.getJSONObject("wall"));
+        Body bodyB=bf.get_body(game.getJSONObject("wall"));
 
+        DistanceJointDef defJoint = new DistanceJointDef ();
+        defJoint.length = 0;
+        defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
 
     }
 
