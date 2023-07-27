@@ -40,12 +40,12 @@ public class NotPhysicsEngineMain extends Game {
     public void create() {
         batch = new SpriteBatch();
         img = new Texture("badlogic.jpg");
-        gameWorld=new GameWorld();
+        gameWorld = new GameWorld();
         cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
         debugRenderer = new Box2DDebugRenderer();
 
 
-        BodyFactory bf=new BodyFactory(gameWorld);
+        BodyFactory bf = new BodyFactory(gameWorld);
 
         String game_content;
         try {
@@ -53,9 +53,9 @@ public class NotPhysicsEngineMain extends Game {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        JSONObject game= JsonReader.read_str_json(game_content);
+        JSONObject game = JsonReader.read_str_json(game_content);
 
-        JSONObject jo=game.getJSONObject("character");
+        JSONObject jo = game.getJSONObject("character");
         bf.get_body(jo);
 
 
@@ -63,14 +63,16 @@ public class NotPhysicsEngineMain extends Game {
 
 //        bf.get_body(game.getJSONObject("chain_test")).setAwake(true);
 
-        Body bodyA=bf.get_body(game.getJSONObject("edge_test"));
-        bodyA.setAwake(true);
+        //Body bodyA=bf.get_body(game.getJSONObject("edge_test"));
+        //bodyA.setAwake(true);
 
-        Body bodyB=bf.get_body(game.getJSONObject("wall"));
+        bf.get_body(game.getJSONObject("wall1"));
+        bf.get_body(game.getJSONObject("wall2"));
 
-        DistanceJointDef defJoint = new DistanceJointDef ();
-        defJoint.length = 0;
-        defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
+        bf.get_joint(game.getJSONObject("joint"));
+//        DistanceJointDef defJoint = new DistanceJointDef ();
+//        defJoint.length = 0;
+//        defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
 
     }
 
