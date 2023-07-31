@@ -41,7 +41,7 @@ public class JsonReader {
      * @param src_json
      * @return
      */
-    static JSONObject jsonObject_json(JSONObject full, String tar_str, JSONObject src_json) {
+    public static JSONObject jsonObject_json(JSONObject full, String tar_str, JSONObject src_json) {
         JSONObject target = src_json.getJSONObject(tar_str);
         target.put("name", tar_str);
         if (target.has("extend")) {
@@ -68,11 +68,11 @@ public class JsonReader {
      * @param full
      * @param tar_str  the JSONObject
      * @param sub_str  the sub
-     * @param src_json
      * @return
      */
-    static JSONObject sub_jsonObject_json(JSONObject full, String tar_str, String sub_str, JSONObject src_json) {
-        JSONObject target = src_json.getJSONObject(tar_str);
+    public static JSONObject sub_jsonObject_json(JSONObject full, String tar_str,
+                                                 String sub_str) {
+        JSONObject target = full.getJSONObject(tar_str);
         JSONObject sub = target.getJSONObject(sub_str);
         target.put("name", tar_str);
         sub.put("name", sub_str);

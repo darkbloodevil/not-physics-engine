@@ -8,14 +8,24 @@
       20
     ]
   },
-  "wall": {
+  "wall1": {
     "body_type": "dynamic",
     "shape": "polygon",
     "width": 3,
     "height": 10,
     "position": [
-      10,
+      14,
       3
+    ]
+  },
+  "wall2": {
+    "body_type": "dynamic",
+    "shape": "polygon",
+    "width": 3,
+    "height": 10,
+    "position": [
+      -10,
+      0
     ]
   },
   "ground": {
@@ -51,5 +61,25 @@
       0,
       0
     ]
+  },
+  "joint": {
+    "joint_type": "distance",
+    "length": 50,
+    "bodyA": {
+      "extend": ["character"],
+      "position": [
+        -5,
+        -5
+      ]
+    },
+    "bodyB": {
+      "extend": ["character"],
+      "position": [
+        0,
+        10
+      ]
+    },
+    "anchorA": [-5,-5],
+    "anchorB": [2,10]
   }
 }

@@ -66,18 +66,14 @@
     "joint_type": "distance",
     "length": 50,
     "bodyA": {
-      "body_type": "dynamic",
-      "shape": "circle",
-      "radius": 1,
+      "extend": ["character"],
       "position": [
         -5,
         -5
       ]
     },
     "bodyB": {
-      "body_type": "dynamic",
-      "shape": "circle",
-      "radius": 1,
+      "extend": ["character"],
       "position": [
         0,
         10
