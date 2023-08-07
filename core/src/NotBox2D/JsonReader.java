@@ -66,8 +66,8 @@ public class JsonReader {
 
     /**
      * @param full
-     * @param tar_str  the JSONObject
-     * @param sub_str  the sub
+     * @param tar_str the JSONObject
+     * @param sub_str the sub
      * @return
      */
     public static JSONObject sub_jsonObject_json(JSONObject full, String tar_str,
@@ -94,6 +94,23 @@ public class JsonReader {
         target.put(sub_str, sub);
         full.put(tar_str, target);
         return sub;
+    }
+
+    /**
+     * 将A与B合并，B覆盖A中的重名项
+     *
+     * @param ja json a
+     * @param jb json b
+     * @return mereged
+     */
+    public static JSONObject mergeJSONObject(JSONObject ja, JSONObject jb) {
+        JSONObject result = new JSONObject(ja.toString());
+        JSONObject b = new JSONObject(jb.toString());
+        for (String o : b.keySet()
+        ) {
+            result.put(o, b.get(o));
+        }
+        return result;
     }
 
 }
