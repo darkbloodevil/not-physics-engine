@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * create standardized objects
@@ -32,9 +35,11 @@ public class StandardFactory {
     }
 
     /**
+     * 读取本地的标准化文件
      * @param standard_path the path of standard file
      */
     private void load_local_standard_json(String standard_path) {
+        // 读取标准化文件
         String standard_file;
         try {
             standard_file = new String(Files.readAllBytes(Paths.get(standard_path)));
@@ -42,13 +47,14 @@ public class StandardFactory {
             throw new RuntimeException(e);
         }
         this.standard_jo = JsonReader.read_str_json(standard_file);
+        // 读取标准化文件中链接的其他文件
         if (this.standard_jo.has(JSONS)) {
             ArrayList<String> searched=new ArrayList<>();
-            Stack<String> to_loads=new Stack<>();
+            Queue<String> to_loads=new LinkedList<>();
             for (Object i:this.standard_jo.getJSONArray(JSONS))
-                to_loads.add((String) i);
-            while (!to_loads.empty()){
-                String top=to_loads.pop();
+                to_loads.offer((String) i);
+            while (!to_loads.isEmpty()){
+                String top=to_loads.poll();
                 searched.add(top);
                 String json_file;
                 try {
@@ -57,11 +63,12 @@ public class StandardFactory {
                     throw new RuntimeException(e);
                 }
                 JSONObject temp=JsonReader.read_str_json(json_file);
+                // 读取链接文件中链接的文件
                 if (temp.has(JSONS)){
                     for (Object i:this.standard_jo.getJSONArray(JSONS))
                     {
                         if (!to_loads.contains((String)i) && !searched.contains((String)i)){
-                            to_loads.add((String) i);
+                            to_loads.offer((String) i);
                         }
                     }
                 }
@@ -92,6 +99,7 @@ public class StandardFactory {
 
     /**
      * get correspond body directly
+     * 直接获取指定的body
      *
      * @param description the body name
      * @return the body
@@ -102,6 +110,7 @@ public class StandardFactory {
 
     /**
      * get a altered body
+     * 通过输入的改变量调整body
      *
      * @param description the body name
      * @param alter       the alter, for example, position : [0,10]
@@ -110,9 +119,9 @@ public class StandardFactory {
     public Body getAlteredBody(String description, JSONObject alter) {
         JSONObject altered = this.standard_jo.getJSONObject(description);
         for (String key : alter.keySet()) {
-            alter.put(key, alter.get(key));
+            altered.put(key, alter.get(key));
         }
-        return this.bodyFactory.get_body(alter);
+        return this.bodyFactory.get_body(altered);
     }
 
 }
