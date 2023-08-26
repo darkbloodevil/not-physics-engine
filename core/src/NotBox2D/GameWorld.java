@@ -11,12 +11,15 @@ import java.nio.file.Paths;
 public class GameWorld {
     public World world;
     JSONObject world_json;
+
+    float gravity=-10;
+
     public GameWorld(){
-        this.world=new World(new Vector2(0, -10), true);
+        this.world=new World(new Vector2(0, gravity), true);
         this.world_json=new JSONObject();
     }
     public GameWorld(JSONObject world_json){
-        this.world=new World(new Vector2(0, -10), true);
+        this.world=new World(new Vector2(0, gravity), true);
         this.world_json=world_json;
     }
     public void create(){
@@ -36,7 +39,7 @@ public class GameWorld {
 
         bf.get_body(game.getJSONObject("ground"));
 
-//        bf.get_body(game.getJSONObject("chain_test")).setAwake(true);
+        bf.get_body(game.getJSONObject("chain_test")).setAwake(true);
 
         //Body bodyA=bf.get_body(game.getJSONObject("edge_test"));
         //bodyA.setAwake(true);

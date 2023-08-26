@@ -29,10 +29,10 @@ public class NotPhysicsEngineMain extends Game {
     Box2DDebugRenderer debugRenderer;
     private OrthographicCamera cam;
     /**
-     * 描述游戏中宽度（米）
+     * 是把屏幕划分成多少份
      */
-    static final float FRUSTUM_WIDTH = 27;
-    static final float FRUSTUM_HEIGHT = 18;
+    static final float FRUSTUM_WIDTH = 48;
+    static final float FRUSTUM_HEIGHT = 27;
 
     public SpriteBatch batcher;
 

@@ -1,7 +1,6 @@
 package NotBox2D;
 
 import com.badlogic.gdx.physics.box2d.Body;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -10,17 +9,21 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * create standardized objects
  */
 public class StandardFactory {
     GameWorld gameWorld;
+    /**
+     * 标准化的各个物件。例如标准化的圆、方。是运行时使用的
+     */
     JSONObject standard_jo;
     BodyFactory bodyFactory;
     static String JSONS = "jsons";
+
+    public final static String XL="XL",L="L",M="M",S="S",SS="SS";
+
 
     public StandardFactory(GameWorld world) {
         this.gameWorld = world;
@@ -95,6 +98,10 @@ public class StandardFactory {
     }
     public void load_factories(BodyFactory bodyFactory) {
         this.bodyFactory = bodyFactory;
+    }
+
+    public void standardize(String particle_size){
+
     }
 
     /**
