@@ -3,6 +3,7 @@ package com.mygdx.game;
 import NotBox2D.BodyFactory;
 import NotBox2D.GameWorld;
 import NotBox2D.JsonReader;
+import NotBox2D.StandardFactory;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,6 +27,7 @@ public class NotPhysicsEngineMain extends Game {
     SpriteBatch batch;
     Texture img;
     GameWorld gameWorld;
+
     Box2DDebugRenderer debugRenderer;
     private OrthographicCamera cam;
     /**
@@ -38,6 +40,8 @@ public class NotPhysicsEngineMain extends Game {
 
     @Override
     public void create() {
+
+
         batch = new SpriteBatch();
         img = new Texture("badlogic.jpg");
         gameWorld = new GameWorld();

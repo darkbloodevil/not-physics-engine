@@ -1,0 +1,6 @@
+{
+  "jsons": {
+    "standard_entity_size": "json_files/standard_entity_size.json"
+  },
+  "frustums":{"XL-FRUSTUM":9,"L-FRUSTUM":18,"M-FRUSTUM":27,"S-FRUSTUM":72,"SS-FRUSTUM":144}
+}
