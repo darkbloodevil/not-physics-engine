@@ -1,8 +1,12 @@
 package NotBox2D;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+import com.mygdx.game.NotPhysicsEngineMain;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -36,27 +40,33 @@ public class GameWorld {
     public void create(){
         bodyFactory = new BodyFactory(this);
         this.standardFactory.load_factories(bodyFactory);
-        this.standardFactory.standardize("SS","S");
+        this.standardFactory.standardize("XL","M");
         this.world_json=JsonReader.mergeJSONObject(this.standardFactory.standard_jo,this.world_json);
+        //set camera
+//        NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_json.getFloat("frustum_width"),
+//                this.world_json.getFloat("frustum_height")));
 
         TabularToMap tabularToMap=TabularToMap.INSTANCE;
         String[][] test_tabular=new String[][]{
-                new String[]{"0","0","0","0","0","s","0","t","0","c","0","0","0","0","0","0"},
-                new String[]{"0","0","0","0","0","s","0","0","0","0","0","0","0","0","0","0"},
-                new String[]{"0","0","0","0","0","s","s","0","0","0","0","0","0","0","0","t"},
-                new String[]{"0","0","0","0","0","s","t","0","0","0","0","0","0","0","0","0"},
-                new String[]{"0","c","0","0","s","0","c","0","0","s","s","0","0","0","0","0"},
-                new String[]{"0","0","0","0","0","s","t","s","0","0","0","0","0","0","0","0"},
-                new String[]{"t","0","0","0","0","s","t","0","0","0","0","0","0","0","0","0"},
-                new String[]{"s","0","0","0","0","s","t","0","0","0","0","0","0","0","0","s"},
+                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
+                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
+                new String[]{"s","s","s","c","s","s","s","s","s","s","s","s","s","s","s","s"},
+                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
+                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
+                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
+                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
+                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
                 new String[]{"s","s","s","c","s","s","s","s","s","s","s","s","s","s","s","s"},
         };
         String[][] tabular=new String[9][6];
         for (int i = 0; i < tabular.length; i++) {
             for (int j = 0; j < tabular[0].length; j++) {
-                tabular[i][j]=test_tabular[5-j][i];
+                tabular[i][j]=test_tabular[8-j][i];
             }
         }
+        System.out.println(world_json.getJSONObject("circle").toString());
+        System.out.println(world_json.getJSONObject("square").toString());
+        System.out.println(world_json.getJSONObject("triangle").toString());
 
         HashMap<String,String> representation=new HashMap<>();
         representation.put("s","square");
@@ -67,35 +77,46 @@ public class GameWorld {
 
         tabularToMap.center_x=8;
         tabularToMap.center_y=4.5f;
-        tabularToMap.offset_x=-8;
+//        tabularToMap.offset_x=-4;
         tabularToMap.offset_y=-3;
-        tabularToMap.interval=1f;
-        tabularToMap.tabular_to_map(tabular,representation,alterMap,this);
+        tabularToMap.offset_x=0;
+//        tabularToMap.offset_y=0;
+        tabularToMap.interval=2f;
+        tabularToMap.tabular_to_map(test_tabular,representation,alterMap,this);
 
 
-//        JSONObject game = JsonReader.read_json_from_path("game.json");
-//
-//        JSONObject jo = game.getJSONObject("character");
-//        bodyFactory.get_body(jo);
-//
-//
-//        bodyFactory.get_body(game.getJSONObject("ground"));
-//
-//        bodyFactory.get_body(game.getJSONObject("chain_test")).setAwake(true);
-//
-//        //Body bodyA=bf.get_body(game.getJSONObject("edge_test"));
-//        //bodyA.setAwake(true);
-//
-//        bodyFactory.get_body(game.getJSONObject("wall1"));
-//        bodyFactory.get_body(game.getJSONObject("wall2"));
-//
-//        JsonReader.sub_jsonObject_json(game,"joint","bodyA");
-//        JsonReader.sub_jsonObject_json(game,"joint","bodyB");
-//        bodyFactory.get_joint(game.getJSONObject("joint"));
+        //test_game();
+    }
+
+    /**
+     * @deprecated
+     */
+    private void test_game(){
+        JSONObject game = JsonReader.read_json_from_path("game.json");
+
+        JSONObject jo = game.getJSONObject("character");
+        bodyFactory.get_body(jo);
+
+        bodyFactory.get_body(game.getJSONObject("character_s"));
+
+        bodyFactory.get_body(game.getJSONObject("ground"));
+
+        bodyFactory.get_body(game.getJSONObject("chain_test")).setAwake(true);
+
+        //Body bodyA=bf.get_body(game.getJSONObject("edge_test"));
+        //bodyA.setAwake(true);
+
+        bodyFactory.get_body(game.getJSONObject("wall1"));
+        bodyFactory.get_body(game.getJSONObject("wall2"));
+
+        JsonReader.sub_jsonObject_json(game,"joint","bodyA");
+        JsonReader.sub_jsonObject_json(game,"joint","bodyB");
+        bodyFactory.get_joint(game.getJSONObject("joint"));
 //        DistanceJointDef defJoint = new DistanceJointDef ();
 //        defJoint.length = 0;
 //        defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
     }
+
     /**
      * get correspond body directly
      * 直接获取指定的body

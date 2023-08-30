@@ -7,8 +7,8 @@
   "L-square": {
     "body_type": "dynamic",
     "shape": "polygon",
-    "width": 4,
-    "height": 4
+    "width": 2,
+    "height": 2
   },
   "L-triangle": {
     "body_type": "dynamic",
@@ -74,8 +74,8 @@
   "M-square": {
     "body_type": "dynamic",
     "shape": "polygon",
-    "width": 2,
-    "height": 2
+    "width": 1,
+    "height": 1
   },
   "M-triangle": {
     "body_type": "dynamic",
@@ -141,8 +141,8 @@
   "S-square": {
     "body_type": "dynamic",
     "shape": "polygon",
-    "width": 1,
-    "height": 1
+    "width": 0.5,
+    "height": 0.5
   },
   "S-triangle": {
     "body_type": "dynamic",

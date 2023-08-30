@@ -11,7 +11,7 @@ import java.util.Queue;
  * create standardized objects
  */
 public class StandardFactory {
-    int SCALE_WIDTH = 16, SCALE_HEIGHT = 9;
+    float SCALE_WIDTH = 16, SCALE_HEIGHT = 9;
     GameWorld gameWorld;
     /**
      * 标准化的各个物件。例如标准化的圆、方。是运行时使用的

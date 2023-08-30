@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Stack;
 
 public class NotPhysicsEngineMain extends Game {
     SpriteBatch batch;
@@ -29,14 +30,15 @@ public class NotPhysicsEngineMain extends Game {
     GameWorld gameWorld;
 
     Box2DDebugRenderer debugRenderer;
-    private OrthographicCamera cam;
+    /**
+     * @TODO 临时的记得改
+     */
+    public static Stack<OrthographicCamera> cameras=new Stack<>();
     /**
      * 是把屏幕划分成多少份
      */
     static final float FRUSTUM_WIDTH = 48;
     static final float FRUSTUM_HEIGHT = 27;
-
-    public SpriteBatch batcher;
 
     @Override
     public void create() {
@@ -45,7 +47,8 @@ public class NotPhysicsEngineMain extends Game {
         batch = new SpriteBatch();
         img = new Texture("badlogic.jpg");
         gameWorld = new GameWorld();
-        cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
+        OrthographicCamera cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
+        cameras.add(cam);
         debugRenderer = new Box2DDebugRenderer();
 
         gameWorld.create();
@@ -54,6 +57,7 @@ public class NotPhysicsEngineMain extends Game {
 
     @Override
     public void render() {
+        OrthographicCamera cam=cameras.peek();
         batch.setProjectionMatrix(cam.combined);
         ScreenUtils.clear(.1f, 0.1f, 0.4f, 1);
         gameWorld.world.step(1 / 60f, 6, 2);

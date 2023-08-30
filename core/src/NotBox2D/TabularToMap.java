@@ -24,15 +24,15 @@ public enum TabularToMap {
      */
     public void tabular_to_map(String[][] tabular, HashMap<String,String> representation,
                                HashMap<String,JSONObject> alterMap,GameWorld gameWorld){
-        for (int i = 0; i < tabular.length; i++) {
-            for (int j = 0; j < tabular[i].length; j++) {
+        for (int j = 0; j < tabular.length; j++) {
+            for (int i = 0; i < tabular[j].length; i++) {
                 //获取表格tag对应的实体名
-                String tag=tabular[i][j];
+                String tag=tabular[j][i];
                 if (tag.equals(EMPTY))continue;// 空就直接过
                 String body_name=representation.get(tag);
                 // 获取对应的位置
                 float x=(i-center_x)*interval-offset_x;
-                float y=(j-center_x)*interval-offset_y;
+                float y=(j-center_y)*interval-offset_y;
                 //在原型上给予对应的改变量
                 JSONObject alter=new JSONObject("{\"position\":["+x+","+y+"]}");
                 if (alterMap.containsKey(tag)){
