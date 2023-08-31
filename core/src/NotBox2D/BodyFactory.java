@@ -54,6 +54,8 @@ public class BodyFactory {
 
         // create the body in the game world
         Body body = gameWorld.world.createBody(bodyDef);
+        body.setFixedRotation(false);
+
 
         FixtureDef fixtureDef = new FixtureDef();
         // body shape
@@ -65,7 +67,16 @@ public class BodyFactory {
                 shape1.setRadius(jo.getFloat(CIRCLE_RADIUS));
             } else if (shape.equalsIgnoreCase("polygon")) {
                 shape1 = new PolygonShape();
-                ((PolygonShape) shape1).setAsBox(jo.getFloat(POLYGON_WIDTH), jo.getFloat(POLYGON_HEIGHT));
+                if(jo.has(POLYGON_WIDTH)){
+                    ((PolygonShape) shape1).setAsBox(jo.getFloat(POLYGON_WIDTH), jo.getFloat(POLYGON_HEIGHT));
+                }else if(jo.has("vertices")){
+                    double[] temp = jo.getJSONArray("vertices").toList().stream().mapToDouble(i -> Double.parseDouble((i).toString())).toArray();
+                    float[] temp_f = new float[temp.length];
+                    for (int i = 0; i < temp.length; i++) {
+                        temp_f[i] = (float) temp[i];
+                    }
+                    ((PolygonShape) shape1).set(temp_f);
+                }
             } else if (shape.equalsIgnoreCase("chain")) {
                 shape1 = new ChainShape();
                 double[] temp = jo.getJSONArray("vertices").toList().stream().mapToDouble(i -> Double.parseDouble((i).toString())).toArray();

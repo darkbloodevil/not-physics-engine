@@ -27,12 +27,12 @@ public enum TabularToMap {
         for (int j = 0; j < tabular.length; j++) {
             for (int i = 0; i < tabular[j].length; i++) {
                 //获取表格tag对应的实体名
-                String tag=tabular[j][i];
+                String tag=tabular[tabular.length-j-1][i];
                 if (tag.equals(EMPTY))continue;// 空就直接过
                 String body_name=representation.get(tag);
                 // 获取对应的位置
-                float x=(i-center_x)*interval-offset_x;
-                float y=(j-center_y)*interval-offset_y;
+                float x=(i-center_x-offset_x)*interval;
+                float y=(j-center_y-offset_y)*interval;
                 //在原型上给予对应的改变量
                 JSONObject alter=new JSONObject("{\"position\":["+x+","+y+"]}");
                 if (alterMap.containsKey(tag)){

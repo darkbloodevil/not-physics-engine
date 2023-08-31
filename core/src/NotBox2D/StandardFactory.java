@@ -53,9 +53,9 @@ public class StandardFactory {
             Queue<String> to_loads = new LinkedList<>();
             for (String key : this.standard_jo.getJSONObject(JSONS).keySet()) {
                 if (!key.equals("name"))
-                to_loads.offer(this.standard_jo.getJSONObject(JSONS).getString(key));
+                    to_loads.offer(this.standard_jo.getJSONObject(JSONS).getString(key));
             }
-            to_loads.forEach(i->System.out.println(i));
+            //to_loads.forEach(i->System.out.println(i));
             while (!to_loads.isEmpty()) {
                 String top = to_loads.poll();
                 searched.add(top);
@@ -94,6 +94,8 @@ public class StandardFactory {
         //基本实体大小 进行标准化
         standard_jo.put("circle", standard_jo.get(entity_size + "-circle"));
         standard_jo.put("square", standard_jo.get(entity_size + "-square"));
+        standard_jo.put("matrix-3h", standard_jo.get(entity_size + "-matrix-3h"));
+        standard_jo.put("matrix-3v", standard_jo.get(entity_size + "-matrix-3v"));
         standard_jo.put("triangle", standard_jo.get(entity_size + "-triangle"));
         standard_jo.put("left-triangle", standard_jo.get(entity_size + "-left-triangle"));
         standard_jo.put("right-triangle", standard_jo.get(entity_size + "-right-triangle"));

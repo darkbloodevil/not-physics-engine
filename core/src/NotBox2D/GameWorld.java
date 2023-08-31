@@ -20,78 +20,88 @@ public class GameWorld {
 
     StandardFactory standardFactory;
     BodyFactory bodyFactory;
-    float gravity=-10;
+    float gravity = -10;
 
-    public GameWorld(){
+    public GameWorld() {
         this.init();
-        this.world_json=new JSONObject();
+        this.world_json = new JSONObject();
     }
-    public GameWorld(JSONObject world_json){
+
+    public GameWorld(JSONObject world_json) {
         this.init();
-        this.world_json=world_json;
+        this.world_json = world_json;
     }
-    private void init()
-    {
-        this.world=new World(new Vector2(0, gravity), true);
 
-        this.standardFactory=new StandardFactory(this);
+    private void init() {
+        this.world = new World(new Vector2(0, gravity), true);
+
+        this.standardFactory = new StandardFactory(this);
 
     }
-    public void create(){
+
+    public void create() {
         bodyFactory = new BodyFactory(this);
         this.standardFactory.load_factories(bodyFactory);
-        this.standardFactory.standardize("XL","M");
-        this.world_json=JsonReader.mergeJSONObject(this.standardFactory.standard_jo,this.world_json);
+        String frustum="L",entity_size = "M";
+        this.standardFactory.standardize(frustum, entity_size);
+        this.world_json = JsonReader.mergeJSONObject(this.standardFactory.standard_jo, this.world_json);
         //set camera
-//        NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_json.getFloat("frustum_width"),
-//                this.world_json.getFloat("frustum_height")));
+        NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_json.getFloat("frustum_width"),
+                this.world_json.getFloat("frustum_height")));
 
-        TabularToMap tabularToMap=TabularToMap.INSTANCE;
-        String[][] test_tabular=new String[][]{
-                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
-                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
-                new String[]{"s","s","s","c","s","s","s","s","s","s","s","s","s","s","s","s"},
-                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
-                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
-                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
-                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
-                new String[]{"0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"},
-                new String[]{"s","s","s","c","s","s","s","s","s","s","s","s","s","s","s","s"},
+        TabularToMap tabularToMap = TabularToMap.INSTANCE;
+        String[][] test_tabular = new String[][]{
+                new String[]{"s", "s", "s", "c", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s"},
+                new String[]{"s", "0", "0", "0", "0", "0", "0", "mh", "0", "0", "0", "0", "0", "0", "0", "s"},
+                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+                new String[]{"s", "0", "0", "0", "0", "0", "rt", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+                new String[]{"s", "s", "s", "c", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s"},
         };
-        String[][] tabular=new String[9][6];
-        for (int i = 0; i < tabular.length; i++) {
-            for (int j = 0; j < tabular[0].length; j++) {
-                tabular[i][j]=test_tabular[8-j][i];
-            }
-        }
+//        String[][] tabular = new String[9][6];
+//        for (int i = 0; i < tabular.length; i++) {
+//            for (int j = 0; j < tabular[0].length; j++) {
+//                tabular[i][5-j] = test_tabular[8 - j][i];
+//            }
+//        }
         System.out.println(world_json.getJSONObject("circle").toString());
         System.out.println(world_json.getJSONObject("square").toString());
         System.out.println(world_json.getJSONObject("triangle").toString());
 
-        HashMap<String,String> representation=new HashMap<>();
-        representation.put("s","square");
-        representation.put("c","circle");
-        representation.put("t","triangle");
-        HashMap<String,JSONObject> alterMap=new HashMap<>();
-        alterMap.put("s",new JSONObject("{\"body_type\":\"static\"}"));
+        HashMap<String, String> representation = new HashMap<>();
+        representation.put("s", "square");
+        representation.put("c", "circle");
+        representation.put("t", "triangle");
+        representation.put("rt", "left-triangle");
+        representation.put("mh", "matrix-3h");
+        HashMap<String, JSONObject> alterMap = new HashMap<>();
+        alterMap.put("s", new JSONObject("{\"body_type\":\"static\"}"));
 
-        tabularToMap.center_x=8;
-        tabularToMap.center_y=4.5f;
+        tabularToMap.center_x = 8;
+        tabularToMap.center_y = 4.5f;
 //        tabularToMap.offset_x=-4;
-        tabularToMap.offset_y=-3;
-        tabularToMap.offset_x=0;
-//        tabularToMap.offset_y=0;
-        tabularToMap.interval=2f;
-        tabularToMap.tabular_to_map(test_tabular,representation,alterMap,this);
+
+        tabularToMap.offset_y=-0.5f;
+        tabularToMap.offset_x=-0.5f;
+//        tabularToMap.offset_x = this.world_json.getFloat("frustum_width")/2;
+//        tabularToMap.offset_y = -this.world_json.getFloat("frustum_height")/2;
+
+        // 实体间距
+        tabularToMap.interval = world_json.getJSONObject("intervals").getFloat(entity_size) *
+                world_json.getJSONObject("intervals").getFloat("scale");
+        tabularToMap.tabular_to_map(test_tabular, representation, alterMap, this);
 
 
         //test_game();
     }
 
     /**
-     * @deprecated
+     * @TODO delete
      */
-    private void test_game(){
+    private void test_game() {
         JSONObject game = JsonReader.read_json_from_path("game.json");
 
         JSONObject jo = game.getJSONObject("character");
@@ -109,8 +119,8 @@ public class GameWorld {
         bodyFactory.get_body(game.getJSONObject("wall1"));
         bodyFactory.get_body(game.getJSONObject("wall2"));
 
-        JsonReader.sub_jsonObject_json(game,"joint","bodyA");
-        JsonReader.sub_jsonObject_json(game,"joint","bodyB");
+        JsonReader.sub_jsonObject_json(game, "joint", "bodyA");
+        JsonReader.sub_jsonObject_json(game, "joint", "bodyB");
         bodyFactory.get_joint(game.getJSONObject("joint"));
 //        DistanceJointDef defJoint = new DistanceJointDef ();
 //        defJoint.length = 0;

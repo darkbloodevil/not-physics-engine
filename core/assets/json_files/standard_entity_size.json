@@ -1,4 +1,10 @@
 {
+  "intervals": {
+    "L": 4,
+    "M": 2,
+    "S": 1,
+    "scale": 1.01
+  },
   "L-circle": {
     "body_type": "dynamic",
     "shape": "circle",
@@ -10,9 +16,21 @@
     "width": 2,
     "height": 2
   },
+  "L-matrix-3h": {
+    "body_type": "dynamic",
+    "shape": "polygon",
+    "width": 6,
+    "height": 2
+  },
+  "L-matrix-3v": {
+    "body_type": "dynamic",
+    "shape": "polygon",
+    "width": 2,
+    "height": 6
+  },
   "L-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -2,
       0,
@@ -26,7 +44,7 @@
   },
   "L-left-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -2,
       0,
@@ -40,7 +58,7 @@
   },
   "L-right-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -2,
       0,
@@ -54,7 +72,7 @@
   },
   "L-equilateral-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -2,
       0,
@@ -77,9 +95,21 @@
     "width": 1,
     "height": 1
   },
+  "M-matrix-3h": {
+    "body_type": "dynamic",
+    "shape": "polygon",
+    "width": 3,
+    "height": 1
+  },
+  "M-matrix-3v": {
+    "body_type": "dynamic",
+    "shape": "polygon",
+    "width": 1,
+    "height": 3
+  },
   "M-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -1,
       0,
@@ -93,7 +123,7 @@
   },
   "M-left-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -1,
       0,
@@ -107,7 +137,7 @@
   },
   "M-right-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -1,
       0,
@@ -121,7 +151,7 @@
   },
   "M-equilateral-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -1,
       0,
@@ -144,9 +174,21 @@
     "width": 0.5,
     "height": 0.5
   },
+  "S-matrix-3h": {
+    "body_type": "dynamic",
+    "shape": "polygon",
+    "width": 1.5,
+    "height": 0.5
+  },
+  "S-matrix-3v": {
+    "body_type": "dynamic",
+    "shape": "polygon",
+    "width": 0.5,
+    "height": 1.5
+  },
   "S-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -0.5,
       0,
@@ -160,7 +202,7 @@
   },
   "S-left-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -0.5,
       0,
@@ -174,7 +216,7 @@
   },
   "S-right-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -0.5,
       0,
@@ -188,7 +230,7 @@
   },
   "S-equilateral-triangle": {
     "body_type": "dynamic",
-    "shape": "chain",
+    "shape": "polygon",
     "vertices": [
       -0.5,
       0,

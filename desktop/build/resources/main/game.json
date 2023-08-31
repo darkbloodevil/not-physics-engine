@@ -8,6 +8,16 @@
       20
     ]
   },
+  "character_s": {
+    "body_type": "dynamic",
+    "shape": "polygon",
+    "width": 1,
+    "height": 1,
+    "position": [
+      0,
+      20
+    ]
+  },
   "wall1": {
     "body_type": "dynamic",
     "shape": "polygon",
@@ -42,7 +52,7 @@
     "body_type": "dynamic",
     "shape": "chain",
     "vertices": [
-      -2, 0, 2, 0, 0, 3.464, -2, 0
+      -1, 0, 1, 0, 0, 2, -1, 0
     ],
 
     "position": [
