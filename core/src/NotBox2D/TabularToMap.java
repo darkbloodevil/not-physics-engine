@@ -9,7 +9,7 @@ public enum TabularToMap {
     INSTANCE;
     public float interval;
     public float center_x=8,center_y=4.5f,offset_x=5,offset_y=8;
-    public static final String EMPTY="0";
+    public static final String EMPTY="[EMPTY]";
 
     TabularToMap(){
         interval=1;

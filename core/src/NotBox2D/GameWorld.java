@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.mygdx.game.NotPhysicsEngineMain;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -50,17 +51,19 @@ public class GameWorld {
                 this.world_json.getFloat("frustum_height")));
 
         TabularToMap tabularToMap = TabularToMap.INSTANCE;
-        String[][] test_tabular = new String[][]{
-                new String[]{"s", "s", "s", "c", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s"},
-                new String[]{"s", "0", "0", "0", "0", "0", "0", "mh", "0", "0", "0", "0", "0", "0", "0", "s"},
-                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-                new String[]{"s", "0", "0", "0", "0", "0", "rt", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-                new String[]{"s", "s", "s", "c", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s"},
-        };
+//        String[][] test_tabular = new String[][]{
+//                new String[]{"s", "s", "s", "c", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s"},
+//                new String[]{"s", "0", "0", "0", "0", "mh", "0", "c", "0", "0", "0", "0", "0", "0", "0", "s"},
+//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+//                new String[]{"s", "0", "0", "0", "0", "0", "rt", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
+//                new String[]{"s", "s", "s", "c", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s"},
+//        };
+
+
 //        String[][] tabular = new String[9][6];
 //        for (int i = 0; i < tabular.length; i++) {
 //            for (int j = 0; j < tabular[0].length; j++) {
@@ -92,7 +95,7 @@ public class GameWorld {
         // 实体间距
         tabularToMap.interval = world_json.getJSONObject("intervals").getFloat(entity_size) *
                 world_json.getJSONObject("intervals").getFloat("scale");
-        tabularToMap.tabular_to_map(test_tabular, representation, alterMap, this);
+        tabularToMap.tabular_to_map(get_game_map(), representation, alterMap, this);
 
 
         //test_game();
@@ -126,6 +129,23 @@ public class GameWorld {
 //        defJoint.length = 0;
 //        defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
     }
+
+    /**
+     * @TODO
+     * @return
+     */
+    private String[][] get_game_map(){
+        JSONObject jsonObject=ExcelReader.excel_to_json("excel_test.xlsx");
+        JSONArray jsonArray= jsonObject.getJSONArray("game_map");
+        String[][] test_tabular=new String[jsonObject.getInt("height")][jsonObject.getInt("width")];
+        for (int i=0;i<jsonObject.getInt("height");i++) {
+            for (int j=0;j<jsonObject.getInt("width");j++) {
+                test_tabular[i][j]=jsonArray.getJSONArray(i).getString(j);
+            }
+        }
+        return test_tabular;
+    }
+
 
     /**
      * get correspond body directly
