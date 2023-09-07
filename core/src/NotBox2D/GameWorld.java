@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class GameWorld {
     public World world;
@@ -70,18 +71,16 @@ public class GameWorld {
 //                tabular[i][5-j] = test_tabular[8 - j][i];
 //            }
 //        }
-        System.out.println(world_json.getJSONObject("circle").toString());
-        System.out.println(world_json.getJSONObject("square").toString());
-        System.out.println(world_json.getJSONObject("triangle").toString());
+
 
         HashMap<String, String> representation = new HashMap<>();
-        representation.put("s", "square");
-        representation.put("c", "circle");
-        representation.put("t", "triangle");
-        representation.put("rt", "left-triangle");
-        representation.put("mh", "matrix-3h");
+//        representation.put("s", "square");
+//        representation.put("c", "circle");
+//        representation.put("t", "triangle");
+//        representation.put("rt", "left-triangle");
+//        representation.put("mh", "matrix-3h");
         HashMap<String, JSONObject> alterMap = new HashMap<>();
-        alterMap.put("s", new JSONObject("{\"body_type\":\"static\"}"));
+//        alterMap.put("s", new JSONObject("{\"body_type\":\"static\"}"));
 
         tabularToMap.center_x = 8;
         tabularToMap.center_y = 4.5f;
@@ -92,10 +91,31 @@ public class GameWorld {
 //        tabularToMap.offset_x = this.world_json.getFloat("frustum_width")/2;
 //        tabularToMap.offset_y = -this.world_json.getFloat("frustum_height")/2;
 
+        JSONObject jsonObject=ExcelReader.excel_to_json("excel_test.xlsx");
+        JSONArray jsonArray= jsonObject.getJSONArray("game_map");
+        String[][] test_tabular=new String[jsonObject.getInt("height")][jsonObject.getInt("width")];
+        for (int i=0;i<jsonObject.getInt("height");i++) {
+            for (int j=0;j<jsonObject.getInt("width");j++) {
+                test_tabular[i][j]=jsonArray.getJSONArray(i).getString(j);
+            }
+        }
+        JSONObject represent_jo=jsonObject.getJSONObject("represent");
+        for (Iterator<String> it = represent_jo.keys(); it.hasNext(); ) {
+            String represent_key = it.next();
+            representation.put(represent_key,represent_jo.getString(represent_key));
+        }
+        JSONObject alter_jo=jsonObject.getJSONObject("alter");
+        for (Iterator<String> it = alter_jo.keys(); it.hasNext(); ) {
+            String alter_key = it.next();
+            System.out.println("\n"+alter_key);
+            alterMap.put(alter_key,alter_jo.getJSONObject(alter_key));
+        }
+
+
         // 实体间距
         tabularToMap.interval = world_json.getJSONObject("intervals").getFloat(entity_size) *
                 world_json.getJSONObject("intervals").getFloat("scale");
-        tabularToMap.tabular_to_map(get_game_map(), representation, alterMap, this);
+        tabularToMap.tabular_to_map(test_tabular, representation, alterMap, this);
 
 
         //test_game();
@@ -130,21 +150,15 @@ public class GameWorld {
 //        defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
     }
 
-    /**
-     * @TODO
-     * @return
-     */
-    private String[][] get_game_map(){
-        JSONObject jsonObject=ExcelReader.excel_to_json("excel_test.xlsx");
-        JSONArray jsonArray= jsonObject.getJSONArray("game_map");
-        String[][] test_tabular=new String[jsonObject.getInt("height")][jsonObject.getInt("width")];
-        for (int i=0;i<jsonObject.getInt("height");i++) {
-            for (int j=0;j<jsonObject.getInt("width");j++) {
-                test_tabular[i][j]=jsonArray.getJSONArray(i).getString(j);
-            }
-        }
-        return test_tabular;
-    }
+//    /**
+//     * @TODO
+//     * @return
+//     */
+//    private String[][] get_game_map(){
+//
+//
+//        return test_tabular;
+//    }
 
 
     /**
@@ -168,6 +182,7 @@ public class GameWorld {
      */
     public Body getAlteredBody(String description, JSONObject alter) {
         JSONObject altered = this.world_json.getJSONObject(description);
+        System.out.println("\nalter"+alter+"\n");
         for (String key : alter.keySet()) {
             altered.put(key, alter.get(key));
         }

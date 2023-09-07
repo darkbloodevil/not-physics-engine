@@ -9,6 +9,7 @@
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="$PROJECT_DIR$/../gradle/gradle-3.3" />
+        <option name="gradleJvm" value="azul-15" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
