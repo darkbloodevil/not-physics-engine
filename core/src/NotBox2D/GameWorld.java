@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.mygdx.game.NotPhysicsEngineMain;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tools.IdGenerator;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,6 +25,8 @@ public class GameWorld {
     BodyFactory bodyFactory;
     float gravity = -10;
 
+    HashMap<Long,Body> id_to_body;
+
     public GameWorld() {
         this.init();
         this.world_json = new JSONObject();
@@ -35,9 +38,13 @@ public class GameWorld {
     }
 
     private void init() {
+        this.id_to_body=new HashMap<>();
+
+
         this.world = new World(new Vector2(0, gravity), true);
 
         this.standardFactory = new StandardFactory(this);
+
 
     }
 
@@ -117,7 +124,7 @@ public class GameWorld {
                 world_json.getJSONObject("intervals").getFloat("scale");
         tabularToMap.tabular_to_map(test_tabular, representation, alterMap, this);
 
-
+        id_to_body.keySet().forEach(System.out::println);
         //test_game();
     }
 
@@ -169,7 +176,9 @@ public class GameWorld {
      * @return the body
      */
     public Body getBody(String description) {
-        return this.bodyFactory.get_body(this.world_json.getJSONObject(description));
+//        JSONObject jo=this.world_json.getJSONObject(description);
+//        set_body_id(jo);
+        return getAlteredBody(description,new JSONObject());
     }
 
     /**
@@ -182,10 +191,23 @@ public class GameWorld {
      */
     public Body getAlteredBody(String description, JSONObject alter) {
         JSONObject altered = this.world_json.getJSONObject(description);
-        System.out.println("\nalter"+alter+"\n");
         for (String key : alter.keySet()) {
             altered.put(key, alter.get(key));
         }
-        return this.bodyFactory.get_body(altered);
+        Long body_id=set_body_id(altered);
+        Body body=this.bodyFactory.get_body(altered);
+        this.id_to_body.put(body_id,body);
+        return body;
+    }
+
+    /**
+     * 给予目标id（id:xxxxx）
+     * @param jo 被赐予id的目标
+     * @return body id
+     */
+    Long set_body_id(JSONObject jo){
+        Long body_id=IdGenerator.INSTANCE.nextId();
+        jo.put("id", body_id);
+        return body_id;
     }
 }

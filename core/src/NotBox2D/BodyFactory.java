@@ -131,6 +131,10 @@ public class BodyFactory {
             }
         }
 
+        if (jo.has("id")){
+            body.setUserData(jo.get("id"));
+        }
+
         return body;
     }
 
