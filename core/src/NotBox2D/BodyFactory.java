@@ -96,6 +96,8 @@ public class BodyFactory {
                 ((EdgeShape) shape1).set(temp_f[0], temp_f[1], temp_f[2], temp_f[3]);
             }
             fixtureDef.shape = shape1;
+        }else {
+            throw new NullPointerException("in BodyFactory creating body, what's the shape?");
         }
 
 
@@ -126,9 +128,7 @@ public class BodyFactory {
 
         // body awake
         if (jo.has("awake")) {
-            if (jo.getBoolean("awake")) {
-                body.setAwake(true);
-            }
+            body.setAwake(jo.getBoolean("awake"));
         }
 
         if (jo.has("id")){

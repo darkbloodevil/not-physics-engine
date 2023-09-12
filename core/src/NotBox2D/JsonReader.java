@@ -16,11 +16,13 @@ import java.util.Stack;
  * <p>
  * first, then related
  *
+ * 核心是用来处理带有继承关系的json（所以不要任何地方都使用）
  * @TODO circular extend
  */
 public class JsonReader {
 
     /**
+     * 文本转json
      * translate the json in str to JSONObject and expand the "extend" tag to meet the requirement
      *
      * @param src_str source string
@@ -32,17 +34,19 @@ public class JsonReader {
         JSONObject source = new JSONObject(src_str);
         // Convert each key in the source json into a formatted JSONObject that meets the requirements
         for (String key : source.keySet()) {
-            if (!result.has(key))
+            if (!result.has(key)){
                 jsonObject_json(result, key, source);
+            }
         }
         return result;
     }
 
     /**
+     * 有点复杂，大概是有一个总的json，然后我们输入的tar_str是其中一个我们要展开的部分，然后full是我们展开完成后的
      * @param full     the result JSON
      * @param tar_str  the target string to convert
-     * @param src_json
-     * @return
+     * @param src_json the json before reading the tar_str
+     * @return tar_str展开后的json
      */
     public static JSONObject jsonObject_json(JSONObject full, String tar_str, JSONObject src_json) {
         JSONObject target = src_json.getJSONObject(tar_str);
@@ -68,6 +72,7 @@ public class JsonReader {
     }
 
     /**
+     * 指定读出json的子项
      * @param full
      * @param tar_str the JSONObject
      * @param sub_str the sub
