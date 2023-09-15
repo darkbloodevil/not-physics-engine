@@ -14,8 +14,10 @@ import tools.IdGenerator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class GameWorld {
     public World world;
@@ -25,7 +27,8 @@ public class GameWorld {
     BodyFactory bodyFactory;
     float gravity = -10;
 
-    HashMap<Long,Body> id_to_body;
+    HashMap<Long, Body> id_to_body;
+    HashMap<String, Long> eid_to_id;
 
     public GameWorld() {
         this.init();
@@ -38,7 +41,8 @@ public class GameWorld {
     }
 
     private void init() {
-        this.id_to_body=new HashMap<>();
+        this.id_to_body = new HashMap<>();
+        this.eid_to_id = new HashMap<>();
 
 
         this.world = new World(new Vector2(0, gravity), true);
@@ -51,7 +55,7 @@ public class GameWorld {
     public void create() {
         bodyFactory = new BodyFactory(this);
         this.standardFactory.load_factories(bodyFactory);
-        String frustum="L",entity_size = "M";
+        String frustum = "L", entity_size = "M";
         this.standardFactory.standardize(frustum, entity_size);
         this.world_json = JsonReader.mergeJSONObject(this.standardFactory.standard_jo, this.world_json);
         //set camera
@@ -93,29 +97,29 @@ public class GameWorld {
         tabularToMap.center_y = 4.5f;
 //        tabularToMap.offset_x=-4;
 
-        tabularToMap.offset_y=-0.5f;
-        tabularToMap.offset_x=-0.5f;
+        tabularToMap.offset_y = -0.5f;
+        tabularToMap.offset_x = -0.5f;
 //        tabularToMap.offset_x = this.world_json.getFloat("frustum_width")/2;
 //        tabularToMap.offset_y = -this.world_json.getFloat("frustum_height")/2;
 
-        JSONObject jsonObject=ExcelReader.excel_to_json("excel_test.xlsx");
-        JSONArray jsonArray= jsonObject.getJSONArray("game_map");
-        String[][] test_tabular=new String[jsonObject.getInt("height")][jsonObject.getInt("width")];
-        for (int i=0;i<jsonObject.getInt("height");i++) {
-            for (int j=0;j<jsonObject.getInt("width");j++) {
-                test_tabular[i][j]=jsonArray.getJSONArray(i).getString(j);
+        JSONObject jsonObject = ExcelReader.excel_to_json("excel_test.xlsx");
+        JSONArray jsonArray = jsonObject.getJSONArray("game_map");
+        String[][] test_tabular = new String[jsonObject.getInt("height")][jsonObject.getInt("width")];
+        for (int i = 0; i < jsonObject.getInt("height"); i++) {
+            for (int j = 0; j < jsonObject.getInt("width"); j++) {
+                test_tabular[i][j] = jsonArray.getJSONArray(i).getString(j);
             }
         }
-        JSONObject represent_jo=jsonObject.getJSONObject("represent");
+        JSONObject represent_jo = jsonObject.getJSONObject("represent");
         for (Iterator<String> it = represent_jo.keys(); it.hasNext(); ) {
             String represent_key = it.next();
-            representation.put(represent_key,represent_jo.getString(represent_key));
+            representation.put(represent_key, represent_jo.getString(represent_key));
         }
-        JSONObject alter_jo=jsonObject.getJSONObject("alter");
+        JSONObject alter_jo = jsonObject.getJSONObject("alter");
         for (Iterator<String> it = alter_jo.keys(); it.hasNext(); ) {
             String alter_key = it.next();
-            System.out.println("\n"+alter_key);
-            alterMap.put(alter_key,alter_jo.getJSONObject(alter_key));
+            System.out.println("\n" + alter_key);
+            alterMap.put(alter_key, alter_jo.getJSONObject(alter_key));
         }
 
 
@@ -167,6 +171,13 @@ public class GameWorld {
 //        return test_tabular;
 //    }
 
+    public void update() {
+        for (String eid : eid_to_id.keySet()) {
+            Body aaa=this.id_to_body.get(this.eid_to_id.get(eid));
+            aaa.applyForce(10,10,0,0,true);
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaa");
+        }
+    }
 
     /**
      * get correspond body directly
@@ -176,9 +187,7 @@ public class GameWorld {
      * @return the body
      */
     public Body getBody(String description) {
-//        JSONObject jo=this.world_json.getJSONObject(description);
-//        set_body_id(jo);
-        return getAlteredBody(description,new JSONObject());
+        return getAlteredBody(description, new JSONObject());
     }
 
     /**
@@ -191,22 +200,30 @@ public class GameWorld {
      */
     public Body getAlteredBody(String description, JSONObject alter) {
         JSONObject altered = this.world_json.getJSONObject(description);
+        Long body_id = set_body_id(altered);
         for (String key : alter.keySet()) {
             altered.put(key, alter.get(key));
+            if (key.equals("eid")){
+                this.eid_to_id.put(alter.getString("eid"), body_id);
+
+            }
         }
-        Long body_id=set_body_id(altered);
-        Body body=this.bodyFactory.get_body(altered);
-        this.id_to_body.put(body_id,body);
+
+
+        Body body = this.bodyFactory.get_body(altered);
+        this.id_to_body.put(body_id, body);
+
         return body;
     }
 
     /**
      * 给予目标id（id:xxxxx）
+     *
      * @param jo 被赐予id的目标
      * @return body id
      */
-    Long set_body_id(JSONObject jo){
-        Long body_id=IdGenerator.INSTANCE.nextId();
+    Long set_body_id(JSONObject jo) {
+        Long body_id = IdGenerator.INSTANCE.nextId();
         jo.put("id", body_id);
         return body_id;
     }

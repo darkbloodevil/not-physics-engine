@@ -122,6 +122,7 @@ public class JsonReader {
     }
 
     /**
+     * 单纯的读取json文件 不做任何额外处理
      * read json file from path
      * @param json_path the path of json file
      * @return the json object

@@ -64,6 +64,7 @@ public class NotPhysicsEngineMain extends Game {
         debugRenderer.render(gameWorld.world, cam.combined);
         batch.begin();
         batch.end();
+        gameWorld.update();
     }
 
     @Override
