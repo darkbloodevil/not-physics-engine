@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<message>
+    <target>
+        <force>
+            <value>10</value>
+            <position>
+                <x>10</x>
+                <y>10</y>
+            </position>
+        </force>
+    </target>
+
+</message>
