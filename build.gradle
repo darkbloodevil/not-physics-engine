@@ -67,7 +67,8 @@ project(":core") {
         implementation group: 'org.apache.poi', name: 'poi', version: '5.2.3'
         // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
         implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.3'
-
+// https://mvnrepository.com/artifact/org.dom4j/dom4j
+        implementation group: 'org.dom4j', name: 'dom4j', version: '2.1.4'
 
 
     }

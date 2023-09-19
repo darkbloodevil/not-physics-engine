@@ -174,8 +174,7 @@ public class GameWorld {
     public void update() {
         for (String eid : eid_to_id.keySet()) {
             Body aaa=this.id_to_body.get(this.eid_to_id.get(eid));
-            aaa.applyForce(10,10,0,0,true);
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaa");
+            aaa.applyForceToCenter(new Vector2(10,10),true);
         }
     }
 
