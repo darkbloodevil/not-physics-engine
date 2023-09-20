@@ -8,6 +8,18 @@
                 <y>10</y>
             </position>
         </force>
+        <velocity>
+            <value>15</value>
+            <position>
+                <x>15</x>
+                <y>15</y>
+            </position>
+        </velocity>
+        <effect>
+            <range>
+                <shape>circle</shape>
+            </range>
+        </effect>
+        <type>firework</type>
     </target>
-
 </message>

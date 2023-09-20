@@ -30,22 +30,25 @@ public class xmltest {
 //
 //            Document document1= DocumentHelper.createDocument();
 //            Element root = document1.addElement("root");
-            Document document= reader.read(new File("test.xml"));
-            Element root_element=document.getRootElement();
-            Stack<Iterator<Element>> iterator_stack=new Stack<>();
+            Document document = reader.read(new File("test.xml"));
+            Element root_element = document.getRootElement();
+            Stack<Iterator<Element>> iterator_stack = new Stack<>();
             iterator_stack.add(root_element.elementIterator());
-            while (!iterator_stack.empty()){
-                Iterator<Element> iterator=iterator_stack.peek();
-                if (!iterator.hasNext()){
+            int tabs = 0;
+            while (!iterator_stack.empty()) {
+                Iterator<Element> iterator = iterator_stack.peek();
+                if (!iterator.hasNext()) {
                     iterator_stack.pop();
+                    tabs--;
                     continue;
                 }
-                Element element=iterator.next();
-                if (element.elementIterator().hasNext()){
+                Element element = iterator.next();
+                if (element.elementIterator().hasNext()) {
                     iterator_stack.push(element.elementIterator());
-                    System.out.println(element.getName()+"\t");
-                }else {
-                    System.out.println(element.getName()+"\t"+element.getText());
+                    System.out.println(new String(new char[tabs]).replace("\0", "\t") + element.getName() + "\t");
+                    tabs++;
+                } else {
+                    System.out.println(new String(new char[tabs]).replace("\0", "\t") + element.getName() + "\t" + element.getText());
                 }
 
             }
