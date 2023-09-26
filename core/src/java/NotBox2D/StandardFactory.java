@@ -1,6 +1,5 @@
 package NotBox2D;
 
-import com.badlogic.gdx.physics.box2d.Body;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

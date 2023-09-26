@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package tests;
 
 import java.io.File;
 import java.io.StringReader;

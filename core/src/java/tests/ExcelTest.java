@@ -1,17 +1,14 @@
-package com.mygdx.game;
+package tests;
 
 import java.io.*;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import NotBox2D.ExcelReader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 //https://howtodoinjava.com/java/library/readingwriting-excel-files-in-java-poi-tutorial/
 public class ExcelTest {

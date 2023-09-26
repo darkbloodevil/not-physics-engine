@@ -3,7 +3,6 @@ package NotBox2D;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 
 public enum TabularToMap {
     INSTANCE;

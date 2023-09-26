@@ -1,6 +1,4 @@
 buildscript {
-    
-
     repositories {
         mavenLocal()
         mavenCentral()
@@ -14,8 +12,16 @@ buildscript {
     }
 }
 
+plugins {
+    id 'scala'
+}
 allprojects {
     apply plugin: "eclipse"
+    apply plugin: 'idea'
+//    plugins {
+//        id 'scala'
+//    }
+
 
     version = '1.0'
     ext {
@@ -35,6 +41,7 @@ allprojects {
         gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+
     }
 }
 
@@ -47,9 +54,10 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        
+
     }
 }
+
 
 project(":core") {
     apply plugin: "java-library"
@@ -69,7 +77,9 @@ project(":core") {
         implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.3'
 // https://mvnrepository.com/artifact/org.dom4j/dom4j
         implementation group: 'org.dom4j', name: 'dom4j', version: '2.1.4'
-
+        implementation group: 'org.scala-lang', name: 'scala3-library_3.0.0-RC2', version: '3.0.0-RC2'
+        implementation 'commons-collections:commons-collections:3.2.2'
+        compileOnly group: 'org.scala-sbt', name: 'sbt', version: '1.9.6'
 
     }
 }

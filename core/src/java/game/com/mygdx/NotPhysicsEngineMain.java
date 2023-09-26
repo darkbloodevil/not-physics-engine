@@ -1,27 +1,14 @@
-package com.mygdx.game;
+package game.com.mygdx;
 
-import NotBox2D.BodyFactory;
 import NotBox2D.GameWorld;
-import NotBox2D.JsonReader;
-import NotBox2D.StandardFactory;
-import com.badlogic.gdx.ApplicationAdapter;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
-import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ScreenUtils;
-import org.json.Cookie;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Stack;
 
 public class NotPhysicsEngineMain extends Game {
