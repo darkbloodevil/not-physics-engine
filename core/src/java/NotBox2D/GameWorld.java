@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
-import java.game.com.mygdx.NotPhysicsEngineMain;
+import game.com.mygdx.NotPhysicsEngineMain;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tools.IdGenerator;
@@ -14,7 +14,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class GameWorld {
+    /**
+     * 该gameworld的物理世界
+     */
     public World world;
+    /**
+     * 用于表示该gameworld中万物的json
+     */
     JSONObject world_json;
 
     StandardFactory standardFactory;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
+    <option name="compileOrder" value="ScalaThenJava" />
     <profile name="Gradle 1" modules="not-physics-engine.core.main,not-physics-engine.core.test,not-physics-engine.desktop.main,not-physics-engine.desktop.test">
       <option name="deprecationWarnings" value="true" />
       <option name="uncheckedWarnings" value="true" />

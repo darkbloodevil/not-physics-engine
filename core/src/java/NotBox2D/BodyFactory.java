@@ -8,6 +8,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+/**
+ * 用于根据提供的body的特性，组装成一个body并且放入世界。
+ * 也可以生成joint
+ * @author darkbloodevil
+ */
 public class BodyFactory {
     GameWorld gameWorld;
     public static String BODY_TYPE = "body_type";
@@ -19,6 +24,9 @@ public class BodyFactory {
     public static String POLYGON_HEIGHT = "height";
 
     public static String JOINT_TYPE = "joint_type";
+
+
+    public static String BODY_LIST_JSON="body_list";
 
     public BodyFactory(GameWorld world) {
         this.gameWorld = world;
@@ -129,7 +137,7 @@ public class BodyFactory {
         if (jo.has("awake")) {
             body.setAwake(jo.getBoolean("awake"));
         }
-
+        // 对body唯一重要的属性：id
         if (jo.has("id")){
             body.setUserData(jo.get("id"));
         }
@@ -144,39 +152,37 @@ public class BodyFactory {
      * @return result
      */
     public HashMap<String, Body> auto_get_bodies() {
-        assert gameWorld.world_json.has("body_list");
-        JSONArray ja = gameWorld.world_json.getJSONArray("body_list");
-        HashMap<String, Body> result;
-        result = new HashMap<>();
-        for (Object o : ja) {
-            String a = (String) o;
-            result.put(a, get_body(gameWorld.world_json.getJSONObject(a)));
-        }
-        return result;
+        return auto_get_bodies(BODY_LIST_JSON);
     }
 
     /**
      * automatically load all the bodies in the specific group
-     * 通过world里面的json自动加载指定组里面的body
+     * 通过world里面的json自动加载指定group里面的body
      *
      * @param group tha target group
      * @return result
      */
     public HashMap<String, Body> auto_get_bodies(String group) {
+        //假定对应group已经在world_json中
         assert gameWorld.world_json.has(group);
         JSONArray ja = gameWorld.world_json.getJSONArray(group);
         HashMap<String, Body> result;
         result = new HashMap<>();
         for (Object o : ja) {
             String a = (String) o;
+            //加入生成的body
             result.put(a, get_body(gameWorld.world_json.getJSONObject(a)));
         }
         return result;
     }
 
+    /**
+     * 通过jo的body A和B 生成joint
+     * @param jo 提供joint所需的两个body
+     * @return 生成的joint
+     */
     public Joint get_joint(JSONObject jo) {
         JointDef jointDef = new JointDef();
-        boolean initialized = false;
 
         Body bodyA = get_body(jo.getJSONObject("bodyA"));
         Body bodyB = get_body(jo.getJSONObject("bodyB"));
