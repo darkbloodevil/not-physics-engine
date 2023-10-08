@@ -19,12 +19,12 @@ public class GameWorld {
      */
     public World world;
     /**
-     * 用于表示该gameworld中万物的json
+     * 用于表示该gameworld中万物原型的json
      */
-    JSONObject world_json;
+    JSONObject world_prototype_json;
 
-    StandardFactory standardFactory;
-    BodyFactory bodyFactory;
+    StandardBuilder standardBuilder;
+    BodyBuilder bodyFactory;
     float gravity = -10;
 
     HashMap<Long, Body> id_to_body;
@@ -32,12 +32,12 @@ public class GameWorld {
 
     public GameWorld() {
         this.init();
-        this.world_json = new JSONObject();
+        this.world_prototype_json = new JSONObject();
     }
 
-    public GameWorld(JSONObject world_json) {
+    public GameWorld(JSONObject world_prototype_json) {
         this.init();
-        this.world_json = world_json;
+        this.world_prototype_json = world_prototype_json;
     }
 
     private void init() {
@@ -47,60 +47,32 @@ public class GameWorld {
 
         this.world = new World(new Vector2(0, gravity), true);
 
-        this.standardFactory = new StandardFactory(this);
+        this.standardBuilder = new StandardBuilder(this);
 
 
     }
 
     public void create() {
-        bodyFactory = new BodyFactory(this);
-        this.standardFactory.load_factories(bodyFactory);
+        bodyFactory = new BodyBuilder(this);
+        this.standardBuilder.load_builders(bodyFactory);
         String frustum = "L", entity_size = "M";
-        this.standardFactory.standardize(frustum, entity_size);
-        this.world_json = JsonReader.mergeJSONObject(this.standardFactory.standard_jo, this.world_json);
+        this.standardBuilder.standardize(frustum, entity_size);
+        this.world_prototype_json = JsonReader.mergeJSONObject(this.standardBuilder.standard_jo, this.world_prototype_json);
         //set camera
-        NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_json.getFloat("frustum_width"),
-                this.world_json.getFloat("frustum_height")));
+        NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_prototype_json.getFloat("frustum_width"),
+                this.world_prototype_json.getFloat("frustum_height")));
 
         TabularToMap tabularToMap = TabularToMap.INSTANCE;
-//        String[][] test_tabular = new String[][]{
-//                new String[]{"s", "s", "s", "c", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s"},
-//                new String[]{"s", "0", "0", "0", "0", "mh", "0", "c", "0", "0", "0", "0", "0", "0", "0", "s"},
-//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-//                new String[]{"s", "0", "0", "0", "0", "0", "rt", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-//                new String[]{"s", "0", "0", "0", "0", "0", "c", "0", "0", "0", "0", "0", "0", "0", "0", "s"},
-//                new String[]{"s", "s", "s", "c", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s", "s"},
-//        };
-
-
-//        String[][] tabular = new String[9][6];
-//        for (int i = 0; i < tabular.length; i++) {
-//            for (int j = 0; j < tabular[0].length; j++) {
-//                tabular[i][5-j] = test_tabular[8 - j][i];
-//            }
-//        }
-
 
         HashMap<String, String> representation = new HashMap<>();
-//        representation.put("s", "square");
-//        representation.put("c", "circle");
-//        representation.put("t", "triangle");
-//        representation.put("rt", "left-triangle");
-//        representation.put("mh", "matrix-3h");
         HashMap<String, JSONObject> alterMap = new HashMap<>();
 //        alterMap.put("s", new JSONObject("{\"body_type\":\"static\"}"));
 
         tabularToMap.center_x = 8;
         tabularToMap.center_y = 4.5f;
-//        tabularToMap.offset_x=-4;
 
         tabularToMap.offset_y = -0.5f;
         tabularToMap.offset_x = -0.5f;
-//        tabularToMap.offset_x = this.world_json.getFloat("frustum_width")/2;
-//        tabularToMap.offset_y = -this.world_json.getFloat("frustum_height")/2;
 
         JSONObject jsonObject = ExcelReader.excel_to_json("excel_test.xlsx");
         JSONArray jsonArray = jsonObject.getJSONArray("game_map");
@@ -124,8 +96,8 @@ public class GameWorld {
 
 
         // 实体间距
-        tabularToMap.interval = world_json.getJSONObject("intervals").getFloat(entity_size) *
-                world_json.getJSONObject("intervals").getFloat("scale");
+        tabularToMap.interval = world_prototype_json.getJSONObject("intervals").getFloat(entity_size) *
+                world_prototype_json.getJSONObject("intervals").getFloat("scale");
         tabularToMap.tabular_to_map(test_tabular, representation, alterMap, this);
 
         id_to_body.keySet().forEach(System.out::println);
@@ -161,15 +133,6 @@ public class GameWorld {
 //        defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
     }
 
-//    /**
-//     * @TODO
-//     * @return
-//     */
-//    private String[][] get_game_map(){
-//
-//
-//        return test_tabular;
-//    }
 
     public void update() {
         for (String eid : eid_to_id.keySet()) {
@@ -198,18 +161,20 @@ public class GameWorld {
      * @return the body
      */
     public Body getAlteredBody(String description, JSONObject alter) {
-        JSONObject altered = this.world_json.getJSONObject(description);
+        // 改变量
+        JSONObject altered = this.world_prototype_json.getJSONObject(description);
+        // 对body给予一个id
         Long body_id = set_body_id(altered);
         for (String key : alter.keySet()) {
             altered.put(key, alter.get(key));
+            // 如果有对应eid，则加入
             if (key.equals("eid")){
                 this.eid_to_id.put(alter.getString("eid"), body_id);
-
             }
         }
-
-
+        // 生成body
         Body body = this.bodyFactory.get_body(altered);
+        // 给出id到body的map
         this.id_to_body.put(body_id, body);
 
         return body;

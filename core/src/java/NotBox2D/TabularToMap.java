@@ -4,6 +4,10 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+/**
+ * @author darkbloodevil
+ * 表格转成实际的地图
+ */
 public enum TabularToMap {
     INSTANCE;
     public float interval;

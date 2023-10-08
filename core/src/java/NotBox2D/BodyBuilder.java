@@ -13,7 +13,7 @@ import java.util.HashMap;
  * 也可以生成joint
  * @author darkbloodevil
  */
-public class BodyFactory {
+public class BodyBuilder {
     GameWorld gameWorld;
     public static String BODY_TYPE = "body_type";
     public static String BODY_POSITION = "position";
@@ -28,7 +28,7 @@ public class BodyFactory {
 
     public static String BODY_LIST_JSON="body_list";
 
-    public BodyFactory(GameWorld world) {
+    public BodyBuilder(GameWorld world) {
         this.gameWorld = world;
     }
 
@@ -104,7 +104,7 @@ public class BodyFactory {
             }
             fixtureDef.shape = shape1;
         }else {
-            throw new NullPointerException("in BodyFactory creating body, what's the shape?");
+            throw new NullPointerException("in BodyBuilder creating body, what's the shape?");
         }
 
 
@@ -164,14 +164,14 @@ public class BodyFactory {
      */
     public HashMap<String, Body> auto_get_bodies(String group) {
         //假定对应group已经在world_json中
-        assert gameWorld.world_json.has(group);
-        JSONArray ja = gameWorld.world_json.getJSONArray(group);
+        assert gameWorld.world_prototype_json.has(group);
+        JSONArray ja = gameWorld.world_prototype_json.getJSONArray(group);
         HashMap<String, Body> result;
         result = new HashMap<>();
         for (Object o : ja) {
             String a = (String) o;
             //加入生成的body
-            result.put(a, get_body(gameWorld.world_json.getJSONObject(a)));
+            result.put(a, get_body(gameWorld.world_prototype_json.getJSONObject(a)));
         }
         return result;
     }

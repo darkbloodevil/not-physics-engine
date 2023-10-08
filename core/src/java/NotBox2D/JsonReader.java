@@ -107,9 +107,10 @@ public class JsonReader {
      *
      * @param ja json a
      * @param jb json b
-     * @return mereged
+     * @return merged
      */
     public static JSONObject mergeJSONObject(JSONObject ja, JSONObject jb) {
+        // 将json object中内容转为string后重新转为json object，实现深拷贝
         JSONObject result = new JSONObject(ja.toString());
         JSONObject b = new JSONObject(jb.toString());
         for (String o : b.keySet()
@@ -122,7 +123,7 @@ public class JsonReader {
     /**
      * 单纯的读取json文件 不做任何额外处理
      * read json file from path
-     * @param json_path the path of json file
+     * @param json_path the path of json file。
      * @return the json object
      */
     public static JSONObject read_json_from_path(String json_path){

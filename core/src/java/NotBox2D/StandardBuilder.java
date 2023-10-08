@@ -7,39 +7,44 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
+ * @author darkbloodevil
+ * 创建标准化的基本组件，用于构筑基本的游戏元素。
  * create standardized objects
  */
-public class StandardFactory {
+public class StandardBuilder {
     float SCALE_WIDTH = 16, SCALE_HEIGHT = 9;
     GameWorld gameWorld;
     /**
      * 标准化的各个物件。例如标准化的圆、方。是运行时使用的
      */
     JSONObject standard_jo;
-    BodyFactory bodyFactory;
+    BodyBuilder bodyBuilder;
     static String JSONS = "jsons";
 
     public final static String XL = "XL", L = "L", M = "M", S = "S", SS = "SS";
 
 
-    public StandardFactory(GameWorld world) {
+    public StandardBuilder(GameWorld world) {
         this.gameWorld = world;
         load_local_standard_json("json_files/standard_file.json");
         this.init();
     }
 
-    public StandardFactory(GameWorld world, String standard_path) {
+    public StandardBuilder(GameWorld world, String standard_path) {
         this.gameWorld = world;
         load_local_standard_json(standard_path);
         this.init();
     }
 
+    /**
+     * 初始化（默认世界大小为M，粒子大小也为M）
+     */
     private void init() {
         this.standardize("M", "M");
     }
 
     /**
-     * 读取本地的标准化文件
+     * 读取本地的标准化文件，会将链接的内容一并读入并且合并
      *
      * @param standard_path the path of standard file
      */
@@ -69,15 +74,19 @@ public class StandardFactory {
                         }
                     }
                 }
+                // 将链接的文件与现有的合并
                 this.standard_jo = JsonReader.mergeJSONObject(this.standard_jo, temp);
 
             }
         }
     }
 
-
-    public void load_factories(BodyFactory bodyFactory) {
-        this.bodyFactory = bodyFactory;
+    /**
+     * 载入工厂
+     * @param bodyBuilder body创建器
+     */
+    public void load_builders(BodyBuilder bodyBuilder) {
+        this.bodyBuilder = bodyBuilder;
     }
 
     /**
