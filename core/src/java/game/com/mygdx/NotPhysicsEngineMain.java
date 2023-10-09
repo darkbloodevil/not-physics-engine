@@ -47,11 +47,11 @@ public class NotPhysicsEngineMain extends Game {
         OrthographicCamera cam=cameras.peek();
         batch.setProjectionMatrix(cam.combined);
         ScreenUtils.clear(.1f, 0.1f, 0.4f, 1);
-        gameWorld.world.step(1 / 60f, 6, 2);
+//        gameWorld.world.step(1 / 60f, 6, 2);
         debugRenderer.render(gameWorld.world, cam.combined);
         batch.begin();
         batch.end();
-        gameWorld.update();
+        gameWorld.update(1/60f);
     }
 
     @Override

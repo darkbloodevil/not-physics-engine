@@ -5,7 +5,7 @@ plugins {
 sourceCompatibility = 1.17
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/java" ]
+
 sourceSets {
     main {
         scala {
@@ -13,6 +13,7 @@ sourceSets {
         }
     }
 }
+sourceSets.main.java.srcDirs = [ "src/java" ]
 
 eclipse.project.name = appName + "-core"
 repositories {

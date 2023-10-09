@@ -1,13 +1,14 @@
 package NotBox2D;
 
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-
 import game.com.mygdx.NotPhysicsEngineMain;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import systems.PhysicsSystem;
 import tools.IdGenerator;
 
 import java.util.HashMap;
@@ -30,6 +31,8 @@ public class GameWorld {
     HashMap<Long, Body> id_to_body;
     HashMap<String, Long> eid_to_id;
 
+    PooledEngine engine;
+
     public GameWorld() {
         this.init();
         this.world_prototype_json = new JSONObject();
@@ -44,11 +47,20 @@ public class GameWorld {
         this.id_to_body = new HashMap<>();
         this.eid_to_id = new HashMap<>();
 
+        this.engine=new PooledEngine();
+        this.initialize_engine();
 
         this.world = new World(new Vector2(0, gravity), true);
 
         this.standardBuilder = new StandardBuilder(this);
 
+
+    }
+    private void initialize_engine(){
+        PhysicsSystem ps=new PhysicsSystem(this.engine);
+        ps.PHYSICS_WORLD_$eq(this.world);
+        System.out.println(ps.PHYSICS_WORLD().getGravity());
+        this.engine.addSystem(new PhysicsSystem(this.engine));
 
     }
 
@@ -134,11 +146,12 @@ public class GameWorld {
     }
 
 
-    public void update() {
-        for (String eid : eid_to_id.keySet()) {
-            Body aaa=this.id_to_body.get(this.eid_to_id.get(eid));
-            aaa.applyForceToCenter(new Vector2(10,10),true);
-        }
+    public void update(float delta_time) {
+        engine.update(delta_time);
+//        for (String eid : eid_to_id.keySet()) {
+//            Body aaa=this.id_to_body.get(this.eid_to_id.get(eid));
+//            aaa.applyForceToCenter(new Vector2(10,10),true);
+//        }
     }
 
     /**

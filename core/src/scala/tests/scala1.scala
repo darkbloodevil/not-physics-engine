@@ -1,8 +1,9 @@
 package tests
 
+import com.badlogic.ashley.core.Engine
+import systems.PhysicsSystem
+
 //import NotBox2D.JsonReader
-
-
 
 
 
@@ -19,6 +20,5 @@ object scala1 {
         }
         f
     }
-
 
 }
