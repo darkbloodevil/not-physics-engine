@@ -10,14 +10,14 @@ public enum IdGenerator {
 
     int random_int=0;
 
-    public static void main(String[] args) {
-
-        out.println(Integer.bitCount(Integer.MAX_VALUE));
-        for (int i = 0; i < 1000; i++) {
-            out.println(Long.toBinaryString(IdGenerator.INSTANCE.nextId()));
-
-        }
-    }
+//    public static void main(String[] args) {
+//
+//        out.println(Integer.bitCount(Integer.MAX_VALUE));
+//        for (int i = 0; i < 1000; i++) {
+//            out.println(Long.toBinaryString(IdGenerator.INSTANCE.nextId()));
+//
+//        }
+//    }
 
     /**
      * 生成不重复的id

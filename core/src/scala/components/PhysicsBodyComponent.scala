@@ -8,5 +8,5 @@ import com.badlogic.gdx.physics.box2d.Body
  */
 class PhysicsBodyComponent extends Component {
     var body: Body = _
-
+    var body_id: Long = 0
 }

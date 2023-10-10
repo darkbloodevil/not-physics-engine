@@ -1,10 +1,15 @@
 package NotBox2D;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+
+import components.IdontKnowComponent;
+import components.PhysicsBodyComponent;
 import game.com.mygdx.NotPhysicsEngineMain;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,9 +32,9 @@ public class GameWorld {
     StandardBuilder standardBuilder;
     BodyBuilder bodyFactory;
     float gravity = -10;
-
-    HashMap<Long, Body> id_to_body;
-    HashMap<String, Long> eid_to_id;
+//
+//    HashMap<Long, Body> id_to_body;
+//    HashMap<String, Long> eid_to_id;
 
     PooledEngine engine;
 
@@ -44,13 +49,12 @@ public class GameWorld {
     }
 
     private void init() {
-        this.id_to_body = new HashMap<>();
-        this.eid_to_id = new HashMap<>();
-
-        this.engine=new PooledEngine();
-        this.initialize_engine();
+//        this.id_to_body = new HashMap<>();
+//        this.eid_to_id = new HashMap<>();
 
         this.world = new World(new Vector2(0, gravity), true);
+        this.engine=new PooledEngine();
+        this.initialize_engine();
 
         this.standardBuilder = new StandardBuilder(this);
 
@@ -59,8 +63,7 @@ public class GameWorld {
     private void initialize_engine(){
         PhysicsSystem ps=new PhysicsSystem(this.engine);
         ps.PHYSICS_WORLD_$eq(this.world);
-        System.out.println(ps.PHYSICS_WORLD().getGravity());
-        this.engine.addSystem(new PhysicsSystem(this.engine));
+        this.engine.addSystem(ps);
 
     }
 
@@ -112,39 +115,9 @@ public class GameWorld {
                 world_prototype_json.getJSONObject("intervals").getFloat("scale");
         tabularToMap.tabular_to_map(test_tabular, representation, alterMap, this);
 
-        id_to_body.keySet().forEach(System.out::println);
+//        id_to_body.keySet().forEach(System.out::println);
         //test_game();
     }
-
-    /**
-     * @TODO delete
-     */
-    private void test_game() {
-        JSONObject game = JsonReader.read_json_from_path("game.json");
-
-        JSONObject jo = game.getJSONObject("character");
-        bodyFactory.get_body(jo);
-
-        bodyFactory.get_body(game.getJSONObject("character_s"));
-
-        bodyFactory.get_body(game.getJSONObject("ground"));
-
-        bodyFactory.get_body(game.getJSONObject("chain_test")).setAwake(true);
-
-        //Body bodyA=bf.get_body(game.getJSONObject("edge_test"));
-        //bodyA.setAwake(true);
-
-        bodyFactory.get_body(game.getJSONObject("wall1"));
-        bodyFactory.get_body(game.getJSONObject("wall2"));
-
-        JsonReader.sub_jsonObject_json(game, "joint", "bodyA");
-        JsonReader.sub_jsonObject_json(game, "joint", "bodyB");
-        bodyFactory.get_joint(game.getJSONObject("joint"));
-//        DistanceJointDef defJoint = new DistanceJointDef ();
-//        defJoint.length = 0;
-//        defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
-    }
-
 
     public void update(float delta_time) {
         engine.update(delta_time);
@@ -176,32 +149,30 @@ public class GameWorld {
     public Body getAlteredBody(String description, JSONObject alter) {
         // 改变量
         JSONObject altered = this.world_prototype_json.getJSONObject(description);
-        // 对body给予一个id
-        Long body_id = set_body_id(altered);
+
+        boolean waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=false;
         for (String key : alter.keySet()) {
             altered.put(key, alter.get(key));
             // 如果有对应eid，则加入
             if (key.equals("eid")){
-                this.eid_to_id.put(alter.getString("eid"), body_id);
+//                this.eid_to_id.put(alter.getString("eid"), body_id);
+                waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=true;
             }
+
         }
         // 生成body
         Body body = this.bodyFactory.get_body(altered);
-        // 给出id到body的map
-        this.id_to_body.put(body_id, body);
+        Entity e=engine.createEntity();
+        PhysicsBodyComponent pbc=engine.createComponent(PhysicsBodyComponent.class);
+        pbc.body_id_$eq(IdGenerator.INSTANCE.nextId());
+        pbc.body_$eq(body);
+        e.add(pbc);
+        if (waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+            e.add(engine.createComponent(IdontKnowComponent.class));
+        body.setUserData(e);
+//        // 给出id到body的map
+//        this.id_to_body.put(body_id, body);
 
         return body;
-    }
-
-    /**
-     * 给予目标id（id:xxxxx）
-     *
-     * @param jo 被赐予id的目标
-     * @return body id
-     */
-    Long set_body_id(JSONObject jo) {
-        Long body_id = IdGenerator.INSTANCE.nextId();
-        jo.put("id", body_id);
-        return body_id;
     }
 }

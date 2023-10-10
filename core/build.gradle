@@ -4,16 +4,17 @@ plugins {
 }
 sourceCompatibility = 1.17
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+[compileScala, compileTestScala]*.options*.encoding = 'UTF-8'
 
 
 sourceSets {
     main {
         scala {
-            srcDirs = ['src/scala']
+            srcDirs = ['src/scala',"src/java"]
         }
     }
 }
-sourceSets.main.java.srcDirs = [ "src/java" ]
+//sourceSets.main.java.srcDirs = [ "src/java" ]
 
 eclipse.project.name = appName + "-core"
 repositories {

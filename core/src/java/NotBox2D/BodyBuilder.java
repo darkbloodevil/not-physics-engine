@@ -3,6 +3,7 @@ package NotBox2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.*;
+import components.PhysicsBodyComponent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -61,6 +62,7 @@ public class BodyBuilder {
 
         // create the body in the game world
         Body body = gameWorld.world.createBody(bodyDef);
+
         body.setFixedRotation(false);
 
 
@@ -136,10 +138,6 @@ public class BodyBuilder {
         // body awake
         if (jo.has("awake")) {
             body.setAwake(jo.getBoolean("awake"));
-        }
-        // 对body唯一重要的属性：id
-        if (jo.has("id")){
-            body.setUserData(jo.get("id"));
         }
 
         return body;
