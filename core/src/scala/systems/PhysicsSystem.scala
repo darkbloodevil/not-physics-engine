@@ -7,10 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.utils.{Array => GDXarray}
 import components.{IdontKnowComponent, PhysicsBodyComponent, TransformComponent}
-import org.etsi.uri.x01903.v13.impl.EncapsulatedPKIDataTypeImpl
 
-import java.util
-import scala.tools.nsc.doc.model
 
 
 class PhysicsSystem(var engine: Engine) extends EntitySystem {
@@ -28,6 +25,36 @@ class PhysicsSystem(var engine: Engine) extends EntitySystem {
     physicsBodyMapper = ComponentMapper.getFor(classOf[PhysicsBodyComponent])
     transformMapper = ComponentMapper.getFor(classOf[TransformComponent])
     idkMapper = ComponentMapper.getFor(classOf[IdontKnowComponent])
+    def set_world(world: World): Unit ={
+        PHYSICS_WORLD=world
+        PHYSICS_WORLD.setContactListener(new ContactListener() {
+            override def beginContact(contact: Contact): Unit = {
+                val entity1: Entity = contact.getFixtureA.getBody.getUserData.asInstanceOf[Entity]
+                val entity2: Entity = contact.getFixtureA.getBody.getUserData.asInstanceOf[Entity]
+                val idk1:Option[IdontKnowComponent] =Option(idkMapper.get(entity1))
+                val idk2:Option[IdontKnowComponent] =Option(idkMapper.get(entity2))
+                if(idk2.isDefined){
+                    idk2.get.x_v = (2*(scala.util.Random.nextInt(1)-0.5)).toInt*idk2.get.y_v+scala.util.Random.nextInt(3)
+                    idk2.get.y_v = (2*(scala.util.Random.nextInt(1)-0.5)).toInt*idk2.get.x_v+scala.util.Random.nextInt(1)
+                }
+                if(idk1.isDefined){
+                    idk1.get.x_v = (2*(scala.util.Random.nextInt(1)-0.5)).toInt*idk1.get.y_v+scala.util.Random.nextInt(5)
+                    idk1.get.y_v = (2*(scala.util.Random.nextInt(1)-0.5)).toInt*idk1.get.x_v+scala.util.Random.nextInt(5)
+                }
+            }
+
+            override def endContact(contact: Contact): Unit = {
+
+            }
+
+            override def preSolve(contact: Contact, oldManifold: Manifold): Unit = {
+            }
+
+            override def postSolve(contact: Contact, impulse: ContactImpulse): Unit = {
+            }
+        })
+
+    }
 
     override def addedToEngine(engine: Engine): Unit = {
         super.addedToEngine(engine)
@@ -58,11 +85,12 @@ class PhysicsSystem(var engine: Engine) extends EntitySystem {
         val bodies = new GDXarray[Body];
         PHYSICS_WORLD.getBodies(bodies)
         for (body <- bodies.items) {
+
             val body_entity: Entity = body.getUserData.asInstanceOf[Entity]
             if (body_entity != null) {
                 val idk: IdontKnowComponent = idkMapper.get(body_entity)
                 if (idk != null) {
-                    body.applyForceToCenter(new Vector2(30, 20), true)
+                    body.setLinearVelocity(new Vector2(idk.x_v.toFloat, idk.y_v.toFloat))
                 }
             }
 

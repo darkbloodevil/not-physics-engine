@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import com.alibaba.excel.EasyExcel;
 import org.dom4j.*;
 import org.dom4j.tree.DefaultDocument;
 import org.json.JSONObject;
@@ -15,6 +16,7 @@ import org.xml.sax.InputSource;
 
 public class xmltest {
     public static void main(String[] args) {
+
         ArrayList<JSONObject> bookList = new ArrayList<JSONObject>();
         SAXReader reader = new SAXReader();
         try {
@@ -58,7 +60,7 @@ public class xmltest {
 
             e.printStackTrace();
         }
-//        bookList.forEach(i->System.out.println(i.toString()));
+        bookList.forEach(i->System.out.println(i.toString()));
 
     }
 

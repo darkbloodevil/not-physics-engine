@@ -62,7 +62,7 @@ public class GameWorld {
     }
     private void initialize_engine(){
         PhysicsSystem ps=new PhysicsSystem(this.engine);
-        ps.PHYSICS_WORLD_$eq(this.world);
+        ps.set_world(this.world);
         this.engine.addSystem(ps);
 
     }
