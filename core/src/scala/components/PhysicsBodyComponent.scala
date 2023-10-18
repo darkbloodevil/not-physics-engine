@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body
  * 用来记录body的component（就是为了用上component）
  *
  */
-class PhysicsBodyComponent() extends Component {
+class PhysicsBodyComponent extends Component {
     var body: Body = _
     var body_id: Long = 0
 

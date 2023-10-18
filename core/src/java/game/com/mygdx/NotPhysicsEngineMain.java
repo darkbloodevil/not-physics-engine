@@ -3,6 +3,7 @@ package game.com.mygdx;
 import NotBox2D.GameWorld;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,10 +14,7 @@ import java.util.Stack;
 
 public class NotPhysicsEngineMain extends Game {
     SpriteBatch batch;
-    Texture img;
-    GameWorld gameWorld;
 
-    Box2DDebugRenderer debugRenderer;
     /**
      * @TODO 临时的记得改
      */
@@ -32,31 +30,75 @@ public class NotPhysicsEngineMain extends Game {
 
 
         batch = new SpriteBatch();
-        img = new Texture("badlogic.jpg");
-        gameWorld = new GameWorld();
+
         OrthographicCamera cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
         cameras.add(cam);
-        debugRenderer = new Box2DDebugRenderer();
-
-        gameWorld.create();
-
+        this.setScreen(new MainScreen(this));
     }
 
     @Override
     public void render() {
-        OrthographicCamera cam=cameras.peek();
+        super.render();
+
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+    }
+}
+class MainScreen extends ScreenAdapter {
+    GameWorld gameWorld;
+
+    Box2DDebugRenderer debugRenderer;
+    NotPhysicsEngineMain game;
+    MainScreen(NotPhysicsEngineMain game){
+        this.game = game;
+        gameWorld = new GameWorld();
+        debugRenderer = new Box2DDebugRenderer();
+
+        gameWorld.create();
+    }
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+        OrthographicCamera cam=game.cameras.peek();
+        SpriteBatch batch=game.batch;
         batch.setProjectionMatrix(cam.combined);
         ScreenUtils.clear(.1f, 0.1f, 0.4f, 1);
 //        gameWorld.world.step(1 / 60f, 6, 2);
         debugRenderer.render(gameWorld.world, cam.combined);
         batch.begin();
         batch.end();
-        gameWorld.update(1/60f);
+        gameWorld.update(delta);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        img.dispose();
+
     }
 }

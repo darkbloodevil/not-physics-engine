@@ -8,12 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -48,7 +45,7 @@ public class ExcelReader {
             try (Stream<Row> rows = sheet.openStream()) {
                 var rowIterator = rows.iterator();
                 JSONArray map_arr = new JSONArray();//the 2 dimension array of the map
-                handling_rows(rowIterator,result_json,map_arr);
+                handling_rows(rowIterator, result_json, map_arr);
                 result_json.put("game_map", map_arr);
             }
         } catch (IOException e) {
@@ -59,59 +56,55 @@ public class ExcelReader {
 
     /**
      * handling all the rows
+     *
      * @param rowIterator row iterator
      * @param result_json result
-     * @param map_arr game map array
+     * @param map_arr     game map array
      */
-    static void handling_rows(Iterator<Row> rowIterator,JSONObject result_json,JSONArray map_arr){
+    static void handling_rows(Iterator<Row> rowIterator, JSONObject result_json, JSONArray map_arr) {
         String task = "";
         while (rowIterator.hasNext()) {
             var row = rowIterator.next();
             // Header Row
-            if (row.getCell(0).asString().equalsIgnoreCase("header")) {
-                handling_header(row,result_json);
-            }
-            //if height is already loaded
-            else if (result_json.has("height")) {
+            if (row.getCell(0).asString().equalsIgnoreCase("header"))
+                handling_header(row, result_json);
+                //if height is already loaded
+            else if (result_json.has("height") && row.getRowNum() <= result_json.getInt("height") + 1)
                 // read the map (+1 cause the header)
-                if (row.getRowNum() <= result_json.getInt("height") + 1) {
-                    handling_map(row,map_arr);
-                }
+                handling_map(row, map_arr);
                 // read other information
-                else {
-                    // set the task
-                    if (row.getCell(0).asString().equalsIgnoreCase(REPRESENT)) {
-                        task = REPRESENT;
-                        result_json.put(REPRESENT, new JSONObject());
-                        continue;
-                    } else if (row.getCell(0).asString().equalsIgnoreCase(ALTER)) {
-                        task = ALTER;
-                        result_json.put(ALTER, new JSONObject());
-                        continue;
-                    }
-
-                    // handling represent（用来标明各个符号代表了什么）
-                    if (task.equals(REPRESENT)) {
-                        handling_represent(row,result_json);
-                    }
-                    // handling alter（用来标明对该符号的调整）
-                    else if (task.equals(ALTER)) {
-                        if (handling_alter(row,result_json)){
-                            break;
-                        }
-                    }
+            else if (result_json.has("height") && row.getRowNum() > result_json.getInt("height") + 1) {
+                // set the task
+                if (row.getCell(0).asString().equalsIgnoreCase(REPRESENT)) {
+                    task = REPRESENT;
+                    result_json.put(REPRESENT, new JSONObject());
+                    continue;
+                } else if (row.getCell(0).asString().equalsIgnoreCase(ALTER)) {
+                    task = ALTER;
+                    result_json.put(ALTER, new JSONObject());
+                    continue;
                 }
-            }
 
+                // handling represent（用来标明各个符号代表了什么）
+                if (task.equals(REPRESENT))
+                    handling_represent(row, result_json);
+                    // handling alter（用来标明对该符号的调整）
+                else if (task.equals(ALTER))
+                    if (handling_alter(row, result_json)) break;
+
+            }
         }
+
+
     }
 
     /**
      * 处理header
-     * @param row row
+     *
+     * @param row         row
      * @param result_json result
      */
-    static void handling_header(Row row,JSONObject result_json){
+    static void handling_header(Row row, JSONObject result_json) {
         for (int i = 0; i < row.getCellCount(); i++) {
             Cell cell = row.getCell(i);
             if (cell == null)
@@ -131,10 +124,11 @@ public class ExcelReader {
 
     /**
      * 处理游戏地图
-     * @param row row
+     *
+     * @param row     row
      * @param map_arr game map array
      */
-    static void handling_map(Row row,JSONArray map_arr){
+    static void handling_map(Row row, JSONArray map_arr) {
         JSONArray row_arr = new JSONArray();
         for (int i = 0; i < row.getCellCount(); i++) {
             Cell cell = row.getCell(i);
@@ -151,10 +145,11 @@ public class ExcelReader {
 
     /**
      * 用来标明各个符号代表了什么
-     * @param row row
+     *
+     * @param row         row
      * @param result_json result
      */
-    static void handling_represent(Row row,JSONObject result_json){
+    static void handling_represent(Row row, JSONObject result_json) {
         // 因为represent是一格key一个value，所以这边循环步长为2
         for (int i = 0; i < row.getCellCount() - 1; i += 2) {
             // key value
@@ -177,11 +172,12 @@ public class ExcelReader {
 
     /**
      * 用来表明对符号的调整
-     * @param row row
+     *
+     * @param row         row
      * @param result_json result
      * @return true表示结束了
      */
-    static boolean handling_alter(Row row,JSONObject result_json){
+    static boolean handling_alter(Row row, JSONObject result_json) {
         //空了就关了
         if (row.getCellCount() == 0) {
             return true;
@@ -218,6 +214,7 @@ public class ExcelReader {
         }
         return false;
     }
+
     /**
      * I don't care the type of cell, so i return object
      *

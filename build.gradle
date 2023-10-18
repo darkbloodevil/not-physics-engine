@@ -88,10 +88,9 @@ project(":core") {
         implementation group: 'org.dhatim', name: 'fastexcel', version: '0.15.7'
 // https://mvnrepository.com/artifact/org.dhatim/fastexcel-reader
         implementation group: 'org.dhatim', name: 'fastexcel-reader', version: '0.15.7'
-
-
 // https://mvnrepository.com/artifact/org.dom4j/dom4j
         implementation group: 'org.dom4j', name: 'dom4j', version: '2.1.4'
+
         implementation group: 'org.scala-lang', name: 'scala3-library_3.0.0-RC2', version: '3.0.0-RC2'
         implementation 'commons-collections:commons-collections:3.2.2'
         compileOnly group: 'org.scala-sbt', name: 'sbt', version: '1.9.6'

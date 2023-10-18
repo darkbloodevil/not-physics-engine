@@ -38,7 +38,6 @@ class PhysicsSystem(var engine: Engine) extends EntitySystem {
                 val pbc1 = physicsBodyMapper.get(entity1)
                 val pbc2 = physicsBodyMapper.get(entity1)
                 if (idk2.isDefined) {
-                    println("2")
                     if(pbc2.last_contact>0)
                         return
                     pbc2.last_contact=pbc2.contact_interval
@@ -47,7 +46,6 @@ class PhysicsSystem(var engine: Engine) extends EntitySystem {
                     idk2.get.y_v = -idk2.get.y_v
                 }
                 if (idk1.isDefined) {
-                    println("1")
                     if(pbc1.last_contact>0)
                         return
                     pbc1.last_contact=pbc1.contact_interval
