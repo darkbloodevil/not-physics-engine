@@ -1,13 +1,10 @@
 package components
 
 import com.badlogic.ashley.core.Component
-import org.json.JSONObject
-
 
 /**
- * 用来表示游戏消息。
- * 例如，与某某相撞了，就发送一个message
+ * 用于传递信息（仅仅与该entity相关的信息
  */
-class GameMsgComponent(var target_system:String,var message_json:JSONObject) extends Component{
-}
+class GameMsgComponent extends Component {
 
+}

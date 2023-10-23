@@ -2,6 +2,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.20'
     id 'scala'
 }
+
 sourceCompatibility = 1.17
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 [compileScala, compileTestScala]*.options*.encoding = 'UTF-8'
@@ -14,7 +15,15 @@ sourceSets {
         }
     }
 }
+jar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+}
 //sourceSets.main.java.srcDirs = [ "src/java" ]
+
+//tasks.named("compileScala"){
+//
+//    classpath = sourceSets.main.compileClasspath
+//}
 
 eclipse.project.name = appName + "-core"
 repositories {

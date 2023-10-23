@@ -1,15 +1,25 @@
 package systems
 
-import com.badlogic.ashley.core._
+import NotBox2D.{DecouplingProcessor, EventEnum, GameWorld}
+import com.badlogic.ashley.core.*
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d._
-import com.badlogic.gdx.utils.{Array => GDXarray}
-import components.{IdontKnowComponent, PhysicsBodyComponent, TransformComponent}
+import com.badlogic.gdx.physics.box2d.*
+import com.badlogic.gdx.utils.Array as GDXarray
+import components.{IdontKnowComponent, PhysicsBodyComponent, PropertyComponent, TransformComponent}
+import org.json.{JSONArray, JSONObject}
 
+import java.util
 
-class PhysicsSystem(var engine: Engine) extends EntitySystem {
+object PhysicsSystem{
+    /**
+     * 用于表明是物理系统
+     */
+    val PHYSICS_SYSTEM_TOKEN="physics system"
+}
+
+class PhysicsSystem(var engine: Engine,val gameWorld: GameWorld) extends EntitySystem {
     var PHYSICS_WORLD: World = _
     private val TIME_STEP = .005f
     private val VELOCITY_ITERATIONS = 8
@@ -17,41 +27,40 @@ class PhysicsSystem(var engine: Engine) extends EntitySystem {
     private var physicsBodyMapper: ComponentMapper[PhysicsBodyComponent] = _
     private var transformMapper: ComponentMapper[TransformComponent] = _
     private var idkMapper: ComponentMapper[IdontKnowComponent] = _
+    private var propertyMapper:ComponentMapper[PropertyComponent]=_
+
     private var world_state = System.currentTimeMillis()
+    private val decouplingProcessor:DecouplingProcessor=DecouplingProcessor()
 
     var GRAVITY = 10
     private var accumulator: Float = 0
     //     PHYSICS_WORLD = new World(new Vector2(0, GRAVITY), true)
     physicsBodyMapper = ComponentMapper.getFor(classOf[PhysicsBodyComponent])
     transformMapper = ComponentMapper.getFor(classOf[TransformComponent])
+    propertyMapper=ComponentMapper.getFor(classOf[PropertyComponent])
     idkMapper = ComponentMapper.getFor(classOf[IdontKnowComponent])
 
+    decouplingProcessor.physicsBodyMapper=physicsBodyMapper
+    decouplingProcessor.propertyMapper=propertyMapper
     def set_world(world: World): Unit = {
         PHYSICS_WORLD = world
         PHYSICS_WORLD.setContactListener(new ContactListener() {
             override def beginContact(contact: Contact): Unit = {
-                println("contact!")
+//                println("contact!")
                 val entity1: Entity = contact.getFixtureA.getBody.getUserData.asInstanceOf[Entity]
                 val entity2: Entity = contact.getFixtureB.getBody.getUserData.asInstanceOf[Entity]
-                val idk1: Option[IdontKnowComponent] = Option(idkMapper.get(entity1))
-                val idk2: Option[IdontKnowComponent] = Option(idkMapper.get(entity2))
+
                 val pbc1 = physicsBodyMapper.get(entity1)
                 val pbc2 = physicsBodyMapper.get(entity1)
-                if (idk2.isDefined) {
-                    if(pbc2.last_contact>0)
-                        return
-                    pbc2.last_contact=pbc2.contact_interval
-                    println(pbc2.last_contact)
-                    idk2.get.x_v = (2 * (scala.util.Random.nextInt(10) - 5)).toInt
-                    idk2.get.y_v = -idk2.get.y_v
+
+                // 碰撞后 对两方一视同仁的设置碰撞间隔
+                if (pbc2.last_contact > 0 || pbc1.last_contact > 0) {
+                    return
                 }
-                if (idk1.isDefined) {
-                    if(pbc1.last_contact>0)
-                        return
-                    pbc1.last_contact=pbc1.contact_interval
-                    idk1.get.x_v = (2 * (scala.util.Random.nextInt(1) - 0.5)).toInt * idk1.get.y_v
-                    idk1.get.y_v = (2 * (scala.util.Random.nextInt(1) - 0.5)).toInt * idk1.get.x_v
-                }
+                pbc2.last_contact = pbc2.contact_interval
+                pbc1.last_contact = pbc1.contact_interval
+
+                decouplingProcessor.decouple_and_process(EventEnum.CONTACT,List(entity1,entity2))
             }
 
             override def endContact(contact: Contact): Unit = {
@@ -100,19 +109,20 @@ class PhysicsSystem(var engine: Engine) extends EntitySystem {
 
             val body_entity: Entity = body.getUserData.asInstanceOf[Entity]
 
-            if(body_entity != null){
-                val idk: IdontKnowComponent = idkMapper.get(body_entity)
-                if(idk != null)body.setLinearVelocity(new Vector2(idk.x_v.toFloat, idk.y_v.toFloat))
+            if (body_entity != null) {
+//                val idk: IdontKnowComponent = idkMapper.get(body_entity)
+//                if (idk != null) body.setLinearVelocity(new Vector2(idk.x_v.toFloat, idk.y_v.toFloat))
 
-                update_transform(body_entity,body)
-                update_last_contact(body_entity,deltaTime)
+                update_transform(body_entity, body)
+                update_last_contact(body_entity, deltaTime)
 
             }
         }
     }
-    def update_transform(body_entity:Entity,body: Body): Unit ={
+
+    def update_transform(body_entity: Entity, body: Body): Unit = {
         val tc = transformMapper.get(body_entity)
-        if(tc != null) // Update the entities/sprites position and angle
+        if (tc != null) // Update the entities/sprites position and angle
         {
             tc.pos.x = body.getPosition.x
             tc.pos.y = body.getPosition.y
@@ -122,18 +132,18 @@ class PhysicsSystem(var engine: Engine) extends EntitySystem {
         }
     }
 
-    def update_last_contact(body_entity:Entity,deltaTime:Float): Unit ={
+    def update_last_contact(body_entity: Entity, deltaTime: Float): Unit = {
         /**
          * 碰撞终止时间
          */
         val pbc = physicsBodyMapper.get(body_entity)
 
-        pbc.physics_system_state=world_state
-        if(pbc.last_contact>0) {
+        pbc.physics_system_state = world_state
+        if (pbc.last_contact > 0) {
 
             pbc.last_contact -= deltaTime
-            if (pbc.last_contact<=0){
-                pbc.last_contact=0
+            if (pbc.last_contact <= 0) {
+                pbc.last_contact = 0
             }
         }
     }

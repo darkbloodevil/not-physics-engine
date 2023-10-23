@@ -6,15 +6,16 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
     }
+
     dependencies {
 
 
     }
 }
-
 plugins {
     id 'scala'
 }
+
 allprojects {
     apply plugin: "eclipse"
     apply plugin: 'idea'
@@ -43,6 +44,8 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
 
     }
+    dependencies {
+    }
 }
 
 project(":desktop") {
@@ -55,13 +58,15 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
 
+
+//    implementation 'commons-collections:commons-collections:3.2.2'
+
     }
 }
 
 
 project(":core") {
     apply plugin: "java-library"
-
 
     dependencies {
 //        implementation project(":core")
@@ -73,8 +78,6 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        // https://mvnrepository.com/artifact/com.alibaba/easyexcel
-//        implementation group: 'com.alibaba', name: 'easyexcel', version: '3.3.2'
 
         // https://mvnrepository.com/artifact/org.json/json
         implementation group: 'org.json', name: 'json', version: '20230227'
@@ -91,10 +94,14 @@ project(":core") {
 // https://mvnrepository.com/artifact/org.dom4j/dom4j
         implementation group: 'org.dom4j', name: 'dom4j', version: '2.1.4'
 
-        implementation group: 'org.scala-lang', name: 'scala3-library_3.0.0-RC2', version: '3.0.0-RC2'
+// https://mvnrepository.com/artifact/org.scala-lang/scala3-library
+        implementation group: 'org.scala-lang', name: 'scala3-library_3', version: '3.0.0'
         implementation 'commons-collections:commons-collections:3.2.2'
-        compileOnly group: 'org.scala-sbt', name: 'sbt', version: '1.9.6'
 
+
+//        compileOnly group: 'org.scala-sbt', name: 'sbt', version: '1.9.6'
+//        testImplementation 'org.scalatest:scalatest_3:3.2.9'
+//        testImplementation 'junit:junit:4.13'
 
     }
 }

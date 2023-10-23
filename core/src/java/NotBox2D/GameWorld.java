@@ -1,6 +1,5 @@
 package NotBox2D;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import components.IdontKnowComponent;
 import components.PhysicsBodyComponent;
+import components.PropertyComponent;
 import game.com.mygdx.NotPhysicsEngineMain;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,16 +52,16 @@ public class GameWorld {
 //        this.id_to_body = new HashMap<>();
 //        this.eid_to_id = new HashMap<>();
 
+
         this.world = new World(new Vector2(0, gravity), true);
         this.engine=new PooledEngine();
         this.initialize_engine();
 
         this.standardBuilder = new StandardBuilder(this);
 
-
     }
     private void initialize_engine(){
-        PhysicsSystem ps=new PhysicsSystem(this.engine);
+        PhysicsSystem ps=new PhysicsSystem(this.engine,this);
         ps.set_world(this.world);
         this.engine.addSystem(ps);
 
@@ -72,7 +72,7 @@ public class GameWorld {
         this.standardBuilder.load_builders(bodyFactory);
         String frustum = "L", entity_size = "M";
         this.standardBuilder.standardize(frustum, entity_size);
-        this.world_prototype_json = JsonReader.mergeJSONObject(this.standardBuilder.standard_jo, this.world_prototype_json);
+        this.world_prototype_json = JsonReader.mergeJSONObject(this.standardBuilder.standard_basic_entities_jo, this.world_prototype_json);
         //set camera
         NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_prototype_json.getFloat("frustum_width"),
                 this.world_prototype_json.getFloat("frustum_height")));
@@ -164,15 +164,23 @@ public class GameWorld {
         Body body = this.bodyFactory.get_body(altered);
         Entity e=engine.createEntity();
         PhysicsBodyComponent pbc=engine.createComponent(PhysicsBodyComponent.class);
+
+
         pbc.body_id_$eq(IdGenerator.INSTANCE.nextId());
         pbc.body_$eq(body);
         e.add(pbc);
-        if (waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
-            e.add(engine.createComponent(IdontKnowComponent.class));
+        if (waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa){
+            PropertyComponent pc=engine.createComponent(PropertyComponent.class);
+            JSONObject property_json=new JSONObject();
+            property_json.put("name","big");
+            pc.property_$eq(property_json);
+            e.add(pc);
+        }
         body.setUserData(e);
 //        // 给出id到body的map
 //        this.id_to_body.put(body_id, body);
 
         return body;
     }
+
 }

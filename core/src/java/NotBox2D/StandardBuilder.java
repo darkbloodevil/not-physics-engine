@@ -17,11 +17,12 @@ public class StandardBuilder {
     /**
      * 标准化的各个物件。例如标准化的圆、方。是运行时使用的
      */
-    JSONObject standard_jo;
+    JSONObject standard_basic_entities_jo;
     BodyBuilder bodyBuilder;
     static String JSONS = "jsons";
 
     public final static String XL = "XL", L = "L", M = "M", S = "S", SS = "SS";
+    public final static String[] SHAPE_SIZES=new String[]{"L","M","S"};
 
 
     public StandardBuilder(GameWorld world) {
@@ -50,14 +51,14 @@ public class StandardBuilder {
      */
     private void load_local_standard_json(String standard_path) {
         // 读取标准化文件
-        this.standard_jo = JsonReader.read_json_from_path(standard_path);
+        this.standard_basic_entities_jo = JsonReader.read_json_from_path(standard_path);
         // 读取标准化文件中链接的其他文件
-        if (this.standard_jo.has(JSONS)) {
+        if (this.standard_basic_entities_jo.has(JSONS)) {
             ArrayList<String> searched = new ArrayList<>();
             Queue<String> to_loads = new LinkedList<>();
-            for (String key : this.standard_jo.getJSONObject(JSONS).keySet()) {
+            for (String key : this.standard_basic_entities_jo.getJSONObject(JSONS).keySet()) {
                 if (!key.equals("name"))
-                    to_loads.offer(this.standard_jo.getJSONObject(JSONS).getString(key));
+                    to_loads.offer(this.standard_basic_entities_jo.getJSONObject(JSONS).getString(key));
             }
             //to_loads.forEach(i->System.out.println(i));
             while (!to_loads.isEmpty()) {
@@ -68,14 +69,14 @@ public class StandardBuilder {
                 // 读取链接文件中链接的文件
                 if (temp.has(JSONS)) {
                     for (String key : temp.getJSONObject(JSONS).keySet()) {
-                        String file_name=temp.getJSONObject(JSONS).getString(key);
+                        String file_name = temp.getJSONObject(JSONS).getString(key);
                         if (!to_loads.contains(file_name) && !searched.contains(file_name)) {
                             to_loads.offer(file_name);
                         }
                     }
                 }
                 // 将链接的文件与现有的合并
-                this.standard_jo = JsonReader.mergeJSONObject(this.standard_jo, temp);
+                this.standard_basic_entities_jo = JsonReader.mergeJSONObject(this.standard_basic_entities_jo, temp);
 
             }
         }
@@ -83,6 +84,7 @@ public class StandardBuilder {
 
     /**
      * 载入工厂
+     *
      * @param bodyBuilder body创建器
      */
     public void load_builders(BodyBuilder bodyBuilder) {
@@ -95,20 +97,22 @@ public class StandardBuilder {
      */
     public void standardize(String frustum, String entity_size) {
         //划分几块 进行标准化
-        standard_jo.put("frustum_height", standard_jo.getJSONObject("frustums").get(frustum + "-FRUSTUM"));
-        standard_jo.put("frustum_width", SCALE_WIDTH / SCALE_HEIGHT *
-                (int) standard_jo.getJSONObject("frustums").get(frustum + "-FRUSTUM"));
+        standard_basic_entities_jo.put("frustum_height", standard_basic_entities_jo.getJSONObject("frustums").get(frustum + "-FRUSTUM"));
+        standard_basic_entities_jo.put("frustum_width", SCALE_WIDTH / SCALE_HEIGHT *
+                (int) standard_basic_entities_jo.getJSONObject("frustums").get(frustum + "-FRUSTUM"));
 
         //基本实体大小 进行标准化
-        standard_jo.put("circle", standard_jo.get(entity_size + "-circle"));
-        standard_jo.put("square", standard_jo.get(entity_size + "-square"));
-        standard_jo.put("matrix-3h", standard_jo.get(entity_size + "-matrix-3h"));
-        standard_jo.put("matrix-3v", standard_jo.get(entity_size + "-matrix-3v"));
-        standard_jo.put("triangle", standard_jo.get(entity_size + "-triangle"));
-        standard_jo.put("left-triangle", standard_jo.get(entity_size + "-left-triangle"));
-        standard_jo.put("right-triangle", standard_jo.get(entity_size + "-right-triangle"));
-        standard_jo.put("equilateral-triangle", standard_jo.get(entity_size + "-equilateral-triangle"));
+        String[] shapes = new String[]{"circle", "square", "matrix-3h", "matrix-3v", "triangle",
+                "left-triangle", "right-triangle", "equilateral-triangle"};
 
+        for (String shape:shapes) {
+            //放入标准化的entity（比如L是标准的，那circle就是L-circle）
+            standard_basic_entities_jo.put(shape, standard_basic_entities_jo.get(entity_size + "-"+shape));
+            for (String size:SHAPE_SIZES){
+                //放入全类型的entity（简单来说就是写的多一些）
+                standard_basic_entities_jo.put(size+"-"+shape, standard_basic_entities_jo.get(size + "-"+shape));
+            }
+        }
     }
 
 

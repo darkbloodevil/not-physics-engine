@@ -23,6 +23,7 @@ class PhysicsBodyComponent extends Component {
 
     /**
      * 用于表示碰撞检测的时间间隔（比如说撞一下，不可能触发多次判定）
+     * 如果需要触发多次判定，只需设置该值为小于等于0即可
      */
     var contact_interval:Float=0.05f
 }

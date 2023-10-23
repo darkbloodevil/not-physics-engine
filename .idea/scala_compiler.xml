@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ScalaCompilerConfiguration">
     <option name="compileOrder" value="ScalaThenJava" />
-    <profile name="Gradle 1" modules="not-physics-engine.core.main,not-physics-engine.core.test,not-physics-engine.desktop.main,not-physics-engine.desktop.test">
+    <option name="incrementalityType" value="IDEA" />
+    <profile name="Gradle 2" modules="not-physics-engine.core.main,not-physics-engine.core.test,not-physics-engine.desktop.main,not-physics-engine.desktop.test">
       <option name="deprecationWarnings" value="true" />
       <option name="uncheckedWarnings" value="true" />
-      <parameters>
-        <parameter value="-target:jvm-17" />
-      </parameters>
     </profile>
   </component>
 </project>

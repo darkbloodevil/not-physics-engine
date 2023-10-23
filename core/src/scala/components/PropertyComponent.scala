@@ -18,5 +18,4 @@ class PropertyComponent extends Component{
         clone_result.property=new JSONObject(property.toString)
         clone_result
     }
-
 }
