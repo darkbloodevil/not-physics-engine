@@ -73,6 +73,8 @@ public class GameWorld {
         String frustum = "L", entity_size = "M";
         this.standardBuilder.standardize(frustum, entity_size);
         this.world_prototype_json = JsonReader.mergeJSONObject(this.standardBuilder.standard_basic_entities_jo, this.world_prototype_json);
+
+
         //set camera
         NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_prototype_json.getFloat("frustum_width"),
                 this.world_prototype_json.getFloat("frustum_height")));
@@ -83,11 +85,17 @@ public class GameWorld {
         HashMap<String, JSONObject> alterMap = new HashMap<>();
 //        alterMap.put("s", new JSONObject("{\"body_type\":\"static\"}"));
 
-        tabularToMap.center_x = 8;
-        tabularToMap.center_y = 4.5f;
+        System.out.println(this.world_prototype_json.getFloat("frustum_width"));
+        tabularToMap.center_x = this.world_prototype_json.getFloat("frustum_width")/4;
+        tabularToMap.center_y = this.world_prototype_json.getFloat("frustum_height")/4;
 
         tabularToMap.offset_y = -0.5f;
         tabularToMap.offset_x = -0.5f;
+//        tabularToMap.center_x = 8;
+//        tabularToMap.center_y = 4.5f;
+//
+//        tabularToMap.offset_y = -0.5f;
+//        tabularToMap.offset_x = -0.5f;
 
         JSONObject jsonObject = ExcelReader.excel_to_json("excel_test.xlsx");
         JSONArray jsonArray = jsonObject.getJSONArray("game_map");
