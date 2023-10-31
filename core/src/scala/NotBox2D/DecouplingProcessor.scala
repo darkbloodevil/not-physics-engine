@@ -14,7 +14,7 @@ class DecouplingProcessor{
     def decouple_and_process(event: EventEnum, entities: List[Entity]): Unit = {
         event match
             case CONTACT => {
-                print("a")
+
             }
     }
 

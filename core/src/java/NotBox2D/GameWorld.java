@@ -2,6 +2,9 @@ package NotBox2D;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -70,7 +73,7 @@ public class GameWorld {
     public void create() {
         bodyFactory = new BodyBuilder(this);
         this.standardBuilder.load_builders(bodyFactory);
-        String frustum = "L", entity_size = "M";
+        String frustum = "S", entity_size = "L";
         this.standardBuilder.standardize(frustum, entity_size);
         this.world_prototype_json = JsonReader.mergeJSONObject(this.standardBuilder.standard_basic_entities_jo, this.world_prototype_json);
 
@@ -85,17 +88,11 @@ public class GameWorld {
         HashMap<String, JSONObject> alterMap = new HashMap<>();
 //        alterMap.put("s", new JSONObject("{\"body_type\":\"static\"}"));
 
-        System.out.println(this.world_prototype_json.getFloat("frustum_width"));
-        tabularToMap.center_x = this.world_prototype_json.getFloat("frustum_width")/4;
-        tabularToMap.center_y = this.world_prototype_json.getFloat("frustum_height")/4;
+        tabularToMap.center_x = this.world_prototype_json.getFloat("frustum_width")/2;
+        tabularToMap.center_y = this.world_prototype_json.getFloat("frustum_height")/2;
 
         tabularToMap.offset_y = -0.5f;
         tabularToMap.offset_x = -0.5f;
-//        tabularToMap.center_x = 8;
-//        tabularToMap.center_y = 4.5f;
-//
-//        tabularToMap.offset_y = -0.5f;
-//        tabularToMap.offset_x = -0.5f;
 
         JSONObject jsonObject = ExcelReader.excel_to_json("excel_test.xlsx");
         JSONArray jsonArray = jsonObject.getJSONArray("game_map");

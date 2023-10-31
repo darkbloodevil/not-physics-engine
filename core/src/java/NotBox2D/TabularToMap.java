@@ -34,8 +34,8 @@ public enum TabularToMap {
                 if (tag.equals(EMPTY))continue;// 空就直接过
                 String body_name=representation.get(tag);
                 // 获取对应的位置
-                float x=(i-center_x-offset_x)*interval;
-                float y=(j-center_y-offset_y)*interval;
+                float x=(i-offset_x)*interval-center_x;
+                float y=(j-offset_y)*interval-center_y;
                 //在原型上给予对应的改变量
                 JSONObject alter=new JSONObject("{\"position\":["+x+","+y+"]}");
                 if (alterMap.containsKey(tag)){

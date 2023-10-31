@@ -25,6 +25,8 @@ public class ExcelReader {
     public static void main(String[] args) {
         System.out.println(excel_to_json("excel_test.xlsx").getJSONArray("game_map").length());
         System.out.println(excel_to_json("excel_test.xlsx").getJSONArray("game_map").getJSONArray(0).length());
+        System.out.println(excel_to_json("excel_test.xlsx").getJSONArray("game_map").toString());
+
     }
 
     /**
