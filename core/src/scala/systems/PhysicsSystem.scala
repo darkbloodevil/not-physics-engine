@@ -19,8 +19,9 @@ object PhysicsSystem{
     val PHYSICS_SYSTEM_TOKEN="physics system"
 }
 
-class PhysicsSystem(var engine: Engine,val gameWorld: GameWorld) extends EntitySystem {
+class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
     var PHYSICS_WORLD: World = _
+    var engine: Engine=_
     private val TIME_STEP = .005f
     private val VELOCITY_ITERATIONS = 8
     private val POSITION_ITERATIONS = 10
@@ -78,6 +79,7 @@ class PhysicsSystem(var engine: Engine,val gameWorld: GameWorld) extends EntityS
 
     override def addedToEngine(engine: Engine): Unit = {
         super.addedToEngine(engine)
+        this.engine=engine
     }
 
     override def update(deltaTime: Float): Unit = {

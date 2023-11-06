@@ -36,7 +36,7 @@ public class ExcelReader {
      * 其他信息（若干行）
      *
      * @param excel_path excel的位置
-     * @return JsonObject build from the excel
+     * @return JsonObject build from the Excel
      */
     public static JSONObject excel_to_json(String excel_path) {
         var f = new File(excel_path);
@@ -86,7 +86,6 @@ public class ExcelReader {
                     result_json.put(ALTER, new JSONObject());
                     continue;
                 }
-
                 // handling represent（用来标明各个符号代表了什么）
                 if (task.equals(REPRESENT))
                     handling_represent(row, result_json);

@@ -11,7 +11,7 @@ import java.util.HashMap;
 public enum TabularToMap {
     INSTANCE;
     public float interval;
-    public float center_x=8,center_y=4.5f,offset_x=5,offset_y=8;
+    public float center_x=8,center_y=4.5f,offset_x=-0.5f,offset_y=-0.5f;
     public static final String EMPTY="[EMPTY]";
 
     TabularToMap(){

@@ -64,7 +64,7 @@ public class GameWorld {
 
     }
     private void initialize_engine(){
-        PhysicsSystem ps=new PhysicsSystem(this.engine,this);
+        PhysicsSystem ps=new PhysicsSystem(this);
         ps.set_world(this.world);
         this.engine.addSystem(ps);
 
@@ -90,9 +90,6 @@ public class GameWorld {
 
         tabularToMap.center_x = this.world_prototype_json.getFloat("frustum_width")/2;
         tabularToMap.center_y = this.world_prototype_json.getFloat("frustum_height")/2;
-
-        tabularToMap.offset_y = -0.5f;
-        tabularToMap.offset_x = -0.5f;
 
         JSONObject jsonObject = ExcelReader.excel_to_json("excel_test.xlsx");
         JSONArray jsonArray = jsonObject.getJSONArray("game_map");
