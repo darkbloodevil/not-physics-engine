@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array as GDXarray
-import components.{IdontKnowComponent, PhysicsBodyComponent, PropertyComponent, TransformComponent}
+import components.{IdontKnowComponent, PhysicsBodyComponent, PhysicsInstruction, PropertyComponent, TransformComponent}
 import org.json.{JSONArray, JSONObject}
 
 import java.util
@@ -29,6 +29,7 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
     private var transformMapper: ComponentMapper[TransformComponent] = _
     private var idkMapper: ComponentMapper[IdontKnowComponent] = _
     private var propertyMapper:ComponentMapper[PropertyComponent]=_
+    private var instructionMapper:ComponentMapper[PhysicsInstruction]=_
 
     private var world_state = System.currentTimeMillis()
     private val decouplingProcessor:DecouplingProcessor=DecouplingProcessor()
@@ -40,6 +41,7 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
     transformMapper = ComponentMapper.getFor(classOf[TransformComponent])
     propertyMapper=ComponentMapper.getFor(classOf[PropertyComponent])
     idkMapper = ComponentMapper.getFor(classOf[IdontKnowComponent])
+    instructionMapper= ComponentMapper.getFor(classOf[PhysicsInstruction])
 
     decouplingProcessor.physicsBodyMapper=physicsBodyMapper
     decouplingProcessor.propertyMapper=propertyMapper
@@ -114,12 +116,20 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
             if (body_entity != null) {
 //                val idk: IdontKnowComponent = idkMapper.get(body_entity)
 //                if (idk != null) body.setLinearVelocity(new Vector2(idk.x_v.toFloat, idk.y_v.toFloat))
-
+                update_instruction(body_entity,body)
                 update_transform(body_entity, body)
                 update_last_contact(body_entity, deltaTime)
-
             }
         }
+    }
+    def update_instruction(body_entity: Entity, body: Body): Unit = {
+        val pic=instructionMapper.get(body_entity)
+        val instructions=pic.instructions
+        instructions.forEach(instruction=>{
+            if(instruction.equals("CHANGE_DIRECTION")){
+
+            }
+        })
     }
 
     def update_transform(body_entity: Entity, body: Body): Unit = {
