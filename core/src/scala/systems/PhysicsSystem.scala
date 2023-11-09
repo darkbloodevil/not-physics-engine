@@ -32,7 +32,8 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
     private var instructionMapper:ComponentMapper[PhysicsInstruction]=_
 
     private var world_state = System.currentTimeMillis()
-    private val decouplingProcessor:DecouplingProcessor=DecouplingProcessor()
+    private var decouplingProcessor:DecouplingProcessor=_
+
 
     var GRAVITY = 10
     private var accumulator: Float = 0
@@ -43,19 +44,18 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
     idkMapper = ComponentMapper.getFor(classOf[IdontKnowComponent])
     instructionMapper= ComponentMapper.getFor(classOf[PhysicsInstruction])
 
-    decouplingProcessor.physicsBodyMapper=physicsBodyMapper
-    decouplingProcessor.propertyMapper=propertyMapper
+//    decouplingProcessor.physicsBodyMapper=physicsBodyMapper
+//    decouplingProcessor.propertyMapper=propertyMapper
     def set_world(world: World): Unit = {
         PHYSICS_WORLD = world
         PHYSICS_WORLD.setContactListener(new ContactListener() {
             override def beginContact(contact: Contact): Unit = {
-//                println("contact!")
+//                Gdx.app.log("PhysicsSystemContact","beginContact start")
                 val entity1: Entity = contact.getFixtureA.getBody.getUserData.asInstanceOf[Entity]
                 val entity2: Entity = contact.getFixtureB.getBody.getUserData.asInstanceOf[Entity]
 
                 val pbc1 = physicsBodyMapper.get(entity1)
                 val pbc2 = physicsBodyMapper.get(entity1)
-
                 // 碰撞后 对两方一视同仁的设置碰撞间隔
                 if (pbc2.last_contact > 0 || pbc1.last_contact > 0) {
                     return
@@ -82,6 +82,7 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
     override def addedToEngine(engine: Engine): Unit = {
         super.addedToEngine(engine)
         this.engine=engine
+        this.decouplingProcessor=DecouplingProcessor(engine)
     }
 
     override def update(deltaTime: Float): Unit = {
@@ -116,20 +117,29 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
             if (body_entity != null) {
 //                val idk: IdontKnowComponent = idkMapper.get(body_entity)
 //                if (idk != null) body.setLinearVelocity(new Vector2(idk.x_v.toFloat, idk.y_v.toFloat))
-                update_instruction(body_entity,body)
                 update_transform(body_entity, body)
                 update_last_contact(body_entity, deltaTime)
+                update_instruction(body_entity,body)
             }
         }
     }
     def update_instruction(body_entity: Entity, body: Body): Unit = {
         val pic=instructionMapper.get(body_entity)
+        if(pic==null){
+            return
+        }
         val instructions=pic.instructions
-        instructions.forEach(instruction=>{
-            if(instruction.equals("CHANGE_DIRECTION")){
+        for i<- 0 until instructions.length() do{
+            val instruction = instructions.get(i)
+            instruction match
+                case instruction_str: String =>
+                    if (instruction_str.equals("CHANGE_DIRECTION")) {
+                        body.setLinearVelocity(Vector2(10,-20))
+                        Gdx.app.log("PhysicsSystem","change direction")
+                    }
+                case _ =>
+        }
 
-            }
-        })
     }
 
     def update_transform(body_entity: Entity, body: Body): Unit = {
@@ -152,12 +162,12 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
 
         pbc.physics_system_state = world_state
         if (pbc.last_contact > 0) {
-
             pbc.last_contact -= deltaTime
             if (pbc.last_contact <= 0) {
                 pbc.last_contact = 0
             }
         }
+//        Gdx.app.log("PhysicsSystemUpdate","last_contact "+pbc.last_contact)
     }
 
 }

@@ -16,6 +16,7 @@ import components.PropertyComponent;
 import game.com.mygdx.NotPhysicsEngineMain;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import systems.MessageProcessingSystem;
 import systems.PhysicsSystem;
 import tools.IdGenerator;
 
@@ -66,8 +67,9 @@ public class GameWorld {
     private void initialize_engine(){
         PhysicsSystem ps=new PhysicsSystem(this);
         ps.set_world(this.world);
+        MessageProcessingSystem mps=new MessageProcessingSystem(this);
         this.engine.addSystem(ps);
-
+        this.engine.addSystem(mps);
     }
 
     public void create() {
@@ -107,7 +109,7 @@ public class GameWorld {
         JSONObject alter_jo = jsonObject.getJSONObject("alter");
         for (Iterator<String> it = alter_jo.keys(); it.hasNext(); ) {
             String alter_key = it.next();
-            System.out.println("\n" + alter_key);
+//            System.out.println("\n" + alter_key);
             alterMap.put(alter_key, alter_jo.getJSONObject(alter_key));
         }
 
