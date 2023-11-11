@@ -7,8 +7,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array as GDXarray
+import com.typesafe.scalalogging.Logger
 import components.{IdontKnowComponent, PhysicsBodyComponent, PhysicsInstruction, PropertyComponent, TransformComponent}
 import org.json.{JSONArray, JSONObject}
+import demos.LogTester.getClass
 
 import java.util
 
@@ -22,6 +24,8 @@ object PhysicsSystem{
 class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
     var PHYSICS_WORLD: World = _
     var engine: Engine=_
+    private val logger=Logger(getClass.getName)
+
     private val TIME_STEP = .005f
     private val VELOCITY_ITERATIONS = 8
     private val POSITION_ITERATIONS = 10
@@ -134,8 +138,8 @@ class PhysicsSystem(val gameWorld: GameWorld) extends EntitySystem {
             instruction match
                 case instruction_str: String =>
                     if (instruction_str.equals("CHANGE_DIRECTION")) {
-                        body.setLinearVelocity(Vector2(10,-20))
-                        Gdx.app.log("PhysicsSystem","change direction")
+                        body.applyTorque(-20f,true)
+//                        Gdx.app.log("PhysicsSystem","change direction")
                     }
                 case _ =>
         }

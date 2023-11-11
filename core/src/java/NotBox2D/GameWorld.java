@@ -75,7 +75,7 @@ public class GameWorld {
     public void create() {
         bodyFactory = new BodyBuilder(this);
         this.standardBuilder.load_builders(bodyFactory);
-        String frustum = "S", entity_size = "L";
+        String frustum = "S", entity_size = "M";
         this.standardBuilder.standardize(frustum, entity_size);
         this.world_prototype_json = JsonReader.mergeJSONObject(this.standardBuilder.standard_basic_entities_jo, this.world_prototype_json);
 
@@ -125,9 +125,6 @@ public class GameWorld {
 
     public void update(float delta_time) {
         engine.update(delta_time);
-//        for (String eid : eid_to_id.keySet()) {
-//            Body aaa=this.id_to_body.get(this.eid_to_id.get(eid));
-//            aaa.applyForceToCenter(new Vector2(10,10),true);
 //        }
     }
 

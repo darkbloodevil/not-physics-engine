@@ -1,7 +1,5 @@
-package tests;
+package demos;
 
-import java.util.Arrays;
-import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 

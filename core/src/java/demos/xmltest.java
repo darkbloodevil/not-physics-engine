@@ -1,17 +1,13 @@
-package tests;
+package demos;
 
 import java.io.File;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Stack;
 
 import org.dom4j.*;
-import org.dom4j.tree.DefaultDocument;
 import org.json.JSONObject;
 import org.dom4j.io.SAXReader;
-import org.xml.sax.InputSource;
 
 public class xmltest {
     public static void main(String[] args) {

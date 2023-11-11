@@ -1,4 +1,4 @@
-package tests;
+package demos;
 
 import NotBox2D.JsonReader;
 import org.json.*;

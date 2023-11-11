@@ -1,8 +1,8 @@
-package tests
+package demos
 
 
 
-object map_test {
+object map_demo {
     def main(args: Array[String]): Unit = {
         def map[A](f: (Int) => A, xs: List[Int]): List[A] = {
             for (x <- xs) yield f(x)
