@@ -1,6 +1,6 @@
 plugins {
 //    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
-    id 'scala'
+id 'scala'
 }
 
 sourceCompatibility = 1.17
@@ -9,34 +9,20 @@ sourceCompatibility = 1.17
 
 
 sourceSets {
-    main {
-        scala {
-            srcDirs = ['src/scala',"src/java"]
-        }
-    }
+main {
+scala {
+srcDirs = ['src/scala',"src/java"]
 }
-sourceSets{
-    test{
-        scala {
-            srcDirs = ['test/scala',"test/java"]
-        }
-    }
 }
-
+test{
+scala {
+srcDirs = ['test/scala',"test/java"]
+}
+}
+}
 jar {
-    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
-
-//tasks.named('test', Test) {
-//    useJUnitPlatform()
-//
-//    maxHeapSize = '1G'
-//
-//    testLogging {
-//        events "passed"
-//    }
-//}
-
 //sourceSets.main.java.srcDirs = [ "src/java" ]
 
 //tasks.named("compileScala"){
@@ -44,10 +30,10 @@ jar {
 //    classpath = sourceSets.main.compileClasspath
 //}
 
-//eclipse.project.name = appName + "-core"
-//repositories {
-//    mavenCentral()
-//}
+eclipse.project.name = appName + "-core"
+repositories {
+mavenCentral()
+}
 //dependencies {
 //    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 //}
