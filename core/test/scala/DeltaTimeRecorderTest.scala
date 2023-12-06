@@ -1,6 +1,7 @@
 import com.artemis.{Aspect, EntitySystem, WorldConfiguration, World as Engine}
 import com.artemis.ComponentMapper
 import com.typesafe.scalalogging.Logger
+import components.ComponentX
 import tools.DeltaTimeRecorder
 import org.scalatest.funsuite.AnyFunSuite
 import org.junit.jupiter.api.DisplayName
@@ -19,7 +20,6 @@ class DeltaTimeRecorderTest {
 class SystemT extends EntitySystem(Aspect.all(classOf[ComponentX])){
     val logger:Logger=Logger(getClass)
     var current_dt: Float = 0f
-    var cmx:ComponentMapper[ComponentX]=_
     /**
      * Override to implement behavior when this system is called by the world.
      */
