@@ -11,7 +11,7 @@ sourceCompatibility = 1.17
 sourceSets {
     main {
         scala {
-            srcDirs = ['src/scala',"src/java"]
+            srcDirs = ['src/scala','src/java']
         }
     }
 }
@@ -26,6 +26,14 @@ sourceSets{
 jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+
 
 //tasks.named('test', Test) {
 //    useJUnitPlatform()

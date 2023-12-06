@@ -1,7 +1,7 @@
 package NotBox2D;
 
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
+import com.artemis.Entity;
+import com.artemis.WorldConfiguration;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import systems.MessageProcessingSystem;
 import systems.PhysicsSystem;
+import tools.DeltaTimeRecorder;
 import tools.IdGenerator;
 
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class GameWorld {
 //    HashMap<Long, Body> id_to_body;
 //    HashMap<String, Long> eid_to_id;
 
-    PooledEngine engine;
+    com.artemis.World engine;
 
     public GameWorld() {
         this.init();
@@ -58,7 +59,6 @@ public class GameWorld {
 
 
         this.world = new World(new Vector2(0, gravity), true);
-        this.engine=new PooledEngine();
         this.initialize_engine();
 
         this.standardBuilder = new StandardBuilder(this);
@@ -66,16 +66,18 @@ public class GameWorld {
     }
     private void initialize_engine(){
         PhysicsSystem ps=new PhysicsSystem(this);
-        ps.set_world(this.world);
+        
         MessageProcessingSystem mps=new MessageProcessingSystem(this);
-        this.engine.addSystem(ps);
-        this.engine.addSystem(mps);
+//        this.engine.addSystem(ps);
+//        this.engine.addSystem(mps);
+        this.engine=new com.artemis.World(new WorldConfiguration().setSystem(mps).setSystem(ps));
+        ps.set_world(this.world);
     }
 
     public void create() {
         bodyFactory = new BodyBuilder(this);
         this.standardBuilder.load_builders(bodyFactory);
-        String frustum = "S", entity_size = "M";
+        String frustum = "M", entity_size = "M";
         this.standardBuilder.standardize(frustum, entity_size);
         this.world_prototype_json = JsonReader.mergeJSONObject(this.standardBuilder.standard_basic_entities_jo, this.world_prototype_json);
 
@@ -124,8 +126,10 @@ public class GameWorld {
     }
 
     public void update(float delta_time) {
-        engine.update(delta_time);
+//        engine.update(delta_time);
 //        }
+        DeltaTimeRecorder.set_deltaTime(engine,delta_time);
+        engine.process();
     }
 
     /**
@@ -164,18 +168,18 @@ public class GameWorld {
         // 生成body
         Body body = this.bodyFactory.get_body(altered);
         Entity e=engine.createEntity();
-        PhysicsBodyComponent pbc=engine.createComponent(PhysicsBodyComponent.class);
+        PhysicsBodyComponent pbc=e.edit().create(PhysicsBodyComponent.class);
 
 
         pbc.body_id_$eq(IdGenerator.INSTANCE.nextId());
         pbc.body_$eq(body);
-        e.add(pbc);
+//        e.add(pbc);
         if (waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa){
-            PropertyComponent pc=engine.createComponent(PropertyComponent.class);
+            PropertyComponent pc=e.edit().create(PropertyComponent.class);
             JSONObject property_json=new JSONObject();
             property_json.put("name","big");
             pc.property_$eq(property_json);
-            e.add(pc);
+//            e.add(pc);
         }
         body.setUserData(e);
 //        // 给出id到body的map

@@ -1,6 +1,6 @@
 package components
 
-import com.badlogic.ashley.core.Component
+import com.artemis.Component
 import org.json.JSONObject
 
 /**

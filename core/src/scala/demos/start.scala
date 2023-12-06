@@ -1,6 +1,5 @@
 package demos
 
-import com.badlogic.ashley.core.Engine
 import game.com.mygdx.NotPhysicsEngineMain
 import systems.PhysicsSystem
 

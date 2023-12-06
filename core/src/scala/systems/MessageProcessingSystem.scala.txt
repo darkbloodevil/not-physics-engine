@@ -1,47 +1,43 @@
 package systems
 
-import NotBox2D.{ComponentsManager, EventEnum, GameWorld}
-import com.badlogic.ashley.core.{ComponentMapper, Engine, Entity, EntitySystem, Family}
-import com.badlogic.ashley.systems.IteratingSystem
+import NotBox2D.{EventEnum, GameWorld}
+import com.artemis.{Aspect, ComponentMapper, Entity, World as Engine}
+import com.artemis.systems.EntityProcessingSystem
 import components.{GameMsgComponent, IdontKnowComponent, PhysicsBodyComponent, PhysicsInstruction, PropertyComponent}
 import org.json.JSONArray
 import com.badlogic.gdx.Gdx
 import systems.MessageProcessingSystem.MESSAGE_PROCESSING_SYSTEM_TOKEN
-
+import com.typesafe.scalalogging.Logger
 object MessageProcessingSystem {
     val MESSAGE_PROCESSING_SYSTEM_TOKEN = "message processing system"
+    val mps_aspect=Aspect.all(classOf[GameMsgComponent],classOf[PropertyComponent])
 }
 
-class MessageProcessingSystem(gameWorld: GameWorld) extends MutableIteratingSystem {
-    private var gameMsgMapper: ComponentMapper[GameMsgComponent] = _
-    private var propertyMapper: ComponentMapper[PropertyComponent] = _
-    gameMsgMapper = ComponentMapper.getFor(classOf[GameMsgComponent])
-    propertyMapper = ComponentMapper.getFor(classOf[PropertyComponent])
-    
-    family=Family.all(classOf[GameMsgComponent], classOf[PropertyComponent]).get()
-    override def update(deltaTime: Float): Unit = {
-        super.update(deltaTime)
+class MessageProcessingSystem(gameWorld: GameWorld) extends EntityProcessingSystem(MessageProcessingSystem.mps_aspect){
+    var gameMsgMapper: ComponentMapper[GameMsgComponent] = _
+    var propertyMapper: ComponentMapper[PropertyComponent] = _
 
-    }
+    private val logger = Logger(getClass.getName)
 
-    override def processEntity(entity: Entity, deltaTime: Float): Unit = {
+    override def process(entity: Entity): Unit = {
+        logger.info("message processing")
         val gameMsgComponent: GameMsgComponent = gameMsgMapper.get(entity)
         val propertyComponent: PropertyComponent = propertyMapper.get(entity)
         val msg = gameMsgComponent.msg
 //        Gdx.app.log("MessageProcessingSystem", "processEntity")
         val property = propertyComponent.property
         if (msg.has(EventEnum.CONTACT.toString) && property.has("name")) {
+//            logger.info("msg "+gameMsgComponent.msg)
             val contact_tar: String = msg.getString(EventEnum.CONTACT.toString)
             val name: String = property.getString("name")
 
             if (contact_tar.equals("wall") && name.equals("big")) {
 //                Gdx.app.log("MessageProcessingSystem", "instruction given")
-                val physicsInstruction = engine.createComponent(classOf[PhysicsInstruction])
+                val physicsInstruction = entity.edit().create(classOf[PhysicsInstruction])
                 physicsInstruction.instructions.put("CHANGE_DIRECTION")
-                entity.add(physicsInstruction)
             }
         }
 
-        ComponentsManager.update_entity(entity,engine)
+//        ComponentsManager.update_entity(entity,engine)
     }
 }

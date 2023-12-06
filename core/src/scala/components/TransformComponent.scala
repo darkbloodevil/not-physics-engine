@@ -1,6 +1,6 @@
 package components
 
-import com.badlogic.ashley.core.Component
+import com.artemis.Component
 import com.badlogic.gdx.math.{Vector2, Vector3}
 
 class TransformComponent extends Component {

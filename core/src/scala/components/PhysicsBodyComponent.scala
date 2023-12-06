@@ -1,6 +1,6 @@
 package components
 
-import com.badlogic.ashley.core.{Component, Entity}
+import com.artemis.{Component, Entity}
 import com.badlogic.gdx.physics.box2d.Body
 
 /**
