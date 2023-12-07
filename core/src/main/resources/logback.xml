@@ -9,4 +9,5 @@
     <root level="debug">
         <appender-ref ref="STDOUT" />
     </root>
+    <logger name="SystemT" level="ON" />
 </configuration>

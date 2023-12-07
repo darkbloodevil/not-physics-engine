@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body
  * 用来记录body的component（就是为了用上component）
  *
  */
-class PhysicsBodyComponent extends LinkedComponent {
+class PhysicsBodyComponent extends Component{
     var body: Body = _
     var body_id: Long = 0
 
@@ -26,9 +26,5 @@ class PhysicsBodyComponent extends LinkedComponent {
      * 如果需要触发多次判定，只需设置该值为小于等于0即可
      */
     var contact_interval:Float=0.05f
-
-    override def change_entity(entity: Entity): Unit = {
-        super.change_entity(entity)
-        this.body.setUserData(entity)
-    }
+    
 }

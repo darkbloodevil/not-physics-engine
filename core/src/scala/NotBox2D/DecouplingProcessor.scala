@@ -7,14 +7,6 @@ import com.artemis.{Entity, Aspect, World => Engine}
 
 
 class DecouplingProcessor {
-    //    var physicsBodyMapper:ComponentMapper[PhysicsBodyComponent] = _
-    //    var propertyMapper:ComponentMapper[PropertyComponent]=_
-    //    var gameMsgMapper:ComponentMapper[GameMsgComponent]=_
-    //
-    //
-    //    physicsBodyMapper = ComponentMapper.getFor(classOf[PhysicsBodyComponent])
-    //    propertyMapper = ComponentMapper.getFor(classOf[PropertyComponent])
-    //    gameMsgMapper=ComponentMapper.getFor(classOf[GameMsgComponent])
 
     /**
      * 用来处理多个entity交互，去除其中交互的影响，剩下的再作为信息交付处理
@@ -32,11 +24,8 @@ class DecouplingProcessor {
     }
 
     def handle_big(e1: Entity, e2: Entity): Boolean = {
-        //        Gdx.app.log("DecouplingProcessor","handle_big")
-        //            Gdx.app.log("DecouplingProcessor","handle_big has entity")
         val pc1 = e1.getComponent(classOf[PropertyComponent])
         if (pc1 != null && pc1.property.has("name") && pc1.property.getString("name").equals("big")) {
-            //                Gdx.app.log("DecouplingProcessor","entity is big")
             val pc2 = e2.getComponent(classOf[PropertyComponent])
             if (pc2 != null) {
                 if (pc2.property.has("name")) {
@@ -44,7 +33,6 @@ class DecouplingProcessor {
                         case "big" => {
 
                         }
-                        case _ => Gdx.app.log("DecouplingProcessor", pc2.property.getString("name"))
                 } else {
 
                 }

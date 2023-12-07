@@ -41,7 +41,6 @@ public class PhysicsSystem extends EntitySystem {
         PHYSICS_WORLD.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-
                 var entity1 = (Entity) contact.getFixtureA().getBody().getUserData();
                 var entity2 = (Entity) contact.getFixtureB().getBody().getUserData();
 
@@ -129,6 +128,7 @@ public class PhysicsSystem extends EntitySystem {
                     //                        Gdx.app.log("PhysicsSystem","change direction")
                 }
             }
+            
         }
 
     }
