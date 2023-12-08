@@ -4,8 +4,6 @@ package systems;
 import NotBox2D.*;
 import com.artemis.ComponentMapper;
 import tools.DeltaTimeRecorder;
-//import com.badlogic.ashley.core.*
-//import com.badlogic.ashley.utils.ImmutableArray
 import com.artemis.Aspect;
 import com.artemis.EntitySystem;
 import com.artemis.Entity;
@@ -112,6 +110,11 @@ public class PhysicsSystem extends EntitySystem {
         }
     }
 
+    /**
+     * 依据指令更新实体
+     * @param body_entity
+     * @param body
+     */
     public void update_instruction(Entity body_entity, Body body) {
         var pic = body_entity.getComponent(PhysicsInstruction.class);
         if (pic == null) {
@@ -120,12 +123,9 @@ public class PhysicsSystem extends EntitySystem {
         var instructions = pic.instructions();
         for (int i = 0; i < instructions.length(); i++) {
             var instruction = instructions.get(i);
-//        logger.info("Physics");
             if (instruction instanceof String instruction_str) {
                 if (instruction_str.equals("CHANGE_DIRECTION")) {
                     body.applyTorque(-20f, true);
-
-                    //                        Gdx.app.log("PhysicsSystem","change direction")
                 }
             }
             
