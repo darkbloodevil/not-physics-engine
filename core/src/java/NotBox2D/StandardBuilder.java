@@ -13,7 +13,6 @@ import java.util.Queue;
  */
 public class StandardBuilder {
     float SCALE_WIDTH = 16, SCALE_HEIGHT = 9;
-    GameWorld gameWorld;
     /**
      * 标准化的各个物件。例如标准化的圆、方。是运行时使用的
      */
@@ -22,23 +21,30 @@ public class StandardBuilder {
     static String JSONS = "jsons";
 
     public final static String XL = "XL", L = "L", M = "M", S = "S", SS = "SS";
-    public final static String[] SHAPE_SIZES=new String[]{"L","M","S"};
+    public final static String[] SHAPE_SIZES = new String[]{"L", "M", "S"};
 
+    String standard_json_path = "json_files/standard_file.json";
 
-    public StandardBuilder(GameWorld world) {
-        this.gameWorld = world;
-        load_local_standard_json("json_files/standard_file.json");
+    /**
+     * 从默认路径载入标准化配置
+     */
+    public StandardBuilder() {
+        load_local_standard_json(standard_json_path);
         this.init();
     }
 
-    public StandardBuilder(GameWorld world, String standard_path) {
-        this.gameWorld = world;
+    /**
+     * 从自定义路径载入标准化配置
+     *
+     * @param standard_path 自定义路径
+     */
+    public StandardBuilder(String standard_path) {
         load_local_standard_json(standard_path);
         this.init();
     }
 
     /**
-     * 初始化（默认世界大小为M，粒子大小也为M）
+     * 初始化（默认世界大小为M，粒子大小也为M）。如需修改则手动调用standardize函数
      */
     private void init() {
         this.standardize("M", "M");
@@ -92,6 +98,8 @@ public class StandardBuilder {
     }
 
     /**
+     * 设置标准化参数（标准化正方形、三角形、……
+     *
      * @param frustum     分成几块
      * @param entity_size 基本单位大小
      */
@@ -99,21 +107,30 @@ public class StandardBuilder {
         //划分几块 进行标准化
         standard_basic_entities_jo.put("frustum_height", standard_basic_entities_jo.getJSONObject("frustums").get(frustum + "-FRUSTUM"));
         standard_basic_entities_jo.put("frustum_width", SCALE_WIDTH / SCALE_HEIGHT *
-                (int) standard_basic_entities_jo.getJSONObject("frustums").get(frustum + "-FRUSTUM"));
+                                                        (int) standard_basic_entities_jo.getJSONObject("frustums").get(frustum + "-FRUSTUM"));
 
         //基本实体大小 进行标准化
         String[] shapes = new String[]{"circle", "square", "matrix-3h", "matrix-3v", "triangle",
                 "left-triangle", "right-triangle", "equilateral-triangle"};
 
-        for (String shape:shapes) {
+        for (String shape : shapes) {
             //放入标准化的entity（比如L是标准的，那circle就是L-circle）
-            standard_basic_entities_jo.put(shape, standard_basic_entities_jo.get(entity_size + "-"+shape));
-            for (String size:SHAPE_SIZES){
+            standard_basic_entities_jo.put(shape, standard_basic_entities_jo.get(entity_size + "-" + shape));
+            for (String size : SHAPE_SIZES) {
                 //放入全类型的entity（简单来说就是写的多一些）
-                standard_basic_entities_jo.put(size+"-"+shape, standard_basic_entities_jo.get(size + "-"+shape));
+                standard_basic_entities_jo.put(size + "-" + shape, standard_basic_entities_jo.get(size + "-" + shape));
             }
         }
     }
 
+    /**
+     * 合并读取标准化的内容和gameworld自带的内容
+     *
+     * @param world_origin gameworld自带的json内容
+     * @return 合并后完整的内容
+     */
+    public JSONObject merge_prototype_json(JSONObject world_origin) {
+        return JsonReader.mergeJSONObject(world_origin, this.standard_basic_entities_jo);
+    }
 
 }

@@ -16,8 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 public class PhysicsSystem extends EntitySystem {
-    Logger logger = LoggerFactory.getLogger(Object.class);
-    public static String PHYSICS_SYSTEM_TOKEN = "physics system";
+    Logger logger = LoggerFactory.getLogger(PhysicsSystem.class);
     ComponentMapper<PhysicsBodyComponent> physicsBodyMapper;
     com.badlogic.gdx.physics.box2d.World PHYSICS_WORLD;
     private float TIME_STEP = .005f;
@@ -25,7 +24,7 @@ public class PhysicsSystem extends EntitySystem {
     private int POSITION_ITERATIONS = 10;
 
     private long world_state = System.currentTimeMillis();
-    private DecouplingProcessor decouplingProcessor=new DecouplingProcessor();
+    private final DecouplingProcessor decouplingProcessor=new DecouplingProcessor();
 
     //        int GRAVITY = 10;
     private float accumulator = 0.0f;

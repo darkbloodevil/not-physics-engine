@@ -8,13 +8,14 @@ import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 
 import components.PhysicsBodyComponent;
 import components.PropertyComponent;
 import game.com.mygdx.NotPhysicsEngineMain;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import systems.MessageProcessingSystem;
 import systems.PhysicsSystem;
 import tools.DeltaTimeRecorder;
@@ -27,7 +28,7 @@ public class GameWorld {
     /**
      * 该gameworld的物理世界
      */
-    public World world;
+    public com.badlogic.gdx.physics.box2d.World world;
     /**
      * 用于表示该gameworld中万物原型的json
      */
@@ -35,6 +36,8 @@ public class GameWorld {
 
     StandardBuilder standardBuilder;
     BodyBuilder bodyFactory;
+
+    Logger logger = LoggerFactory.getLogger(GameWorld.class);
     float gravity = -10;
 //
 //    HashMap<Long, Body> id_to_body;
@@ -57,10 +60,10 @@ public class GameWorld {
 //        this.eid_to_id = new HashMap<>();
 
 
-        this.world = new World(new Vector2(0, gravity), true);
+        this.world = new com.badlogic.gdx.physics.box2d.World(new Vector2(0, gravity), true);
         this.initialize_engine();
 
-        this.standardBuilder = new StandardBuilder(this);
+        this.standardBuilder = new StandardBuilder();
 
     }
     private void initialize_engine(){
@@ -78,8 +81,8 @@ public class GameWorld {
         this.standardBuilder.load_builders(bodyFactory);
         String frustum = "M", entity_size = "M";
         this.standardBuilder.standardize(frustum, entity_size);
-        this.world_prototype_json = JsonReader.mergeJSONObject(this.standardBuilder.standard_basic_entities_jo, this.world_prototype_json);
-
+        this.world_prototype_json = this.standardBuilder.merge_prototype_json(this.world_prototype_json);
+        
 
         //set camera
         NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_prototype_json.getFloat("frustum_width"),

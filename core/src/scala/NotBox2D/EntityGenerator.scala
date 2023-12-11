@@ -14,14 +14,20 @@ object EntityGenerator{
             engine_to_generator+=(engine,EntityGenerator(engine))
         }
     }
+
+    /**
+     * 加入instruction
+     * @param system 当前的system，用于定位engine
+     * @param instruction_jo 指令json
+     */
     def add_instruction(system:BaseSystem,instruction_jo: JSONObject): Unit = {
-        EntityGenerator.get_entity_generator(system).get.add_instruction(instruction_jo)
+        EntityGenerator.get_entity_generator(system).get.add(instruction_jo)
     }
 
     /**
      * 获取对应engine的generator
      * @param system 调用的EntityGeneratorSystem，用于获取对应的世界engine
-     * @return
+     * @return EntityGenerator
      */
     def get_entity_generator(system:BaseSystem): Option[EntityGenerator] = {
         for (engine <- engine_to_generator.keys) do {
@@ -58,7 +64,7 @@ class EntityGenerator(engine: Engine) {
         }
 
     }
-    def add_instruction(instruction_jo: JSONObject): Unit = {
+    def add(instruction_jo: JSONObject): Unit = {
         instruction_queue+=instruction_jo
     }
 }

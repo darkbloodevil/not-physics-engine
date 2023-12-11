@@ -3,7 +3,8 @@ package NotBox2D
 import EventEnum.*
 import com.badlogic.gdx.Gdx
 import components.{GameMsgComponent, PhysicsBodyComponent, PropertyComponent}
-import com.artemis.{Entity, Aspect, World => Engine}
+import com.artemis.{Aspect, Entity, World as Engine}
+import org.json.JSONObject
 
 
 class DecouplingProcessor {
@@ -12,10 +13,9 @@ class DecouplingProcessor {
      * 用来处理多个entity交互，去除其中交互的影响，剩下的再作为信息交付处理
      */
     def decouple_and_process(event: EventEnum, entities:java.util.List[Entity]): Unit = {
-        //        Gdx.app.log("DecouplingProcessor", "decouple_and_process start!")
         event match
             case CONTACT => {
-                //                Gdx.app.log("DecouplingProcessor", "Contact!")
+                
                 val e1: Entity = entities.get(0)
                 val e2: Entity = entities.get(1)
                 handle_big(e1, e2)
@@ -31,7 +31,9 @@ class DecouplingProcessor {
                 if (pc2.property.has("name")) {
                     pc2.property.getString("name") match
                         case "big" => {
-
+                            val game_msg: GameMsgComponent = e1.edit().create(classOf[GameMsgComponent])
+                            game_msg.msg.put(CONTACT.toString, "big")
+                            game_msg.msg.put("position", new JSONObject("""{"x":1,"y":2}"""))
                         }
                 } else {
 
@@ -39,6 +41,7 @@ class DecouplingProcessor {
             } else {
                 val game_msg: GameMsgComponent = e1.edit().create(classOf[GameMsgComponent])
                 game_msg.msg.put(CONTACT.toString, "wall")
+                
                 //                    ComponentsManager.update_entity(e1,engine)
                 return true
             }
