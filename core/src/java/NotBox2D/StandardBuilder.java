@@ -57,7 +57,7 @@ public class StandardBuilder {
      */
     private void load_local_standard_json(String standard_path) {
         // 读取标准化文件
-        this.standard_basic_entities_jo = JsonReader.read_json_from_path(standard_path);
+        this.standard_basic_entities_jo = JsonReader.standard_json_from_path(standard_path);
         // 读取标准化文件中链接的其他文件
         if (this.standard_basic_entities_jo.has(JSONS)) {
             ArrayList<String> searched = new ArrayList<>();
@@ -71,7 +71,7 @@ public class StandardBuilder {
                 String top = to_loads.poll();
                 searched.add(top);
 
-                JSONObject temp = JsonReader.read_json_from_path(top);
+                JSONObject temp = JsonReader.standard_json_from_path(top);
                 // 读取链接文件中链接的文件
                 if (temp.has(JSONS)) {
                     for (String key : temp.getJSONObject(JSONS).keySet()) {

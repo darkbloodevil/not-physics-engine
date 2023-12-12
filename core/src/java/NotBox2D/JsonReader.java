@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 public class JsonReader {
 
     /**
-     * 文本转json
+     * 文本转json（要解析成规范json的）
      * translate the json in str to JSONObject and expand the "extend" tag to meet the requirement
      *
      * @param src_str source string
@@ -121,7 +121,22 @@ public class JsonReader {
     }
 
     /**
-     * 单纯的读取json文件 不做任何额外处理
+     * 按照规范格式读取json文件
+     * read json file from path
+     * @param json_path the path of json file。
+     * @return the json object
+     */
+    public static JSONObject standard_json_from_path(String json_path){
+        String standard_file;
+        try {
+            standard_file = new String(Files.readAllBytes(Paths.get(json_path)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return JsonReader.read_str_json(standard_file);
+    }
+    /**
+     * 直接读取json文件，不带任何额外判断
      * read json file from path
      * @param json_path the path of json file。
      * @return the json object
@@ -130,11 +145,10 @@ public class JsonReader {
         String standard_file;
         try {
             standard_file = new String(Files.readAllBytes(Paths.get(json_path)));
+            return new JSONObject(standard_file);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return JsonReader.read_str_json(standard_file);
-
     }
 
 
