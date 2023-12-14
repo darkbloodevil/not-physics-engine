@@ -24,7 +24,7 @@ public class PhysicsSystem extends EntitySystem {
     private int POSITION_ITERATIONS = 10;
 
     private long world_state = System.currentTimeMillis();
-    private final DecouplingProcessor decouplingProcessor=new DecouplingProcessor();
+    private final DecouplingProcessor decouplingProcessor = new DecouplingProcessor();
 
     //        int GRAVITY = 10;
     private float accumulator = 0.0f;
@@ -82,7 +82,6 @@ public class PhysicsSystem extends EntitySystem {
 
         accumulator += frameTime;
         while (accumulator >= TIME_STEP) {
-            logger.info("word step");
             PHYSICS_WORLD.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
             //PHYSICS_WORLD.step(deltaTime, 2, 2);
             accumulator -= TIME_STEP;
@@ -102,19 +101,44 @@ public class PhysicsSystem extends EntitySystem {
             if (body_entity != null) {
                 //                val idk: IdontKnowComponent = idkMapper.get(body_entity)
                 //                if (idk != null) body.setLinearVelocity(new Vector2(idk.x_v.toFloat, idk.y_v.toFloat))
+                update_body(body_entity, body);
+                update_instruction(body_entity);
                 update_transform(body_entity, body);
                 update_last_contact(body_entity, deltaTime);
-                update_instruction(body_entity, body);
+            }
+        }
+    }
+
+    /**
+     * 更新body当前状态
+     * @param body_entity
+     * @param body
+     */
+    public void update_body(Entity body_entity, Body body) {
+        var pbc = body_entity.getComponent(PropertyComponent.class);
+        if (pbc == null)
+            return;
+        else {
+            var pbp = pbc.property();
+            if (pbp.has("direction")) {
+                var direction = pbp.getString("direction");
+                if (direction.equals("LEFT")) {
+                    body.setLinearVelocity(10, 5);
+                } else if (direction.equals("RIGHT")) {
+                    body.setLinearVelocity(-10, -1);
+                }
+            }else {
+                pbp.put("direction","LEFT");
             }
         }
     }
 
     /**
      * 依据指令更新实体
+     *
      * @param body_entity
-     * @param body
      */
-    public void update_instruction(Entity body_entity, Body body) {
+    public void update_instruction(Entity body_entity) {
         var pic = body_entity.getComponent(PhysicsInstruction.class);
         if (pic == null) {
             return;
@@ -124,28 +148,40 @@ public class PhysicsSystem extends EntitySystem {
             var instruction = instructions.get(i);
             if (instruction instanceof String instruction_str) {
                 if (instruction_str.equals("CHANGE_DIRECTION")) {
-                    body.applyTorque(-20f, true);
+                    var pbc = body_entity.getComponent(PropertyComponent.class);
+                    if(pbc!=null){
+                        var pbp = pbc.property();
+                        if (pbp.has("direction")) {
+                            var direction = pbp.getString("direction");
+                            if (direction.equals("LEFT")) {
+                                pbp.put("direction","RIGHT");
+                            } else if (direction.equals("RIGHT")) {
+                                pbp.put("direction","LEFT");
+                            }
+                        }else {
+                            pbp.put("direction","LEFT");
+                        }
+                    }
+                    
                 }
             }
-            
         }
-
+        // 删除PhysicsInstruction
+        body_entity.edit().remove(PhysicsInstruction.class);
     }
 
-    void update_transform(Entity body_entity,Body body)
-    {
+    void update_transform(Entity body_entity, Body body) {
         var tc = body_entity.getComponent(TransformComponent.class);
         if (tc != null) // Update the entities/sprites position and angle
         {
-            tc.pos().set(body.getPosition().x,body.getPosition().y,tc.pos().z);
+            tc.pos().set(body.getPosition().x, body.getPosition().y, tc.pos().z);
             // We need to convert our angle from radians to degrees
             tc.rotation_$eq(body.getAngle());
             //Gdx.app.log("my","position "+b.getPosition().x+" "+ b.getPosition().y);
         }
     }
 
-    void update_last_contact(Entity body_entity, Float deltaTime)
-    {
+    void update_last_contact(Entity body_entity, Float deltaTime) {
         /**
          * 碰撞终止时间
          */
@@ -153,7 +189,7 @@ public class PhysicsSystem extends EntitySystem {
 
         pbc.physics_system_state_$eq(world_state);
         if (pbc.last_contact() > 0) {
-            pbc.last_contact_$eq(pbc.last_contact()-deltaTime);
+            pbc.last_contact_$eq(pbc.last_contact() - deltaTime);
             if (pbc.last_contact() <= 0) {
                 pbc.last_contact_$eq(0f);
             }

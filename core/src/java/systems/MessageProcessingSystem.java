@@ -35,6 +35,7 @@ public class MessageProcessingSystem extends EntityProcessingSystem {
             if (name.equals("big")) {
                 if (contact_tar.equals("wall")) {
                     var physicsInstruction = entity.edit().create(PhysicsInstruction.class);
+                    
                     physicsInstruction.instructions().put("CHANGE_DIRECTION");
                 } else if (contact_tar.equals("big")) {
                     var instruction_str = " {\"name\":\"small\",\"position\":%s} ";
