@@ -1,6 +1,7 @@
 package NotBox2D;
 
 import org.json.JSONObject;
+import tools.JsonReader;
 
 import java.util.HashMap;
 
@@ -39,7 +40,7 @@ public enum TabularToMap {
                 //在原型上给予对应的改变量
                 JSONObject alter=new JSONObject("{\"position\":["+x+","+y+"]}");
                 if (alterMap.containsKey(tag)){
-                    alter=JsonReader.mergeJSONObject(alter,alterMap.get(tag));
+                    alter= JsonReader.mergeJSONObject(alter,alterMap.get(tag));
                 }
                 gameWorld.getAlteredBody(body_name,alter);
 

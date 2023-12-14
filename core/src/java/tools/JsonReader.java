@@ -1,4 +1,4 @@
-package NotBox2D;
+package tools;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 public class JsonReader {
 
     /**
-     * 文本转json（要解析成规范json的）
+     * 文本转json（要解析成规范json的，就是有命名而且展开extend）
      * translate the json in str to JSONObject and expand the "extend" tag to meet the requirement
      *
      * @param src_str source string
@@ -33,7 +33,7 @@ public class JsonReader {
         // Convert each key in the source json into a formatted JSONObject that meets the requirements
         for (String key : source.keySet()) {
             if (!result.has(key)){
-                jsonObject_json(result, key, source);
+                standardizing_json(result, key, source);
             }
         }
         return result;
@@ -46,17 +46,25 @@ public class JsonReader {
      * @param src_json the json before reading the tar_str
      * @return tar_str展开后的json
      */
-    public static JSONObject jsonObject_json(JSONObject full, String tar_str, JSONObject src_json) {
+    public static JSONObject standardizing_json(JSONObject full, String tar_str, JSONObject src_json) {
+        // 获取目标 JSON 对象
         JSONObject target = src_json.getJSONObject(tar_str);
+        // 为目标 JSON 对象设置 "name" 属性，其值为目标字符串 tar_str
         target.put("name", tar_str);
+        // 如果目标 JSON 对象具有 "extend" 属性，表示存在继承关系
         if (target.has("extend")) {
+            // 获取继承的父项数组
             JSONArray parents = target.getJSONArray("extend");
+            // 遍历继承的每一个父项
             for (Object o : parents) {
                 String parent = (String) o;
                 JSONObject parent_json;
+                // 如果全局 JSON 对象中已经存在这个父项，则直接获取
                 if (full.has(parent))
                     parent_json = full.getJSONObject(parent);
-                else parent_json = jsonObject_json(full, parent, src_json);
+                else// 否则，递归调用自身，处理父项 
+                    parent_json = standardizing_json(full, parent, src_json);
+                // 将父项的属性合并到目标 JSON 对象中，确保不覆盖目标对象已有的属性
                 for (String parent_key : parent_json.keySet()) {
                     if (!target.has(parent_key)) {
                         target.put(parent_key, parent_json.get(parent_key));
@@ -69,38 +77,7 @@ public class JsonReader {
         return target;
     }
 
-    /**
-     * 指定读出json的子项
-     * @param full
-     * @param tar_str the JSONObject
-     * @param sub_str the sub
-     * @return
-     */
-    public static JSONObject sub_jsonObject_json(JSONObject full, String tar_str,
-                                                 String sub_str) {
-        JSONObject target = full.getJSONObject(tar_str);
-        JSONObject sub = target.getJSONObject(sub_str);
-        target.put("name", tar_str);
-        sub.put("name", sub_str);
-        if (sub.has("extend")) {
-            JSONArray sub_parents = sub.getJSONArray("extend");
-            for (Object o : sub_parents) {
-                String sub_parent = (String) o;
-                JSONObject sub_parent_json;
-                if (full.has(sub_parent)) {
-                    sub_parent_json = full.getJSONObject(sub_parent);
-                    for (String parent_key : sub_parent_json.keySet()) {
-                        if (!sub.has(parent_key)) {
-                            sub.put(parent_key, sub_parent_json.get(parent_key));
-                        }
-                    }
-                }
-            }
-        }
-        target.put(sub_str, sub);
-        full.put(tar_str, target);
-        return sub;
-    }
+    
 
     /**
      * 将A与B合并，B覆盖A中的重名项
@@ -153,6 +130,47 @@ public class JsonReader {
 
 
 }
+
+
+
+///**
+// * 指定读出json的子项
+// * @param full
+// * @param tar_str the JSONObject
+// * @param sub_str the sub
+// * @return
+// */
+//public static JSONObject sub_jsonObject_json(JSONObject full, String tar_str,
+//                                             String sub_str) {
+//    // 获取目标 JSON 对象
+//    JSONObject target = full.getJSONObject(tar_str);
+//    JSONObject sub = target.getJSONObject(sub_str);
+//    // 为目标 JSON 对象和子项都设置 "name" 属性
+//    target.put("name", tar_str);
+//    sub.put("name", sub_str);
+//    // 如果子项具有 "extend" 属性，表示存在继承关系
+//    if (sub.has("extend")) {
+//        // 获取继承的父项数组
+//        JSONArray sub_parents = sub.getJSONArray("extend");
+//        // 遍历继承的每一个父项
+//        for (Object o : sub_parents) {
+//            String sub_parent = (String) o;
+//            JSONObject sub_parent_json;
+//            // 如果全局 JSON 对象中已经存在这个父项，则直接获取
+//            if (full.has(sub_parent)) {
+//                sub_parent_json = full.getJSONObject(sub_parent);
+//                for (String parent_key : sub_parent_json.keySet()) {
+//                    if (!sub.has(parent_key)) {
+//                        sub.put(parent_key, sub_parent_json.get(parent_key));
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    target.put(sub_str, sub);
+//    full.put(tar_str, target);
+//    return sub;
+//}
 
 //    /**
 //     * '(', ')', '+', '-', '*', '/','%' are the math operators
