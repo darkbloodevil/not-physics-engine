@@ -2,9 +2,6 @@ package NotBox2D;
 
 import com.artemis.Entity;
 import com.artemis.WorldConfiguration;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.AudioDevice;
-import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -19,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import systems.MessageProcessingSystem;
 import systems.PhysicsSystem;
 import tools.DeltaTimeRecorder;
+import tools.ExcelReader;
 import tools.IdGenerator;
 
 import java.util.HashMap;
@@ -98,7 +96,7 @@ public class GameWorld {
         tabularToMap.center_x = this.world_prototype_json.getFloat("frustum_width")/2;
         tabularToMap.center_y = this.world_prototype_json.getFloat("frustum_height")/2;
 
-        JSONObject jsonObject = ExcelReader.excel_to_json("excel_test.xlsx");
+        JSONObject jsonObject = ExcelReader.excel_to_json("excel_files/basic_game_map.xlsx");
         JSONArray jsonArray = jsonObject.getJSONArray("game_map");
         String[][] test_tabular = new String[jsonObject.getInt("height")][jsonObject.getInt("width")];
         for (int i = 0; i < jsonObject.getInt("height"); i++) {
