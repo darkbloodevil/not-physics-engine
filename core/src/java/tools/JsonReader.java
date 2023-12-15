@@ -29,7 +29,7 @@ public class JsonReader {
      * @param src_str source string
      * @return the result JSONObject
      */
-    public static JSONObject read_str_json(String src_str) {
+    public static JSONObject read_str_json(String src_str){
         JSONObject result = new JSONObject();
         // the direct translation of str to json
         JSONObject source = new JSONObject(src_str);

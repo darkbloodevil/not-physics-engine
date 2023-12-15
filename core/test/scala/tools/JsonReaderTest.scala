@@ -3,6 +3,8 @@ package tools
 import org.json.JSONObject
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.{Assertions, Test}
+import org.scalatest.Assertions._
+
 class JsonReaderTest {
     @DisplayName("test_read_json_from_path")
     @Test
@@ -15,9 +17,8 @@ class JsonReaderTest {
     @DisplayName("test_read_str_json")
     @Test
     def test_read_str_json(): Unit = {
-        // 测试能不能发现循环继承
-        var circular_inheritance_found=false
-        try
+
+        assertThrows[RuntimeException] { // Result type: Assertion
             JsonReader.read_str_json(
                 """
                   |{
@@ -33,10 +34,7 @@ class JsonReaderTest {
                   |  }
                   |}
                   |""".stripMargin)
-        catch
-            case e:RuntimeException => circular_inheritance_found=true
-        Assertions.assertTrue(circular_inheritance_found,"find circular inheritance")
-        // 测试继承
+        }
         try
             val json_result= JsonReader.read_str_json(
                 """
