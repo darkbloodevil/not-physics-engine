@@ -1,5 +1,6 @@
 package tools;
 
+import exceptions.JsonInheritanceException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -13,11 +14,13 @@ import java.nio.file.Paths;
  * related:
  * <p>
  * first, then related
- *
+ * <p>
  * 核心是用来处理带有继承关系的json（所以不要任何地方都使用）
+ *
  * @TODO circular extend
  */
 public class JsonReader {
+    static final String ON_PROCESSING_TOKEN = "ON PROCESSING";
 
     /**
      * 文本转json（要解析成规范json的，就是有命名而且展开extend）
@@ -32,8 +35,12 @@ public class JsonReader {
         JSONObject source = new JSONObject(src_str);
         // Convert each key in the source json into a formatted JSONObject that meets the requirements
         for (String key : source.keySet()) {
-            if (!result.has(key)){
-                standardizing_json(result, key, source);
+            if (!result.has(key)) {
+                try {
+                    standardizing_json(result, key, source);
+                } catch (JsonInheritanceException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         return result;
@@ -41,29 +48,46 @@ public class JsonReader {
 
     /**
      * 有点复杂，大概是有一个总的json，然后我们输入的tar_str是其中一个我们要展开的部分，然后full是我们展开完成后的
+     *
      * @param full     the result JSON
      * @param tar_str  the target string to convert
      * @param src_json the json before reading the tar_str
      * @return tar_str展开后的json
      */
-    public static JSONObject standardizing_json(JSONObject full, String tar_str, JSONObject src_json) {
+    private static JSONObject standardizing_json(JSONObject full, String tar_str, JSONObject src_json) throws JsonInheritanceException {
         // 获取目标 JSON 对象
         JSONObject target = src_json.getJSONObject(tar_str);
-        // 为目标 JSON 对象设置 "name" 属性，其值为目标字符串 tar_str
-        target.put("name", tar_str);
+        /** 23/12/14更新，好像没什么用就去掉了
+         * // 为目标 JSON 对象设置 "name" 属性，其值为目标字符串 tar_str
+         *         target.put("name", tar_str);
+         */
+
         // 如果目标 JSON 对象具有 "extend" 属性，表示存在继承关系
         if (target.has("extend")) {
-            // 获取继承的父项数组
-            JSONArray parents = target.getJSONArray("extend");
+            // 获取继承的父项数组。这类处理使其同时支持String和Array的写法
+            Object parents_o = target.get("extend");
+            JSONArray parents = new JSONArray();
+            if (parents_o instanceof JSONArray) {
+                parents = (JSONArray) parents_o;
+            }else {
+                parents.put(parents_o);
+            }
+
             // 遍历继承的每一个父项
             for (Object o : parents) {
                 String parent = (String) o;
                 JSONObject parent_json;
+
+                full.put(tar_str, ON_PROCESSING_TOKEN);
                 // 如果全局 JSON 对象中已经存在这个父项，则直接获取
-                if (full.has(parent))
+                if (full.has(parent)) {
+                    if (full.get(parent).equals(ON_PROCESSING_TOKEN)) {
+                        throw new JsonInheritanceException("circular inheritance");
+                    }
                     parent_json = full.getJSONObject(parent);
-                else// 否则，递归调用自身，处理父项 
-                    parent_json = standardizing_json(full, parent, src_json);
+                }
+                // 否则，递归调用自身，处理父项 
+                else parent_json = standardizing_json(full, parent, src_json);
                 // 将父项的属性合并到目标 JSON 对象中，确保不覆盖目标对象已有的属性
                 for (String parent_key : parent_json.keySet()) {
                     if (!target.has(parent_key)) {
@@ -77,7 +101,6 @@ public class JsonReader {
         return target;
     }
 
-    
 
     /**
      * 将A与B合并，B覆盖A中的重名项
@@ -86,7 +109,7 @@ public class JsonReader {
      * @param jb json b
      * @return merged
      */
-    public static JSONObject mergeJSONObject(JSONObject ja, JSONObject jb) {
+    public static JSONObject merge_json(JSONObject ja, JSONObject jb) {
         // 将json object中内容转为string后重新转为json object，实现深拷贝
         JSONObject result = new JSONObject(ja.toString());
         JSONObject b = new JSONObject(jb.toString());
@@ -100,10 +123,11 @@ public class JsonReader {
     /**
      * 按照规范格式读取json文件
      * read json file from path
+     *
      * @param json_path the path of json file。
      * @return the json object
      */
-    public static JSONObject standard_json_from_path(String json_path){
+    public static JSONObject standard_json_from_path(String json_path) {
         String standard_file;
         try {
             standard_file = new String(Files.readAllBytes(Paths.get(json_path)));
@@ -112,13 +136,15 @@ public class JsonReader {
         }
         return JsonReader.read_str_json(standard_file);
     }
+
     /**
      * 直接读取json文件，不带任何额外判断
      * read json file from path
+     *
      * @param json_path the path of json file。
      * @return the json object
      */
-    public static JSONObject read_json_from_path(String json_path){
+    public static JSONObject read_json_from_path(String json_path) {
         String standard_file;
         try {
             standard_file = new String(Files.readAllBytes(Paths.get(json_path)));
@@ -130,7 +156,6 @@ public class JsonReader {
 
 
 }
-
 
 
 ///**
