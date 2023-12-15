@@ -1,8 +1,8 @@
 package demos
 
-import NotBox2D.JsonReader
 import game.com.mygdx.NotPhysicsEngineMain
 import systems.PhysicsSystem
+import tools.JsonReader
 
 //import NotBox2D.JsonReader
 

@@ -1,9 +1,9 @@
 
-import NotBox2D.JsonReader
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import game.com.mygdx.NotPhysicsEngineMain;
 import org.json._
+import tools.JsonReader
 
 object DesktopLauncher {
     def main(args: Array[String]): Unit = {

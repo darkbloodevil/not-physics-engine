@@ -1,11 +1,11 @@
-import com.artemis.{Aspect, EntitySystem, WorldConfiguration, World as Engine}
-import com.artemis.ComponentMapper
+package tools
+
+import com.artemis.{Aspect, ComponentMapper, EntitySystem, WorldConfiguration, World as Engine}
 import com.typesafe.scalalogging.Logger
 import components.ComponentX
-import tools.DeltaTimeRecorder
+import org.junit.jupiter.api.{Assertions, DisplayName, Test}
 import org.scalatest.funsuite.AnyFunSuite
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.{Assertions, Test}
+import tools.DeltaTimeRecorder
 
 
 class DeltaTimeRecorderTest {

@@ -1,6 +1,7 @@
 package NotBox2D;
 
 import org.json.JSONObject;
+import tools.JsonReader;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -82,7 +83,7 @@ public class StandardBuilder {
                     }
                 }
                 // 将链接的文件与现有的合并
-                this.standard_basic_entities_jo = JsonReader.mergeJSONObject(this.standard_basic_entities_jo, temp);
+                this.standard_basic_entities_jo = JsonReader.merge_json(this.standard_basic_entities_jo, temp);
 
             }
         }
@@ -130,7 +131,7 @@ public class StandardBuilder {
      * @return 合并后完整的内容
      */
     public JSONObject merge_prototype_json(JSONObject world_origin) {
-        return JsonReader.mergeJSONObject(world_origin, this.standard_basic_entities_jo);
+        return JsonReader.merge_json(world_origin, this.standard_basic_entities_jo);
     }
 
 }
