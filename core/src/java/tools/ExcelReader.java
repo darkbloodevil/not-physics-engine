@@ -25,7 +25,7 @@ public class ExcelReader {
     /**
      * tokens in result
      */
-    static String HEADER="[HEADER]",REPRESENT = "[REPRESENT]", ALTER = "[ALTER]",LIST = "[LIST]", NONE="[NONE]",EMPTY_TOKEN = "[EMPTY]";
+    static String GAME_MAP="game_map",HEADER="[HEADER]",REPRESENT = "[REPRESENT]", ALTER = "[ALTER]",LIST = "[LIST]", NONE="[NONE]",EMPTY_TOKEN = "[EMPTY]";
 
     public static void main(String[] args) {
         System.out.println(excel_to_json("excel_files/basic_game_map.xlsx").getJSONArray("game_map").length());
@@ -63,10 +63,19 @@ public class ExcelReader {
     static void handle_map_sheet(Sheet sheet, JSONObject result_json) throws IOException, ExcelFormatException {
         try (Stream<Row> rows = sheet.openStream()) {
             var rowIterator = rows.iterator();
-            JSONArray map_arr = new JSONArray();//the 2 dimension array of the map
-            handling_rows(rowIterator, result_json, map_arr);
-            result_json.put("game_map", map_arr);
+            init_result_json(result_json);
+            handling_rows(rowIterator, result_json, result_json.getJSONArray(GAME_MAP));
         }
+    }
+
+    /**
+     * 初始化result json
+     * @param result_json
+     */
+    static void init_result_json(JSONObject result_json){
+        result_json.put(GAME_MAP, new JSONArray());//the 2 dimension array of the map
+        result_json.put(REPRESENT, new JSONObject());
+        result_json.put(ALTER, new JSONObject());
     }
 
     /**
@@ -88,19 +97,17 @@ public class ExcelReader {
             if (row.getCell(0).asString().equalsIgnoreCase(HEADER))
                 handling_header(row, result_json);
                 //if height is already loaded
-            else if (result_json.has("height") && row.getRowNum() <= result_json.getInt("height") + 1)
-                // read the map (+1 cause the header)
+            else if (result_json.has("height") && row.getRowNum() <= result_json.getInt("height") + 1) {// read the map (+1 cause the header)
                 handling_map(row, map_arr);
+            }
                 // read other information
             else if (result_json.has("height") && row.getRowNum() > result_json.getInt("height") + 1) {
                 // set the task
                 if (row.getCell(0).asString().equalsIgnoreCase(REPRESENT)) {
                     task = REPRESENT;
-                    result_json.put(REPRESENT, new JSONObject());
                     continue;
                 } else if (row.getCell(0).asString().equalsIgnoreCase(ALTER)) {
                     task = ALTER;
-                    result_json.put(ALTER, new JSONObject());
                     continue;
                 }
                 // handling represent（用来标明各个符号代表了什么）
@@ -236,6 +243,10 @@ public class ExcelReader {
              */
             var tar_property=row.getCell(i).asString();
             var sub_property=whatever_cell(row.getCell(i+1));
+            // 空值则退出
+            if (key.equals("")||tar_property.equals("")||row.getCell(i+1).getText().equals(""))
+                return;
+
             // tar_property遇到[LIST]，说明出错了
             if (tar_property.equalsIgnoreCase(LIST)){
                 throw new ExcelFormatException("[LIST] should not used in the beggining!");
@@ -269,6 +280,25 @@ public class ExcelReader {
             current_sub_json=sub_value;
 
         }
+
+    }
+
+    /**
+     * I don't care the type of cell, so i return object
+     *
+     * @param cell_value cell value
+     * @return object cell value
+     */
+    static Object whatever_cell(Cell cell_value) {
+        if (cell_value == null) return new Object();
+        if (cell_value.getValue() instanceof String) return cell_value.asString();
+        else if (cell_value.getValue() instanceof BigDecimal) return cell_value.asNumber();
+        else if (cell_value.getValue() instanceof Boolean) return cell_value.asBoolean();
+        return new Object();
+    }
+}
+
+
 /**
  * // 只有三个元素，说明是单个值
  *         if (row.getCellCount() < 4) {
@@ -290,20 +320,3 @@ public class ExcelReader {
  *             value.put(row.getCell(1).asString(), jsonArray);
  *         }
  */
-
-    }
-
-    /**
-     * I don't care the type of cell, so i return object
-     *
-     * @param cell_value cell value
-     * @return object cell value
-     */
-    static Object whatever_cell(Cell cell_value) {
-        if (cell_value == null) return new Object();
-        if (cell_value.getValue() instanceof String) return cell_value.asString();
-        else if (cell_value.getValue() instanceof BigDecimal) return cell_value.asNumber();
-        else if (cell_value.getValue() instanceof Boolean) return cell_value.asBoolean();
-        return new Object();
-    }
-}
