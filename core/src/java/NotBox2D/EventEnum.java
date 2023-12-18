@@ -1,5 +1,6 @@
 package NotBox2D;
 
 public enum EventEnum {
-    CONTACT;
+    CONTACT,
+    TIME_TRIGGER
 }
