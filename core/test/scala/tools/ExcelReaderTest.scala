@@ -13,22 +13,12 @@ import org.scalatest.Assertions.*
 //import org.junit.Assert._
 import org.junit.jupiter.api.{Assertions, DisplayName, Test}
 class ExcelReaderTest{
-//    test("NotBox2D.ExcelReader"){
-//        assert(ExcelReader.excel_to_json("excel_test.xlsx")!=null,()=>"excel not null")
-//    }
-//
-//    @Test
-//    @DisplayName("testAddition")
-//    def testAddition(): Unit = {
-//        val result = 2 + 2
-//        Assertions.assertEquals(4, result,"result right")
-//    }
 
     @Test
     @DisplayName("test_excel_to_json")
     def test_excel_to_json(): Unit = {
         val result=ExcelReader.excel_to_json("excel_test.xlsx")
-        Assertions.assertTrue(result.has(ExcelReader.ALTER))
+        Assertions.assertTrue(result.has(ExcelReader.ALTER),"has alter")
         val alter_json=result.getJSONObject(ExcelReader.ALTER)
         Assertions.assertTrue(alter_json.getJSONObject("A").getJSONObject("shape").
             getJSONObject("circle").getInt("radius")==20, "radius = 20")
@@ -37,7 +27,31 @@ class ExcelReaderTest{
 
         Assertions.assertTrue(alter_json.getJSONObject("B").get("seed").isInstanceOf[JSONArray], "seed is array")
         Assertions.assertTrue(alter_json.getJSONObject("GA").getJSONArray("names").length()==2 , "has two names")
+        print("test_excel_to_json")
+        print(alter_json)
+    }
 
+    @Test
+    @DisplayName("test_alter_list")
+    def test_alter_list(): Unit = {
+        val result = ExcelReader.excel_to_json("alter_list_test.xlsx")
+        Assertions.assertTrue(result.has(ExcelReader.ALTER))
+        val alter_json = result.getJSONObject(ExcelReader.ALTER)
+        Assertions.assertTrue(alter_json.getJSONArray("A").isEmpty,"A is []")
+        print("test_excel_to_json")
+        print(alter_json)
+
+    }
+
+    @Test
+    @DisplayName("test_empty_alter")
+    def test_empty_alter(): Unit = {
+        val result = ExcelReader.excel_to_json("alter_list_test.xlsx")
+        Assertions.assertTrue(result.has(ExcelReader.ALTER))
+        val alter_json = result.getJSONObject(ExcelReader.ALTER)
+        Assertions.assertTrue(!alter_json.has("GA"),"no GA")
+        print("test_excel_to_json")
+        print(alter_json)
 
     }
 }
