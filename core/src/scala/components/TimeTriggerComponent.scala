@@ -10,8 +10,8 @@ import java.util
  * 用于记录某条目剩余时间
  */
 class TimeTriggerItem{
-    var time: Float
-    var item: String
+    var time: Float=0.0f
+    var item: String=""
 }
 
 /**

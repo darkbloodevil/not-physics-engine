@@ -47,7 +47,5 @@ public class TimeTriggerItemSystem extends EntityProcessingSystem {
                 element.time_$eq(time_left);
             }
         }
-
-
     }
 }
