@@ -37,15 +37,17 @@ class TimeTriggerItemSystemTest{
 
         ttc.timeTriggerItems.add(TimeTriggerItem(1.2f, "A"))
         DeltaTimeRecorder.set_deltaTime(engine, 1.0f)
+        
+        engine.process()
         logger.info("1 second has passed")
-        engine.process()
         Assertions.assertTrue(!msgMapper.has(entity),"triggered at 1.2 second")
-        logger.info("2 second has passed")
+        
         engine.process()
+        logger.info("2 second has passed")
         Assertions.assertTrue(msgMapper.has(entity), "triggered at 1.2 second, sends message")
         Assertions.assertTrue(!ttcMapper.has(entity), "triggered at 1.2 second, remove time trigger")
-        logger.info("3 second has passed")
-        engine.process()
         
+        engine.process()
+        logger.info("3 second has passed")
     }
 }
