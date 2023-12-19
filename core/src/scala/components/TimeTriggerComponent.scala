@@ -12,6 +12,11 @@ import java.util
 class TimeTriggerItem{
     var time: Float=0.0f
     var item: String=""
+    def this(time:Float,item:String)={
+        this()
+        this.time=time
+        this.item=item
+    }
 }
 
 /**

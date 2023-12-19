@@ -11,6 +11,7 @@ import components.TimeTriggerItem;
 import org.json.JSONArray;
 import tools.DeltaTimeRecorder;
 
+
 import java.util.Iterator;
 
 public class TimeTriggerItemSystem extends EntityProcessingSystem {
@@ -46,6 +47,11 @@ public class TimeTriggerItemSystem extends EntityProcessingSystem {
                 // 时间没到 更新时间
                 element.time_$eq(time_left);
             }
+        }
+        
+        // 空了就删除
+        if (ttc.timeTriggerItems().isEmpty()){
+            entity.edit().remove(ttc);
         }
     }
 }
