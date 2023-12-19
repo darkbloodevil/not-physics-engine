@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 import tools.DeltaTimeRecorder
 
 class TimeTriggerItemSystemTest{
-    var logger= LoggerFactory.getLogger(classOf[TimeTriggerItemSystemTest]);
+    private var logger= LoggerFactory.getLogger(classOf[TimeTriggerItemSystemTest])
     @Test
     @DisplayName("test_time_trigger")
     def test_time_trigger(): Unit = {

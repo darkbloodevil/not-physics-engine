@@ -13,12 +13,16 @@ sourceSets {
         scala {
             srcDirs = ['src/scala','src/java']
         }
+        resources {
+            srcDirs = ['assets']
+        }
     }
-}
-sourceSets{
     test{
         scala {
             srcDirs = ['test/scala',"test/java"]
+        }
+        resources {
+            srcDirs = ['test/assets']
         }
     }
 }

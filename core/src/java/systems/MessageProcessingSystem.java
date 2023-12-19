@@ -9,7 +9,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 统一处理msg
+ */
 public class MessageProcessingSystem extends EntityProcessingSystem {
     public static String MESSAGE_PROCESSING_SYSTEM_TOKEN = "message processing system";
     ComponentMapper<GameMsgComponent> gameMsgMapper;
@@ -22,12 +24,12 @@ public class MessageProcessingSystem extends EntityProcessingSystem {
 
     @Override
     protected void process(Entity entity) {
-//        logger.info("message processing");
 
         GameMsgComponent gameMsgComponent = gameMsgMapper.get(entity);
         PropertyComponent propertyComponent = propertyMapper.get(entity);
         JSONObject msg = gameMsgComponent.msg();
         JSONObject property = propertyComponent.property();
+        
         if (msg.has(EventEnum.CONTACT.toString()) && property.has("name")) {
             String contact_tar = msg.getString(EventEnum.CONTACT.toString());
             String name = property.getString("name");
@@ -38,7 +40,10 @@ public class MessageProcessingSystem extends EntityProcessingSystem {
                     
                     physicsInstruction.instructions().put("CHANGE_DIRECTION");
                 } else if (contact_tar.equals("big")) {
-                    var instruction_str = " {\"name\":\"small\",\"position\":%s} ";
+//                    var instruction_str = " {\"name\":\"small\",\"position\":%s} ";
+                    var instruction_str = """
+                            {"name":"small","position":%s}
+                            """;
                     EntityGenerator.add_instruction(this,
                             new JSONObject(String.format(instruction_str,
                                     msg.getJSONObject("position").toString())));
@@ -47,6 +52,5 @@ public class MessageProcessingSystem extends EntityProcessingSystem {
 
         }
 
-//        ComponentsManager.update_entity(entity,engine)
     }
 }

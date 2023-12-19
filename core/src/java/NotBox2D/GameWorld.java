@@ -37,9 +37,6 @@ public class GameWorld {
 
     Logger logger = LoggerFactory.getLogger(GameWorld.class);
     float gravity = -10;
-//
-//    HashMap<Long, Body> id_to_body;
-//    HashMap<String, Long> eid_to_id;
 
     com.artemis.World engine;
 
@@ -54,8 +51,6 @@ public class GameWorld {
     }
 
     private void init() {
-//        this.id_to_body = new HashMap<>();
-//        this.eid_to_id = new HashMap<>();
 
 
         this.world = new com.badlogic.gdx.physics.box2d.World(new Vector2(0, gravity), true);
@@ -81,7 +76,6 @@ public class GameWorld {
         String frustum = "M", entity_size = "M";
         this.standardBuilder.standardize(frustum, entity_size);
         this.world_prototype_json = this.standardBuilder.merge_prototype_json(this.world_prototype_json);
-        
 
         //set camera
         NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_prototype_json.getFloat("frustum_width"),
