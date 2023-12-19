@@ -3,9 +3,9 @@ package tools
 import org.json.JSONObject
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.{Assertions, Test}
-import org.scalatest.Assertions._
+import org.scalatest.Assertions.*
 
-class JsonReaderTest {
+class JsonReaderTest{
     @DisplayName("test_read_json_from_path")
     @Test
     def test_read_json_from_path(): Unit = {
