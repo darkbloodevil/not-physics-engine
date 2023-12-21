@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
+
 /**
  * 统一处理msg
  */
@@ -36,6 +38,14 @@ public class MessageProcessingSystem extends EntitySystem {
         PropertyComponent propertyComponent = propertyMapper.get(entity);
         JSONObject msg = gameMsgComponent.msg();
         JSONObject property = propertyComponent.property();
+        Iterator<String> iterator=msg.keys();
+        // 使用迭代器遍历列表
+        while (iterator.hasNext()) {
+            String msg_name = iterator.next();
+            var msg_arr=msg.getJSONArray(msg_name);
+            
+        }
+        
         if (msg.has(EventEnum.CONTACT.toString()) && property.has("name")) {
             String contact_tar = msg.getString(EventEnum.CONTACT.toString());
             String name = property.getString("name");
@@ -43,9 +53,10 @@ public class MessageProcessingSystem extends EntitySystem {
             if (name.equals("big")) {
                 if (contact_tar.equals("wall")) {
                     var physicsInstruction = entity.edit().create(PhysicsInstruction.class);
+                    
                     physicsInstruction.instructions().put("CHANGE_DIRECTION");
                 } else if (contact_tar.equals("big")) {
-                    //                    var instruction_str = " {\"name\":\"small\",\"position\":%s} ";
+//                    var instruction_str = " {\"name\":\"small\",\"position\":%s} ";
                     var instruction_str = """
                             {"name":"small","position":%s}
                             """;

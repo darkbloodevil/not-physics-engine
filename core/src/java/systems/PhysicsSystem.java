@@ -49,7 +49,8 @@ public class PhysicsSystem extends EntitySystem {
                 }
                 pbc2.last_contact_$eq(pbc2.contact_interval());
                 pbc1.last_contact_$eq(pbc1.contact_interval());
-
+                
+                
                 decouplingProcessor.decouple_and_process(EventEnum.CONTACT, Arrays.asList(entity1, entity2));
             }
 
