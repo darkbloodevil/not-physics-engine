@@ -12,10 +12,19 @@ import java.util
 class TimeTriggerItem{
     var time: Float=0.0f
     var item: String=""
-    def this(time:Float,item:String)={
+    var event_id:Long=0L
+
+    /**
+     * 
+     * @param time 要多久后触发
+     * @param item 触发什么
+     * @param event_id 触发对应的事件
+     */
+    def this(time:Float,item:String,event_id:Long=0L)={
         this()
         this.time=time
         this.item=item
+        this.event_id=event_id
     }
 }
 
