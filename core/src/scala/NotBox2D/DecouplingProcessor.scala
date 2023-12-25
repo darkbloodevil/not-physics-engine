@@ -45,7 +45,7 @@ class DecouplingProcessor {
                             //                            val game_msg: GameMsgComponent = entity.edit().create(classOf[GameMsgComponent])
                             //                            game_msg.msg.put(CONTACT.toString, "big")
                             //                            game_msg.msg.put("position", new JSONObject("""{"x":1,"y":2}"""))
-                            val msg_jo = createMsg(e1, CONTACT.toString)
+                            val msg_jo = msgCreator.createMsg(e1, CONTACT.toString)
                             msg_jo.put("target", "big")
                             msg_jo.put("position", new JSONObject("""{"x":1,"y":2}"""))
                         }
@@ -55,7 +55,7 @@ class DecouplingProcessor {
             } else {
                 //                val game_msg: GameMsgComponent = e1.edit().create(classOf[GameMsgComponent])
                 //                game_msg.msg.put(CONTACT.toString, "wall")
-                val msg_jo = createMsg(e1, CONTACT.toString)
+                val msg_jo = msgCreator.createMsg(e1, CONTACT.toString)
                 msg_jo.put("target", "wall")
                 //                    ComponentsManager.update_entity(e1,engine)
                 return true

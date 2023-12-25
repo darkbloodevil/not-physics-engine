@@ -59,10 +59,10 @@ public class MessageProcessingSystem extends EntitySystem {
                     
                     physicsInstruction.instructions().put("CHANGE_DIRECTION");
                 } else if (contact_tar.equals("big")) {
-//                    var instruction_str = " {\"name\":\"small\",\"position\":%s} ";
-                    var instruction_str = """
-                            {"name":"small","position":%s}
-                            """;
+                    var instruction_str = " {\"name\":\"small\",\"position\":%s} ";
+//                    var instruction_str = """
+//                            {"name":"small","position":%s}
+//                            """;
                     EntityGenerator.add_instruction(this,
                             new JSONObject(String.format(instruction_str,
                                     msg.getJSONObject("position").toString())));

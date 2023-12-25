@@ -17,7 +17,7 @@ class MessageCreator {
      * 用于记录该事件的id
      * @param event_id 事件的重复性id，如果不需要修改就为0L
      */
-    def this(event_id:Long=0L) {
+    def this(event_id:Long=0L)= {
         this()
         this.event_id=event_id
     }
