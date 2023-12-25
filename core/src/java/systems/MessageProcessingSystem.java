@@ -22,7 +22,7 @@ public class MessageProcessingSystem extends EntitySystem {
     ComponentMapper<GameMsgComponent> gameMsgMapper;
     ComponentMapper<PropertyComponent> propertyMapper;
 
-    public MessageProcessingSystem(GameWorld gameWorld) {
+    public MessageProcessingSystem() {
         super(Aspect.all(GameMsgComponent.class, PropertyComponent.class));
 
     }
@@ -38,12 +38,15 @@ public class MessageProcessingSystem extends EntitySystem {
         PropertyComponent propertyComponent = propertyMapper.get(entity);
         JSONObject msg = gameMsgComponent.msg();
         JSONObject property = propertyComponent.property();
-        Iterator<String> iterator=msg.keys();
+        Iterator<String> event_type_iterator=msg.keys();
         // 使用迭代器遍历列表
-        while (iterator.hasNext()) {
-            String msg_name = iterator.next();
+        while (event_type_iterator.hasNext()) {
+            String msg_name = event_type_iterator.next();
             var msg_arr=msg.getJSONArray(msg_name);
-            
+            msg_arr.forEach((Object message_o)->{
+                var message=(JSONObject)message_o;
+                
+            });
         }
         
         if (msg.has(EventEnum.CONTACT.toString()) && property.has("name")) {
@@ -68,6 +71,14 @@ public class MessageProcessingSystem extends EntitySystem {
 
         }
 
+    }
+
+    /**
+     * 清理实体的message
+     * @param entity
+     */
+    void clear_msg(Entity entity){
+        entity.edit().remove(GameMsgComponent.class);
     }
 }
 /*
