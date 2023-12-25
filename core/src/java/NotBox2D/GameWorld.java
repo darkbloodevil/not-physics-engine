@@ -62,7 +62,7 @@ public class GameWorld {
     private void initialize_engine(){
         PhysicsSystem ps=new PhysicsSystem(this);
         
-        MessageProcessingSystem mps=new MessageProcessingSystem(this);
+        MessageProcessingSystem mps=new MessageProcessingSystem();
 //        this.engine.addSystem(ps);
 //        this.engine.addSystem(mps);
         this.engine=new com.artemis.World(new WorldConfiguration().setSystem(mps).setSystem(ps));
