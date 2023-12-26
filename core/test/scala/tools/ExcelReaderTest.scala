@@ -8,7 +8,7 @@ import org.dhatim.fastexcel.reader.Row
 import org.dhatim.fastexcel.reader.Sheet
 import org.dhatim.fastexcel.Worksheet
 import org.json.{JSONArray, JSONObject}
-import org.scalatest.Assertions.*
+import org.scalatest.Assertions._
 //import org.junit.Test
 //import org.junit.Assert._
 import org.junit.jupiter.api.{Assertions, DisplayName, Test}

@@ -2,8 +2,7 @@ package systems;
 
 import com.artemis.Aspect;
 import com.artemis.EntitySystem;
-import com.artemis.World;
-import NotBox2D.EntityGenerator;
+import NotBox2D.EntityGeneratorManager;
 
 /**
  * 用于生成entity(事实上写在EntityGenerator里边)
@@ -18,7 +17,7 @@ public class EntityGeneratorSystem extends EntitySystem {
      */
     @Override
     protected void processSystem() {
-        EntityGenerator.generate(this);
+        EntityGeneratorManager.generate(this);
     }
 
 }

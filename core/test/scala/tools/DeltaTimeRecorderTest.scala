@@ -1,6 +1,6 @@
 package tools
 
-import com.artemis.{Aspect, ComponentMapper, EntitySystem, WorldConfiguration, World as Engine}
+import com.artemis.{Aspect, ComponentMapper, EntitySystem, WorldConfiguration, World => Engine}
 import com.typesafe.scalalogging.Logger
 import components.ComponentX
 import org.junit.jupiter.api.{Assertions, DisplayName, Test}

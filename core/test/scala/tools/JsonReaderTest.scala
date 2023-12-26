@@ -3,7 +3,7 @@ package tools
 import org.json.JSONObject
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.{Assertions, Test}
-import org.scalatest.Assertions.*
+import org.scalatest.Assertions._
 
 class JsonReaderTest{
     @DisplayName("test_read_json_from_path")
@@ -35,8 +35,8 @@ class JsonReaderTest{
                   |}
                   |""".stripMargin)
         }
-        try
-            val json_result= JsonReader.read_str_json(
+        try{
+            val json_result = JsonReader.read_str_json(
                 """
                   |{
                   |  "grandfather": {
@@ -65,9 +65,11 @@ class JsonReaderTest{
             Assertions.assertTrue(json_result.getJSONObject("daughter").getString("body_type").equals("dynamic"), "daughter extends grandpa")
             // 测试继承顺序
             Assertions.assertTrue(json_result.getJSONObject("daughter").getString("shape").equals("matrix"), "daughter extends mother first then father")
-
-        catch
-            case  e:RuntimeException=>e.printStackTrace()
+        }
+        catch{
+            case e: RuntimeException => e.printStackTrace()
+        }
+            
             
             
         
@@ -75,14 +77,14 @@ class JsonReaderTest{
     @DisplayName("test_merge_json")
     @Test
     def test_merge_json(): Unit = {
-        val ja=JSONObject(
+        val ja=new JSONObject(
             """
               |{
               |     "circle":20,
               |     "square":30
               |}
               |""".stripMargin)
-        val jb = JSONObject(
+        val jb = new JSONObject(
             """
               |{
               |     "circle":30,

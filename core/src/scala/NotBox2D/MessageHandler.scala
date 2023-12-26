@@ -1,7 +1,7 @@
 package NotBox2D
 
 import org.json.JSONObject
-import com.artemis.*
+import com.artemis._
 /**
  * 用于处理单一的message
  * @param property 对应的property

@@ -1,10 +1,10 @@
 package systems
 
-import com.artemis.{Aspect, Entity, EntitySystem, WorldConfiguration, World as Engine}
+import com.artemis.{Aspect, Entity, EntitySystem, WorldConfiguration, World => Engine}
 import components.{GameMsgComponent, TimeTriggerComponent, TimeTriggerItem}
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.{Assertions, Test}
-import org.scalatest.Assertions.*
+import org.scalatest.Assertions._
 import org.slf4j.LoggerFactory
 
 class MessageProcessingSystemTest {

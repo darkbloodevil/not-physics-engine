@@ -1,4 +1,3 @@
-
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import game.com.mygdx.NotPhysicsEngineMain;

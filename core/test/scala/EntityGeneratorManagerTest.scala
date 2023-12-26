@@ -1,15 +1,16 @@
-import com.artemis.{Aspect, Entity, EntitySystem, WorldConfiguration, World as Engine}
+
+import com.artemis.{Aspect, Entity, EntitySystem, WorldConfiguration, World => Engine}
 import com.artemis.systems.EntityProcessingSystem
 import com.typesafe.scalalogging.Logger
-import NotBox2D.EntityGenerator
-import components.{InstructionComponent, *}
+import NotBox2D.EntityGeneratorManager
+import components._
 import org.json.{JSONArray, JSONObject}
 import org.scalatest.funsuite.AnyFunSuite
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.{Assertions, Test}
 import systems.EntityGeneratorSystem
 
-class EntityGeneratorTest {
+class EntityGeneratorManagerTest {
 
     @Test
     @DisplayName("test_entity_generator")
@@ -17,10 +18,10 @@ class EntityGeneratorTest {
         val egs:EntityGeneratorSystem=EntityGeneratorSystem()
         val systemT:SystemT2=SystemT2()
         val engine:Engine=Engine(WorldConfiguration().setSystem(SystemU()).setSystem(egs).setSystem(systemT))
-        EntityGenerator.add_engine(engine)
+        EntityGeneratorManager.add_engine(engine)
         engine.process()
         engine.process()
-        EntityGenerator.add_instruction(egs,JSONObject(
+        EntityGeneratorManager.add_instruction(egs,JSONObject(
             """{"name":"test_instruction","instruction":"generate!"}"""))
         engine.process()
         Assertions.assertTrue(systemT.has_component,"有没有生成呢")

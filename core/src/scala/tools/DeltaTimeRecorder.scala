@@ -10,15 +10,24 @@ import com.artemis.{BaseSystem, World=>Engine}
 object DeltaTimeRecorder {
     private var engine_to_deltaTime: Map[Engine, Float] = Map()
     def set_deltaTime(engine: Engine,deltaTime:Float): Unit = {
-        engine_to_deltaTime+=(engine,deltaTime)
+        engine_to_deltaTime=engine_to_deltaTime.updated(engine , deltaTime)
     }
+
     def get_deltaTime(system: BaseSystem): Option[Float] = {
-        for(engine<-engine_to_deltaTime.keys) do {
-            if (engine.getSystems.contains(system)) {
-                return engine_to_deltaTime.get(engine)
-            }
+        engine_to_deltaTime.find { case (engine, _) =>
+            engine != null && engine.getSystems != null && engine.getSystems.contains(system)
+        } match {
+            case Some((_, deltaTime)) => Some(deltaTime)
+            case None => None
         }
-        None
     }
+//    def get_deltaTime(system: BaseSystem): Option[Float] = {
+//        for(engine<-engine_to_deltaTime.keys) do {
+//            if (engine.getSystems.contains(system)) {
+//                return engine_to_deltaTime.get(engine)
+//            }
+//        }
+//        None
+//    }
 
 }

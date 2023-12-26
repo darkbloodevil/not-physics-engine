@@ -1,7 +1,19 @@
 plugins {
-//    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
-    id 'scala'
+    id 'not.physics.engine.scala-application-conventions'
 }
+ext {
+    gdxVersion = '1.10.0'
+}
+
+dependencies {
+
+    implementation 'org.apache.commons:commons-text'
+    implementation project(':core')
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+}
+
 
 sourceCompatibility = 1.17
 
@@ -18,42 +30,69 @@ sourceSets {
     }
 }
 
-
-sourceSets.main.resources.srcDirs = ["../core/assets"]
-
-project.ext.mainClassName = "DesktopLauncher"
-project.ext.assetsDir = new File("../core/assets")
-
-task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
-}
-
-task debug(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
-    debug = true
-}
-
-task dist(type: Jar) {
-    manifest {
-        attributes 'Main-Class': project.mainClassName
-    }
-    dependsOn configurations.runtimeClasspath
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    with jar
+application {
+    // Define the main class for the application.
+    mainClass = 'DesktopLauncher'
 }
 
 
 
-dist.dependsOn classes
-
-eclipse.project.name = appName + "-desktop"
+//plugins {
+////    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+//    id 'scala'
+//}
+//
+//sourceCompatibility = 1.17
+//
+//sourceSets {
+//    main {
+//        scala {
+//            srcDirs = ['src/scala',"src/java"]
+//        }
+//    }
+//    test{
+//        scala {
+//            srcDirs = ['test/scala',"test/java"]
+//        }
+//    }
+//}
+//
+//
+//sourceSets.main.resources.srcDirs = ["../core/assets"]
+//
+//project.ext.mainClassName = "DesktopLauncher"
+//project.ext.assetsDir = new File("../core/assets")
+//
+//task run(dependsOn: classes, type: JavaExec) {
+//    main = project.mainClassName
+//    classpath = sourceSets.main.runtimeClasspath
+//    standardInput = System.in
+//    workingDir = project.assetsDir
+//    ignoreExitValue = true
+//}
+//
+//task debug(dependsOn: classes, type: JavaExec) {
+//    main = project.mainClassName
+//    classpath = sourceSets.main.runtimeClasspath
+//    standardInput = System.in
+//    workingDir = project.assetsDir
+//    ignoreExitValue = true
+//    debug = true
+//}
+//
+//task dist(type: Jar) {
+//    manifest {
+//        attributes 'Main-Class': project.mainClassName
+//    }
+//    dependsOn configurations.runtimeClasspath
+//    from {
+//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//    with jar
+//}
+//
+//
+//
+//dist.dependsOn classes
+//
+//eclipse.project.name = appName + "-desktop"

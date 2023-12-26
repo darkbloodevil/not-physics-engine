@@ -33,7 +33,7 @@ class MessageCreator {
     def createMsg(entity: Entity, key: String): JSONObject = {
         val msg = entity.edit().create(classOf[GameMsgComponent])
         // 创建一个新的JSON对象，用于存储消息内容
-        val content = JSONObject()
+        val content = new JSONObject()
 
         // 检查消息中是否已经存在指定的键
         if (msg.msg.has(key)) {
@@ -41,7 +41,7 @@ class MessageCreator {
             msg.msg.getJSONArray(key).put(content)
         } else {
             // 如果不存在，创建一个新的JSON数组，并将新的内容添加到数组中
-            val ja = JSONArray()
+            val ja = new JSONArray()
             ja.put(content)
             // 将新的JSON数组添加到消息中，键为指定的字符串
             msg.msg.put(key, ja)

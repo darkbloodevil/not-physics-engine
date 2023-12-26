@@ -3,7 +3,6 @@ package systems;
 
 import NotBox2D.*;
 import com.artemis.*;
-import com.artemis.systems.EntityProcessingSystem;
 import components.*;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -63,7 +62,7 @@ public class MessageProcessingSystem extends EntitySystem {
 //                    var instruction_str = """
 //                            {"name":"small","position":%s}
 //                            """;
-                    EntityGenerator.add_instruction(this,
+                    EntityGeneratorManager.add_instruction(this,
                             new JSONObject(String.format(instruction_str,
                                     msg.getJSONObject("position").toString())));
                 }
@@ -105,7 +104,7 @@ public class MessageProcessingSystem extends EntitySystem {
  *                     var instruction_str = """
  *                             {"name":"small","position":%s}
  *                             """;
- *                     EntityGenerator.add_instruction(this,
+ *                     EntityGeneratorManager.add_instruction(this,
  *                             new JSONObject(String.format(instruction_str,
  *                                     msg.getJSONObject("position").toString())));
  *                 }

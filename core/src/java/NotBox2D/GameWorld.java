@@ -67,7 +67,7 @@ public class GameWorld {
 //        this.engine.addSystem(mps);
         this.engine=new com.artemis.World(new WorldConfiguration().setSystem(mps).setSystem(ps));
         ps.set_world(this.world);
-        EntityGenerator.add_engine(engine);
+        EntityGeneratorManager.add_engine(engine);
     }
 
     public void create() {
