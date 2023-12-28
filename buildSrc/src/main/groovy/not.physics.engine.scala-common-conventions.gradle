@@ -6,7 +6,9 @@ plugins {
     // Apply the scala Plugin to add support for Scala.
     id 'scala'
 }
-
+scala {
+    version '3.0.0' // 指定 Scala 版本
+}
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
