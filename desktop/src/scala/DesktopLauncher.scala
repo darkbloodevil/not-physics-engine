@@ -1,6 +1,6 @@
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
-import game.com.mygdx.NotPhysicsEngineMain;
+import game.com.mygdx.NotPhysicsEngineGUI
 import org.json._
 import tools.JsonReader
 
@@ -16,6 +16,6 @@ object DesktopLauncher {
 //        config.width = 1600
 //        config.height = 900
         //config.fullscreen=true;
-        new LwjglApplication(new NotPhysicsEngineMain, config)
+        new LwjglApplication(new NotPhysicsEngineGUI, config)
     }
 }

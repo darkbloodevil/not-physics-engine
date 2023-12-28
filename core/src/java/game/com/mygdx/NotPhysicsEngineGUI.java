@@ -5,14 +5,13 @@ import NotBox2D.GameWorld;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.Stack;
 
-public class NotPhysicsEngineMain extends Game {
+public class NotPhysicsEngineGUI extends Game {
     SpriteBatch batch;
 
     /**
@@ -51,8 +50,8 @@ class MainScreen extends ScreenAdapter {
     GameWorld gameWorld;
 
     Box2DDebugRenderer debugRenderer;
-    NotPhysicsEngineMain game;
-    MainScreen(NotPhysicsEngineMain game){
+    NotPhysicsEngineGUI game;
+    MainScreen(NotPhysicsEngineGUI game){
         this.game = game;
         gameWorld = new GameWorld();
         debugRenderer = new Box2DDebugRenderer();

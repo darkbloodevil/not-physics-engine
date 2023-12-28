@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 import components.PhysicsBodyComponent;
 import components.PropertyComponent;
-import game.com.mygdx.NotPhysicsEngineMain;
+import game.com.mygdx.NotPhysicsEngineGUI;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -78,7 +78,7 @@ public class GameWorld {
         this.world_prototype_json = this.standardBuilder.merge_prototype_json(this.world_prototype_json);
 
         //set camera
-        NotPhysicsEngineMain.cameras.add(new OrthographicCamera(this.world_prototype_json.getFloat("frustum_width"),
+        NotPhysicsEngineGUI.cameras.add(new OrthographicCamera(this.world_prototype_json.getFloat("frustum_width"),
                 this.world_prototype_json.getFloat("frustum_height")));
 
         TabularToMap tabularToMap = TabularToMap.INSTANCE;

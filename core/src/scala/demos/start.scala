@@ -1,6 +1,6 @@
 package demos
 
-import game.com.mygdx.NotPhysicsEngineMain
+import game.com.mygdx.NotPhysicsEngineGUI
 import systems.PhysicsSystem
 import tools.JsonReader
 
@@ -21,6 +21,6 @@ object start {
         //        config.width = 1600
         //        config.height = 900
         //config.fullscreen=true;
-        new LwjglApplication(new NotPhysicsEngineMain, config)
+        new LwjglApplication(new NotPhysicsEngineGUI, config)
     }
 }
