@@ -24,11 +24,11 @@ import java.util.Iterator;
 
 public class GameWorld {
     /**
-     * 该gameworld的物理世界
+     * 该game world的物理世界
      */
     public com.badlogic.gdx.physics.box2d.World world;
     /**
-     * 用于表示该gameworld中万物原型的json
+     * 用于表示该game world中万物原型的json
      */
     JSONObject world_prototype_json;
 
@@ -59,19 +59,20 @@ public class GameWorld {
         this.standardBuilder = new StandardBuilder();
 
     }
-    private void initialize_engine(){
-        PhysicsSystem ps=new PhysicsSystem(this);
-        
-        MessageProcessingSystem mps=new MessageProcessingSystem();
+
+    private void initialize_engine() {
+        PhysicsSystem ps = new PhysicsSystem();
+
+        MessageProcessingSystem mps = new MessageProcessingSystem();
 //        this.engine.addSystem(ps);
 //        this.engine.addSystem(mps);
-        this.engine=new com.artemis.World(new WorldConfiguration().setSystem(mps).setSystem(ps));
+        this.engine = new com.artemis.World(new WorldConfiguration().setSystem(mps).setSystem(ps));
         ps.set_world(this.world);
         EntityGeneratorManager.add_engine(engine);
     }
 
     public void create() {
-        bodyFactory = new BodyBuilder(this);
+        bodyFactory = new BodyBuilder(this.world_prototype_json, this.world);
         this.standardBuilder.load_builders(bodyFactory);
         String frustum = "M", entity_size = "M";
         this.standardBuilder.standardize(frustum, entity_size);
@@ -87,8 +88,8 @@ public class GameWorld {
         HashMap<String, JSONObject> alterMap = new HashMap<>();
 //        alterMap.put("s", new JSONObject("{\"body_type\":\"static\"}"));
 
-        tabularToMap.center_x = this.world_prototype_json.getFloat("frustum_width")/2;
-        tabularToMap.center_y = this.world_prototype_json.getFloat("frustum_height")/2;
+        tabularToMap.center_x = this.world_prototype_json.getFloat("frustum_width") / 2;
+        tabularToMap.center_y = this.world_prototype_json.getFloat("frustum_height") / 2;
 
         JSONObject jsonObject = ExcelReader.excel_to_json("excel_files/basic_game_map.xlsx");
         JSONArray jsonArray = jsonObject.getJSONArray("game_map");
@@ -113,7 +114,7 @@ public class GameWorld {
 
         // 实体间距
         tabularToMap.interval = world_prototype_json.getJSONObject("intervals").getFloat(entity_size) *
-                world_prototype_json.getJSONObject("intervals").getFloat("scale");
+                                world_prototype_json.getJSONObject("intervals").getFloat("scale");
         tabularToMap.tabular_to_map(test_tabular, representation, alterMap, this);
 
 //        id_to_body.keySet().forEach(System.out::println);
@@ -123,7 +124,7 @@ public class GameWorld {
     public void update(float delta_time) {
 //        engine.update(delta_time);
 //        }
-        DeltaTimeRecorder.set_deltaTime(engine,delta_time);
+        DeltaTimeRecorder.set_deltaTime(engine, delta_time);
         engine.process();
     }
 
@@ -150,29 +151,29 @@ public class GameWorld {
         // 改变量
         JSONObject altered = this.world_prototype_json.getJSONObject(description);
 
-        boolean waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=false;
+        boolean waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = false;
         for (String key : alter.keySet()) {
             altered.put(key, alter.get(key));
             // 如果有对应eid，则加入
-            if (key.equals("eid")){
+            if (key.equals("eid")) {
 //                this.eid_to_id.put(alter.getString("eid"), body_id);
-                waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=true;
+                waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = true;
             }
 
         }
         // 生成body
         Body body = this.bodyFactory.get_body(altered);
-        Entity e=engine.createEntity();
-        PhysicsBodyComponent pbc=e.edit().create(PhysicsBodyComponent.class);
+        Entity e = engine.createEntity();
+        PhysicsBodyComponent pbc = e.edit().create(PhysicsBodyComponent.class);
 
 
         pbc.body_id_$eq(IdGenerator.INSTANCE.nextId());
         pbc.body_$eq(body);
 //        e.add(pbc);
-        if (waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa){
-            PropertyComponent pc=e.edit().create(PropertyComponent.class);
-            JSONObject property_json=new JSONObject();
-            property_json.put("name","big");
+        if (waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) {
+            PropertyComponent pc = e.edit().create(PropertyComponent.class);
+            JSONObject property_json = new JSONObject();
+            property_json.put("name", "big");
             pc.property_$eq(property_json);
 //            e.add(pc);
         }

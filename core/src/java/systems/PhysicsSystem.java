@@ -29,7 +29,7 @@ public class PhysicsSystem extends EntitySystem {
     //        int GRAVITY = 10;
     private float accumulator = 0.0f;
 
-    public PhysicsSystem(GameWorld gameWorld) {
+    public PhysicsSystem() {
         super(Aspect.all(PhysicsBodyComponent.class));
     }
 

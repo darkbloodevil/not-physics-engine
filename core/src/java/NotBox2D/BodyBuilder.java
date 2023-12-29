@@ -12,10 +12,14 @@ import java.util.HashMap;
 /**
  * 用于根据提供的body的特性，组装成一个body并且放入世界。
  * 也可以生成joint
+ * 與physics.box2d.world綁定
  * @author darkbloodevil
  */
 public class BodyBuilder {
-    GameWorld gameWorld;
+//    GameWorld gameWorld;
+    JSONObject world_prototype_json;
+    
+    World world;
     public static String BODY_TYPE = "body_type";
     public static String BODY_POSITION = "position";
     public static String BODY_SHAPE = "shape";
@@ -25,12 +29,15 @@ public class BodyBuilder {
     public static String POLYGON_HEIGHT = "height";
 
     public static String JOINT_TYPE = "joint_type";
-
-
+    
     public static String BODY_LIST_JSON="body_list";
 
-    public BodyBuilder(GameWorld world) {
-        this.gameWorld = world;
+//    public BodyBuilder(GameWorld world) {
+//        this.gameWorld = world;
+//    }
+    public BodyBuilder(JSONObject world_prototype_json,World world) {
+        this.world_prototype_json = world_prototype_json;
+        this.world=world;
     }
 
     /**
@@ -61,7 +68,7 @@ public class BodyBuilder {
         }
 
         // create the body in the game world
-        Body body = gameWorld.world.createBody(bodyDef);
+        Body body = world.createBody(bodyDef);
 
         body.setFixedRotation(false);
 
@@ -162,14 +169,14 @@ public class BodyBuilder {
      */
     public HashMap<String, Body> auto_get_bodies(String group) {
         //假定对应group已经在world_json中
-        assert gameWorld.world_prototype_json.has(group);
-        JSONArray ja = gameWorld.world_prototype_json.getJSONArray(group);
+        assert world_prototype_json.has(group);
+        JSONArray ja = world_prototype_json.getJSONArray(group);
         HashMap<String, Body> result;
         result = new HashMap<>();
         for (Object o : ja) {
             String a = (String) o;
             //加入生成的body
-            result.put(a, get_body(gameWorld.world_prototype_json.getJSONObject(a)));
+            result.put(a, get_body(world_prototype_json.getJSONObject(a)));
         }
         return result;
     }
@@ -271,7 +278,7 @@ public class BodyBuilder {
         }
 
 
-        return this.gameWorld.world.createJoint(jointDef);
+        return this.world.createJoint(jointDef);
     }
 
 }
