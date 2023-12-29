@@ -1,4 +1,4 @@
-package game.com.mygdx;
+package game;
 
 import NotBox2D.GameWorld;
 
