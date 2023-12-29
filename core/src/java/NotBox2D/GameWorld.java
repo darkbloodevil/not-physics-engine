@@ -23,6 +23,54 @@ import tools.JsonReader;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
+
+/**
+ * @author darkbloodevil
+ * 表格转成实际的地图
+ */
+class TabularToMap {
+    public float interval;
+    public float center_x = 8, center_y = 4.5f, offset_x = -0.5f, offset_y = -0.5f;
+    public static final String EMPTY = "[EMPTY]";
+    GameWorld gameWorld;
+
+    TabularToMap(GameWorld gameWorld) {
+        interval = 1;
+        this.gameWorld = gameWorld;
+    }
+
+    /**
+     * 将表格画成地图
+     *
+     * @param tabular 表格
+     * @param representation 表格中元素代表什么
+     * @param alterMap 修改表格中内容
+     */
+    public void tabular_to_map(String[][] tabular, HashMap<String, String> representation,
+                               HashMap<String, JSONObject> alterMap) {
+        for (int j = 0; j < tabular.length; j++) {
+            for (int i = 0; i < tabular[j].length; i++) {
+                //获取表格tag对应的实体名
+                String tag = tabular[tabular.length - j - 1][i];
+                if (tag.equals(EMPTY)) continue;// 空就直接过
+                String body_name = representation.get(tag);
+                // 获取对应的位置
+                float x = (i - offset_x) * interval - center_x;
+                float y = (j - offset_y) * interval - center_y;
+                //在原型上给予对应的改变量
+                JSONObject alter = new JSONObject("{\"position\":[" + x + "," + y + "]}");
+                if (alterMap.containsKey(tag)) {
+                    alter = JsonReader.merge_json(alter, alterMap.get(tag));
+                }
+                gameWorld.getAlteredBody(body_name, alter);
+
+            }
+        }
+    }
+}
+
+
 public class GameWorld {
     /**
      * 该game world的物理世界
@@ -83,7 +131,7 @@ public class GameWorld {
         NotPhysicsEngineGUI.cameras.add(new OrthographicCamera(this.world_prototype_json.getFloat("frustum_width"),
                 this.world_prototype_json.getFloat("frustum_height")));
 
-        TabularToMap tabularToMap = TabularToMap.INSTANCE;
+        TabularToMap tabularToMap = new TabularToMap(this);
 
         HashMap<String, String> representation = new HashMap<>();
         HashMap<String, JSONObject> alterMap = new HashMap<>();
@@ -116,7 +164,7 @@ public class GameWorld {
         // 实体间距
         tabularToMap.interval = world_prototype_json.getJSONObject("intervals").getFloat(entity_size) *
                                 world_prototype_json.getJSONObject("intervals").getFloat("scale");
-        tabularToMap.tabular_to_map(test_tabular, representation, alterMap, this);
+        tabularToMap.tabular_to_map(test_tabular, representation, alterMap);
 
 //        id_to_body.keySet().forEach(System.out::println);
         //test_game();
@@ -185,47 +233,4 @@ public class GameWorld {
         return body;
     }
 
-}
-/**
- * @author darkbloodevil
- * 表格转成实际的地图
- */
-enum TabularToMap {
-    INSTANCE;
-    public float interval;
-    public float center_x=8,center_y=4.5f,offset_x=-0.5f,offset_y=-0.5f;
-    public static final String EMPTY="[EMPTY]";
-
-    TabularToMap(){
-        interval=1;
-    }
-
-    /**
-     * 将表格画成地图
-     * @param tabular
-     * @param representation
-     * @param alterMap
-     * @param gameWorld
-     */
-    public void tabular_to_map(String[][] tabular, HashMap<String,String> representation,
-                               HashMap<String,JSONObject> alterMap,GameWorld gameWorld){
-        for (int j = 0; j < tabular.length; j++) {
-            for (int i = 0; i < tabular[j].length; i++) {
-                //获取表格tag对应的实体名
-                String tag=tabular[tabular.length-j-1][i];
-                if (tag.equals(EMPTY))continue;// 空就直接过
-                String body_name=representation.get(tag);
-                // 获取对应的位置
-                float x=(i-offset_x)*interval-center_x;
-                float y=(j-offset_y)*interval-center_y;
-                //在原型上给予对应的改变量
-                JSONObject alter=new JSONObject("{\"position\":["+x+","+y+"]}");
-                if (alterMap.containsKey(tag)){
-                    alter= JsonReader.merge_json(alter,alterMap.get(tag));
-                }
-                gameWorld.getAlteredBody(body_name,alter);
-
-            }
-        }
-    }
 }
