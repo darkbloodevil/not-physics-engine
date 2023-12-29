@@ -66,7 +66,7 @@ class MainScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        OrthographicCamera cam=game.cameras.peek();
+        OrthographicCamera cam= NotPhysicsEngineGUI.cameras.peek();
         SpriteBatch batch=game.batch;
         batch.setProjectionMatrix(cam.combined);
         ScreenUtils.clear(.1f, 0.1f, 0.4f, 1);
