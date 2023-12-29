@@ -12,6 +12,12 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.9'
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.11'
+// https://mvnrepository.com/artifact/ch.qos.logback/logback-core
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.4.11'
 }
 
 

@@ -1,6 +1,6 @@
 package demos
 
-import game.com.mygdx.NotPhysicsEngineGUI
+import game.NotPhysicsEngineGUI
 import systems.PhysicsSystem
 import tools.JsonReader
 

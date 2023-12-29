@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 import components.PhysicsBodyComponent;
 import components.PropertyComponent;
-import game.com.mygdx.NotPhysicsEngineGUI;
+import game.NotPhysicsEngineGUI;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;

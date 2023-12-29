@@ -2,7 +2,7 @@ package java;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import game.com.mygdx.NotPhysicsEngineGUI;
+import game.NotPhysicsEngineGUI;
 
 
 public class DesktopLauncher {
