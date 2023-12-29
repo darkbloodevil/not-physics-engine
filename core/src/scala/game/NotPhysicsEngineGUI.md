@@ -20,8 +20,8 @@ object NotPhysicsEngineGUI {
     /**
      * 是把屏幕划分成多少份
      */
-    private[game] val FRUSTUM_WIDTH = 48
-    private[game] val FRUSTUM_HEIGHT = 27
+    private[game] val FRUSTUM_WIDTH = 48f
+    private[game] val FRUSTUM_HEIGHT = 27f
 }
 
 class NotPhysicsEngineGUI extends Game {
@@ -45,12 +45,12 @@ class NotPhysicsEngineGUI extends Game {
 
 class MainScreen extends ScreenAdapter {
 
-    var gameWorld: GameWorld;
+    var gameWorld: GameWorld = _
 
-    var debugRenderer:Box2DDebugRenderer;
-    var game:NotPhysicsEngineGUI;
+    var debugRenderer: Box2DDebugRenderer = _
+    var game: NotPhysicsEngineGUI = _
 
-    def this(game:NotPhysicsEngineGUI) {
+    def this(game: NotPhysicsEngineGUI) = {
         this()
         this.game = game;
         gameWorld = new GameWorld();
@@ -58,11 +58,12 @@ class MainScreen extends ScreenAdapter {
 
         gameWorld.create();
     }
+
     override def show(): Unit = {
     }
 
     override def render(delta: Float): Unit = {
-        val cam = game.cameras.peek
+        val cam = NotPhysicsEngineGUI.cameras.peek
         val batch = game.batch
         batch.setProjectionMatrix(cam.combined)
         ScreenUtils.clear(.1f, 0.1f, 0.4f, 1)
