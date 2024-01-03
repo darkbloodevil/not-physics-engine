@@ -41,6 +41,8 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.11'
 // https://mvnrepository.com/artifact/ch.qos.logback/logback-core
     implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.4.11'
+// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0'
 
 
     implementation 'org.scala-lang:scala3-library_3:3.0.1'
