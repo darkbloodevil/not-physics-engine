@@ -1,6 +1,6 @@
-package tools
+package tools.cmdLine
 
-import tools.AnsiWrapper.{RESET, allow_ansi}
+import AnsiWrapper.{RESET, allow_ansi}
 
 
 object AnsiWrapper {
@@ -38,7 +38,7 @@ object AnsiWrapper {
      * @param color_code 颜色编码
      * @return
      */
-    def color256(color_code: Int): String = {
+    def color8bit(color_code: Int): String = {
         "\u001B[38;5;" + color_code + "m"
     }
 
@@ -47,9 +47,32 @@ object AnsiWrapper {
      * @param color_code 颜色编码
      * @return
      */
-    def color256_bg(color_code: Int): String = {
+    def color8bit_bg(color_code: Int): String = {
         "\u001B[48;5;" + color_code + "m"
     }
+
+    /**
+     * 修改字体颜色（24bit）
+     * @param red 8bit red
+     * @param green 8bit green
+     * @param blue 8bit blue
+     * @return
+     */
+    def color24bit(red: Int,green:Int,blue:Int): String = {
+        "\u001B[38;2;" + red+";"+green+";"+blue + "m"
+    }
+
+    /**
+     * 修改字体颜色（24bit）
+     * @param red 8bit red
+     * @param green 8bit green
+     * @param blue 8bit blue
+     * @return
+     */
+    def color24bit_bg(red: Int,green:Int,blue:Int): String = {
+        "\u001B[48;2;" + red+";"+green+";"+blue + "m"
+    }
+    
 }
 
 /**
