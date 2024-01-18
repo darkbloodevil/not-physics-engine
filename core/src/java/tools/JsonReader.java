@@ -17,6 +17,7 @@ import java.nio.file.Paths;
  * <p>
  * 核心是用来处理带有继承关系的json（所以不要任何地方都使用）
  *
+ * @TODO 如果继承中，出现了key相同的dict或者array
  * @TODO circular extend
  */
 public class JsonReader {
@@ -29,7 +30,7 @@ public class JsonReader {
      * @param src_str source string
      * @return the result JSONObject
      */
-    public static JSONObject read_str_json(String src_str){
+    public static JSONObject read_str_json(String src_str) {
         JSONObject result = new JSONObject();
         // the direct translation of str to json
         JSONObject source = new JSONObject(src_str);
@@ -69,7 +70,7 @@ public class JsonReader {
             JSONArray parents = new JSONArray();
             if (parents_o instanceof JSONArray) {
                 parents = (JSONArray) parents_o;
-            }else {
+            } else {
                 parents.put(parents_o);
             }
 
