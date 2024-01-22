@@ -2,7 +2,7 @@ package tools.cmdLine
 
 import java.awt.{Graphics, Graphics2D}
 import java.awt.image.BufferedImage
-import javax.imageio.ImageIO
+
 import java.io.File
 
 
@@ -30,9 +30,9 @@ class CmdCanvas(width: Int, height: Int) {
                  * @TODO 根据一定的映射规则，让graphics2D来画
                  *       注意如果要画出带ansi的，那就不可以再做替换了（会找不到位置
                  */
-                builder.append(if (image.getRGB(x, y) == -16777216) cyan.wrap(" ")
-                else if (image.getRGB(x, y) == -1) "#"
-                else "*")
+//                builder.append(if (image.getRGB(x, y) == -16777216) cyan.wrap(" ")
+//                else if (image.getRGB(x, y) == -1) "#"
+//                else "*")
             }
 
             /**
@@ -40,6 +40,18 @@ class CmdCanvas(width: Int, height: Int) {
              */
 
         }
+
+        val textBlock=CmdTextBlock(20,5)
+        textBlock.update_properties("name","March 7th")
+        textBlock.update_properties("","")
+        textBlock.update_color("name",AnsiWrapper(AnsiWrapper.RED),CmdTextBlock.VALUE_TAR)
+        textBlock.render(builders)
+        val textBlock2 = CmdTextBlock(10, 10)
+        textBlock2.update_properties("name", "darkbloodevil")
+        textBlock2.update_properties("kind", "evil")
+        textBlock2.update_color("name", AnsiWrapper(AnsiWrapper.RED), CmdTextBlock.VALUE_TAR)
+        textBlock2.set_symbols_order(Array("","name","-","kind","#"))
+        textBlock2.render(builders)
         draw()
     }
 
