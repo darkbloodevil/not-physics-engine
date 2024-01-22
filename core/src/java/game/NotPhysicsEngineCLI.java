@@ -21,11 +21,8 @@ public class NotPhysicsEngineCLI {
     public static final String WHITE = "\u001B[37m";
 
     public NotPhysicsEngineCLI() {
-        System.out.println(RED + " two heart ♥♥ is ok" + RESET);
-        System.out.println(BOLD_RED + " two heart ♥♥ is ok" + RESET);
-        System.out.println(PURPLE + " one heart ♥ is not" + RESET);
 
-        CmdCanvas cc=new CmdCanvas(128,64);
+        CmdCanvas cc=new CmdCanvas(128,16);
 //        cc.graphics2D().drawRect(3,3,10,5);
         cc.render();
         
