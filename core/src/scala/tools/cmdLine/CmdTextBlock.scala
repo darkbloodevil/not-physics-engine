@@ -99,6 +99,14 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
         ""
     }
 
+    /**
+     * 设置edge symbol
+     *
+     * @param edge_symbol 边缘符号
+     */
+    def set_edge_symbol(edge_symbol: String): Unit = {
+        this.edge_symbol = edge_symbol
+    }
 
     /**
      * 将string截断使得满足长度要求
@@ -348,5 +356,22 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
      */
     def set_symbols_order(symbols_order: Array[String]): Unit = {
         this.symbols_order = symbols_order
+    }
+
+    /**
+     * 复制
+     *
+     * @return clone result
+     */
+    def clone_prototype(): CmdTextBlock = {
+        val ctb = CmdTextBlock(width, height)
+        ctb.properties = this.properties
+        ctb.key_ansi = this.key_ansi
+        ctb.value_ansi = this.value_ansi
+        ctb.edge_ansi = this.edge_ansi
+        ctb.edge_symbol = this.edge_symbol
+        ctb.edge_visible = this.edge_visible
+        ctb.symbols_order = this.symbols_order
+        ctb
     }
 }
