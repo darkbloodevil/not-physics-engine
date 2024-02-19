@@ -1,5 +1,5 @@
 plugins {
-    id 'not.physics.engine.scala-application-conventions'
+    id 'npe.scala-application-conventions'
 }
 ext {
     gdxVersion = '1.10.0'
@@ -26,22 +26,36 @@ sourceCompatibility = 1.17
 sourceSets {
     main {
         scala {
-            srcDirs = ['src/scala',"src/java"]
+            srcDirs = ['src/main/scala',"src/main/java"]
+        }
+        java {
+            srcDirs = []
         }
     }
     test{
         scala {
-            srcDirs = ['test/scala',"test/java"]
+            srcDirs = ['src/test/scala',"src/test/java"]
         }
     }
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'DesktopLauncher'
+    mainClass = 'npe.desktop.DesktopLauncher'
 }
 
-
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'npe.desktop.DesktopLauncher'
+        )
+    }
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    // 将项目的所有依赖打包到JAR文件中
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 
 //plugins {
 ////    id 'org.jetbrains.kotlin.jvm' version '1.7.20'

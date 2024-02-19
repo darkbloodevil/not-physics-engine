@@ -1,5 +1,5 @@
 plugins {
-    id 'not.physics.engine.scala-library-conventions'
+    id 'npe.scala-library-conventions'
 }
 ext {
     appName = "my-gdx-game"
@@ -70,25 +70,35 @@ sourceCompatibility = 1.17
 sourceSets {
     main {
         scala {
-            srcDirs = ['src/scala','src/java']
+            srcDirs = ['src/main/scala','src/main/java']
+        }
+        java {
+            srcDirs = []
         }
         resources {
-            srcDirs = ['assets']
+            srcDirs = ['src/main/assets']
         }
     }
     test{
         scala {
-            srcDirs = ['test/scala',"test/java"]
+            srcDirs = ['src/test/scala',"src/test/java"]
+        }
+        java {
+            srcDirs = []
         }
         resources {
-            srcDirs = ['test/assets']
+            srcDirs = ['src/test/assets']
         }
     }
 }
 
-jar {
-    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-}
+//jar {
+//    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+//    // 将项目的所有依赖打包到JAR文件中
+//    from {
+//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//}
 test {
     useJUnitPlatform()
     testLogging {
