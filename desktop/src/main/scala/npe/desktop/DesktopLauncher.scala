@@ -30,5 +30,5 @@ object DesktopLauncher {
 }
 
 class DesktopLauncher {
-
+    
 }

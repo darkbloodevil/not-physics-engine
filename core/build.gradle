@@ -45,15 +45,15 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0'
 
 
-    implementation 'org.scala-lang:scala3-library_3:3.0.1'
-    implementation 'commons-collections:commons-collections:3.2.2'
+   implementation 'org.scala-lang:scala3-library_3:3.0.1'
+   implementation 'commons-collections:commons-collections:3.2.2'
 // https://mvnrepository.com/artifact/com.typesafe.scala-logging/scala-logging
-    implementation group: 'com.typesafe.scala-logging', name: 'scala-logging_3', version: '3.9.5'
+   implementation group: 'com.typesafe.scala-logging', name: 'scala-logging_3', version: '3.9.5'
 
-    testImplementation 'org.scalatest:scalatest_3:3.2.9'
+   testImplementation 'org.scalatest:scalatest_3:3.2.9'
 //        testImplementation 'junit:junit:4.13'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+   testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 }
 
@@ -92,19 +92,25 @@ sourceSets {
     }
 }
 
-//jar {
-//    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-//    // 将项目的所有依赖打包到JAR文件中
-//    from {
-//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-//    }
-//}
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
+jar {
+    manifest {
+       attributes(
+               'Main-Class': 'npe.desktop.DesktopLauncher'
+       )
+   }
+   duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+   // 将项目的所有依赖打包到JAR文件中
+   from {
+       configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+   }
 }
+// test {
+//     useJUnitPlatform()
+//     testLogging {
+//         events "passed", "skipped", "failed"
+//     }
+// }
+
 //
 //
 //

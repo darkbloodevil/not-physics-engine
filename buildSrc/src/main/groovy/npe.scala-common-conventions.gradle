@@ -6,21 +6,12 @@ plugins {
     // Apply the scala Plugin to add support for Scala.
     id 'scala'
 }
-//scala {
-//    version '3.0.0' // 指定 Scala 版本
-////    zincVersion = "1.10.0-M2"
-//    zincVersion = "1.7.0" // Or later version that supports Scala  3
-//
-//}
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
-//
-//configurations.zinc {
-//    resolutionStrategy.force('org.scala-lang:scala3-library_3:3.0.0') // Replace x and y with the actual version numbers
-//}
+
 dependencies {
     constraints {
         // Define dependency versions as constraints
@@ -43,12 +34,12 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.named('test') {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
-    maxHeapSize = '1G'
+// tasks.named('test') {
+//     // Use JUnit Platform for unit tests.
+//     useJUnitPlatform()
+//     maxHeapSize = '1G'
 
-    testLogging {
-        events "passed"
-    }
-}
+//     testLogging {
+//         events "passed"
+//     }
+// }
