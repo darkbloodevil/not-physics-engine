@@ -38,34 +38,34 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
      * 边缘颜色
      */
     private var edge_ansi: AnsiWrapper = AnsiWrapper(AnsiWrapper.RESET)
-
+    
     /**
      * 边缘是否可见（主要用于竖向的，横向的由symbols_order设定
      */
     private var edge_visible = true
-
+    
     /**
      * 各个符号排序
      */
-    var symbols_order: Array[String] = _
-
+    private var symbols_order: Array[String] = _
+    
     /**
      * 竖向的边标记
      */
-    var edge_symbol = "|"
-
+    private var edge_symbol = "|"
+    
     /**
      * 已经渲染的高度
      */
-    var rendered_lines = 0
-
+    private var rendered_lines = 0
+    
     /** *
      * 画出横向的线条
      *
      * @param builder builder
      * @param symbol  横线标记
      */
-    def draw_line(builder: StringBuilder, symbol: String): Unit = {
+    private def draw_line(builder: StringBuilder, symbol: String): Unit = {
         rendered_lines += 1
         if (this.edge_visible) {
             builder.append(this.edge_ansi.wrap(edge_symbol + symbol * this.width + edge_symbol))
@@ -74,31 +74,31 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
             builder.append(this.edge_ansi.wrap(symbol * this.width))
         }
     }
-
+    
     /**
      * 计算文本长度。中文算2英文算1
      *
      * @param text 要计算长度的文本
      * @return 长度
      */
-    def count_length(text: String): Int = {
+    private def count_length(text: String): Int = {
         val patternChinese = Pattern.compile("[\u4e00-\u9fa5]")
         val matcherChinese = patternChinese.matcher(text)
         var chineseLength = 0
         while (matcherChinese.find) chineseLength += matcherChinese.group.length // Chinese characters are 2 bytes long
         chineseLength + text.length
     }
-
+    
     /**
      * 获取包装后的边缘
      */
-    def get_wrapped_edge(): String = {
+    private def get_wrapped_edge(): String = {
         if (edge_visible) {
             return this.edge_ansi.wrap(edge_symbol)
         }
         ""
     }
-
+    
     /**
      * 设置edge symbol
      *
@@ -107,14 +107,14 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
     def set_edge_symbol(edge_symbol: String): Unit = {
         this.edge_symbol = edge_symbol
     }
-
+    
     /**
      * 将string截断使得满足长度要求
      *
      * @param text 要截断的string
      * @return 截断的位置
      */
-    def cut_string(text: String): Int = {
+    private def cut_string(text: String): Int = {
         val patternChinese = Pattern.compile("[\u4e00-\u9fa5]")
         var current_len = 0
         var current_index = 0
@@ -132,7 +132,7 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
         }
         current_index
     }
-
+    
     /**
      * 绘制多行
      *
@@ -140,7 +140,7 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
      * @param color            颜色
      * @param builder_iterator 迭代器
      */
-    def multiline_render(text: String, color: AnsiWrapper, builder_iterator: Iterator[StringBuilder]): Unit = {
+    private def multiline_render(text: String, color: AnsiWrapper, builder_iterator: Iterator[StringBuilder]): Unit = {
         if (!builder_iterator.hasNext) {
             return
         }
@@ -162,14 +162,14 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
         }
         builder.append(get_wrapped_edge() + color.wrap(current) + get_wrapped_edge())
     }
-
+    
     /**
      * 画某个属性
      *
      * @param key              key
      * @param builder_iterator 迭代器
      */
-    def draw_property(key: String, builder_iterator: Iterator[StringBuilder]): Unit = {
+    private def draw_property(key: String, builder_iterator: Iterator[StringBuilder]): Unit = {
         val value = String.valueOf(this.properties.apply(key))
         val key_len = count_length(key)
         val value_len = count_length(value)
@@ -202,13 +202,13 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
             multiline_render(value, value_ansi.getOrElse(key, AnsiWrapper(AnsiWrapper.RESET)), builder_iterator)
         }
     }
-
+    
     /**
      * 不考虑顺序的绘制
      *
      * @param builder_iterator builder迭代器
      */
-    def render_disordered(builder_iterator: Iterator[StringBuilder]): Unit = {
+    private def render_disordered(builder_iterator: Iterator[StringBuilder]): Unit = {
         if (edge_visible) {
             if (!builder_iterator.hasNext) {
                 return
@@ -226,13 +226,13 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
             draw_line(builder_iterator.next(), "=")
         }
     }
-
+    
     /**
      * 考虑顺序的绘制
      *
      * @param builder_iterator builder迭代器
      */
-    def render_ordered(builder_iterator: Iterator[StringBuilder]): Unit = {
+    private def render_ordered(builder_iterator: Iterator[StringBuilder]): Unit = {
         var last_line = ""
         var drew_line = true
         for symbol <- symbols_order do {
@@ -265,26 +265,26 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
             drew_line = true
         }
     }
-
-
+    
+    
     /**
      * 将block填满
      *
      * @param builder_iterator 迭代器
      */
-    def fill_block(builder_iterator: Iterator[StringBuilder]): Unit = {
+    private def fill_block(builder_iterator: Iterator[StringBuilder]): Unit = {
         while (builder_iterator.hasNext && rendered_lines < height - 1) {
             builder_iterator.next().append(get_wrapped_edge() + " " * width + get_wrapped_edge())
             rendered_lines += 1
         }
     }
-
+    
     /**
      * 将剩余的空间填满
      *
      * @param builder_iterator 迭代器
      */
-    def fill_none(builder_iterator: Iterator[StringBuilder]): Unit = {
+    private def fill_none(builder_iterator: Iterator[StringBuilder]): Unit = {
         while (builder_iterator.hasNext) {
             if (edge_visible) {
                 builder_iterator.next().append(" " * (2 + width))
@@ -293,29 +293,38 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
             }
         }
     }
-
+    
     override def render(builders: IndexedSeq[StringBuilder]): Unit = {
         val builder_iterator = builders.iterator
         rendered_lines = 0
         if (symbols_order == null) {
             render_disordered(builder_iterator)
-
+            
         } else {
             render_ordered(builder_iterator)
         }
         fill_none(builder_iterator)
     }
-
+    
     /**
      * 更新属性
      *
      * @param key   属性的key
      * @param value 属性的value
      */
-    def update_properties(key: String, value: Any): Unit = {
+    def update_property(key: String, value: Any): Unit = {
         this.properties = this.properties + (key -> value)
     }
-
+    
+    /**
+     * 更新一组属性属性
+     *
+     * @param properties 更新的属性
+     */
+    def update_properties(properties: Map[String, Any]): Unit = {
+        this.properties = this.properties ++ properties
+    }
+    
     /**
      * 删除属性
      *
@@ -324,7 +333,7 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
     def remove_properties(key: String): Unit = {
         this.properties = this.properties - key
     }
-
+    
     /**
      * 更新颜色
      *
@@ -341,7 +350,7 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
             this.value_ansi = this.value_ansi + (key -> color)
         }
     }
-
+    
     /**
      * 设置边缘是否可见
      *
@@ -350,14 +359,14 @@ class CmdTextBlock(width: Int, height: Int) extends CmdRender {
     def set_edge_visible(visible: Boolean): Unit = {
         this.edge_visible = visible
     }
-
+    
     /**
      * 设置符号顺序
      */
     def set_symbols_order(symbols_order: Array[String]): Unit = {
         this.symbols_order = symbols_order
     }
-
+    
     /**
      * 复制
      *
