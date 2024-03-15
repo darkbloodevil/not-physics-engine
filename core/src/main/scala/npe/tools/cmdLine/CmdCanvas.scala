@@ -20,46 +20,32 @@ class CmdCanvas(width: Int, height: Int) {
 
         val imagePath = "badlogic.jpg"
 
-        
-
-        val cyan: AnsiWrapper = AnsiWrapper(AnsiWrapper.BG_CYAN)
-        for y <- 0 until height do {
-            val builder = builders.apply(y)
-            for x <- 0 until width do {
-                /**
-                 * @TODO 根据一定的映射规则，让graphics2D来画
-                 *       注意如果要画出带ansi的，那就不可以再做替换了（会找不到位置
-                 */
-//                builder.append(if (image.getRGB(x, y) == -16777216) cyan.wrap(" ")
-//                else if (image.getRGB(x, y) == -1) "#"
-//                else "*")
-            }
-
-            /**
-             * @TODO 根据一定的规则，替换掉上述画的部分像素
-             */
-
-        }
-
         val textBlock=CmdTextBlock(20,5)
-        textBlock.update_properties("name","March 7th")
-        textBlock.update_properties("sex","female")
+        textBlock.update_property("name","March 7th")
+        textBlock.update_property("sex","female")
         textBlock.update_color("name",AnsiWrapper(AnsiWrapper.RED),CmdTextBlock.VALUE_TAR)
 
         val textBlock2 = CmdTextBlock(10, 10)
-        textBlock2.update_properties("name", "darkbloodevil")
-        textBlock2.update_properties("kind", "evil")
+        textBlock2.update_property("name", "darkbloodevil")
+        textBlock2.update_property("kind", "evil")
         textBlock2.update_color("name", AnsiWrapper(AnsiWrapper.RED), CmdTextBlock.VALUE_TAR)
         textBlock2.set_symbols_order(Array("","name","-","kind","#"))
 
         val textBlock3:CmdTextBlock = textBlock.clone_prototype()
-        textBlock3.update_properties("name", "<name>")
-        textBlock3.update_properties("sex", "<sex>")
-
+        textBlock3.update_property("name", "<name>")
+        textBlock3.update_property("sex", "<sex>")
+        textBlock3.update_properties(Map("year"->"<year>","job"->"<job>"))
+        
+        
         textBlock.render(builders)
         textBlock2.render(builders)
         textBlock3.render(builders)
         draw()
+        val input:CmdInput=CmdInput()
+        while(true){
+            input.next_command()
+            
+        }
     }
 
     /**

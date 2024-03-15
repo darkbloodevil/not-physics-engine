@@ -192,10 +192,10 @@ class InputParser() {
                         if (regex_temp.equals("")) {
                             regex_temp = "C" + i + "D" + j
                         } else {
-                            regex_temp += "| C" + i + "D" + j
+                            regex_temp += "|C" + i + "D" + j
                         }
                     }
-                    regex_temp = "( " + "C" + i + " ( " + regex_temp + " )* Cn )"
+                    regex_temp = "(" + "C" + i + "(" + regex_temp + ")* Cn)"
                 }
                 // 普通 匹配Ci  xx | xx | ...  Cn
                 else {
@@ -207,22 +207,18 @@ class InputParser() {
                         if (regex_temp.equals("")) {
                             regex_temp = "C" + i + "D" + j
                         } else {
-                            regex_temp += "| C" + i + "D" + j
+                            regex_temp += "|C" + i + "D" + j
                         }
                     }
-                    regex_temp = "( " + "C" + i + "  " + regex_temp + "  Cn )"
+                    regex_temp = "(" + "C" + i + " (" + regex_temp + ") Cn)"
                 }
                 if (regex_str.equals("")) {
                     regex_str = regex_temp
                 } else {
-                    regex_str += "| " + regex_temp
+                    regex_str += "|" + regex_temp
                 }
-                
             }
-            
-            
         }
-        
         val regex_c: Completers.RegexCompleter = new Completers.RegexCompleter(regex_str, comp.get)
         regex_c
     }
@@ -231,7 +227,7 @@ class InputParser() {
     def get_command(terminal: Terminal): CommandData = {
         var lineReader: LineReader = LineReaderBuilder.builder.terminal(terminal).completer(this.get_completer()).build
 //        val autosuggestionWidgets: AutosuggestionWidgets = new AutosuggestionWidgets(lineReader)
-//        // Enable autosuggestions// Enable autosuggestions
+//        // Enable autosuggestions
 //        autosuggestionWidgets.enable()
         val input = lineReader.readLine("MyApp> ")
         lineReader.getParsedLine.words.forEach((word: String) => {

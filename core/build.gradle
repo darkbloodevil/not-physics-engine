@@ -44,6 +44,7 @@ dependencies {
 // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0'
 
+    implementation group: 'org.jline', name: 'jline', version: '3.25.0'
 
    implementation 'org.scala-lang:scala3-library_3:3.0.1'
    implementation 'commons-collections:commons-collections:3.2.2'

@@ -1,9 +1,0 @@
-package NotBox2D
-
-enum EventEnum extends Enum[EventEnum] {
-    /**
-     * 发生碰撞的事件
-     */
-    case CONTACT,NOTHING //extends EventEnum("contact")
-
-}
