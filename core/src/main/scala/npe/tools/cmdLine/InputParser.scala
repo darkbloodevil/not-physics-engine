@@ -4,10 +4,10 @@ import org.json.{JSONArray, JSONObject}
 import org.jline.reader.{Completer, LineReader, LineReaderBuilder}
 import org.jline.terminal.{Terminal, TerminalBuilder}
 import org.jline.builtins.Completers
-import org.jline.reader.impl.completer._
+import org.jline.builtins.Completers.AnyCompleter
+import org.jline.reader.impl.completer.*
+
 import scala.jdk.CollectionConverters.*
-
-
 import java.util
 import org.jline.widget.AutosuggestionWidgets
 
@@ -33,12 +33,15 @@ class InputParser() {
      * ps. 上述列的结构中，不要在意列表可能的重复。simply ignore it
      */
     private val parser_struct: JSONObject = new JSONObject()
-    val end_token: String = "|"
+    private val end_token: String = "|"
     private val ZERO_TOKEN = "zero"
     private val STR_TOKEN = "str"
     private val INT_TOKEN = "int"
     private val FLOAT_TOKEN = "float"
     private val LIST_TOKEN = "list"
+    private[this] var _used_words: Int = -1
+    
+    def used_words: Int = _used_words
     
     
     /**
@@ -162,56 +165,57 @@ class InputParser() {
         val iterator = this.parser_struct.keys()
         // 提前加入终止符号
         comp.put("Cn", new StringsCompleter(end_token))
-        
+        // 用于标注命令的编号
         var i = 0
         // 最外层 遍历command
         while (iterator.hasNext) {
             val command = iterator.next()
             i += 1
+            // 标记命令的第二阶
             var j = 0
+            // 将command加入comp
             comp.put("C" + i, new StringsCompleter(command))
-            
+            // 获取command的对象
             val command_jo = this.parser_struct.getJSONObject(command)
+            
             val command_iterator = command_jo.keys()
             // 遍历command 内的各个type
             while (command_iterator.hasNext) {
+                // 获取command中的某个type
                 val value_type = command_iterator.next()
-                
+                // command中的某个type的具体值
                 val value_arr = command_jo.getJSONArray(value_type)
                 val value_iterator = value_arr.iterator()
                 
                 var regex_temp = ""
+                
+                // 遍历各个value可能取值 用于加入comp
+                while (value_iterator.hasNext) {
+                    j += 1
+                    val value = value_iterator.next().toString
+                    comp.put("C" + i + "D" + j, new StringsCompleter(value))
+                    if (regex_temp.equals("")) {
+                        regex_temp = "C" + i + "D" + j
+                    } else {
+                        regex_temp += "|C" + i + "D" + j
+                    }
+                }
+                // 如果实际上没有取值 那就任意匹配
+                if (regex_temp.equals("")) {
+                    j += 1
+                    comp.put("C" + i + "D" + j, new AnyCompleter)
+                    regex_temp = "C" + i + "D" + j
+                }
                 // list 匹配Ci ( xx | xx | ... )* Cn
                 if (value_type.equals(LIST_TOKEN)) {
-                    
-                    // 遍历各个value可能取值 用于加入comp
-                    while (value_iterator.hasNext) {
-                        j += 1
-                        val value = value_iterator.next().toString
-                        comp.put("C" + i + "D" + j, new StringsCompleter(value))
-                        if (regex_temp.equals("")) {
-                            regex_temp = "C" + i + "D" + j
-                        } else {
-                            regex_temp += "|C" + i + "D" + j
-                        }
-                    }
                     regex_temp = "(" + "C" + i + "(" + regex_temp + ")* Cn)"
+                    
                 }
-                // 普通 匹配Ci  xx | xx | ...  Cn
+                // 普通 匹配Ci ( xx | xx | ... ) Cn
                 else {
-                    // 遍历各个value可能取值 用于加入comp
-                    while (value_iterator.hasNext) {
-                        j += 1
-                        val value = value_iterator.next().toString
-                        comp.put("C" + i + "D" + j, new StringsCompleter(value))
-                        if (regex_temp.equals("")) {
-                            regex_temp = "C" + i + "D" + j
-                        } else {
-                            regex_temp += "|C" + i + "D" + j
-                        }
-                    }
                     regex_temp = "(" + "C" + i + " (" + regex_temp + ") Cn)"
                 }
+                
                 if (regex_str.equals("")) {
                     regex_str = regex_temp
                 } else {
@@ -223,16 +227,158 @@ class InputParser() {
         regex_c
     }
     
-    
-    def get_command(terminal: Terminal): CommandData = {
-        var lineReader: LineReader = LineReaderBuilder.builder.terminal(terminal).completer(this.get_completer()).build
-//        val autosuggestionWidgets: AutosuggestionWidgets = new AutosuggestionWidgets(lineReader)
-//        // Enable autosuggestions
-//        autosuggestionWidgets.enable()
-        val input = lineReader.readLine("MyApp> ")
-        lineReader.getParsedLine.words.forEach((word: String) => {
-            println(word)
-        })
-        CommandData.null_command()
+    /**
+     * 清理掉parser_struct
+     */
+    def clear(): Unit = {
+        this.parser_struct.clear()
     }
+    
+    /**
+     * 生成list command data
+     *
+     * @param name   name
+     * @param values 要求输入的是name以后的内容，并且全部输入进来。这边会对"|"进行判定
+     * @return command data
+     */
+    private def generator_list_command(name: String, values: util.List[String]): CommandData = {
+        for (i <- 0 until values.size()) {
+            // 遇到end token，那就提前打断截止value
+            if (values.get(i).equals(end_token)) {
+                _used_words = 1 + i
+                return CommandData(name, CommandData.LIST_TYPE, for v <- 0 until i yield values.get(v))
+                
+            }
+        }
+        // 未遇到end token 那就一路用完values
+        _used_words = 1 + values.size()
+        CommandData(name, CommandData.LIST_TYPE, for v <- values.toArray yield v)
+    }
+    
+    /**
+     * 生成int类型的command data
+     *
+     * @param name  name
+     * @param value int值 会被转换（但是不做正确性判断
+     * @return command data
+     */
+    private def generator_int_command(name: String, value: String): CommandData = {
+        this._used_words = 2
+        CommandData(name, CommandData.INT_TYPE, value.toInt)
+    }
+    
+    /**
+     * 生成float类型的command data
+     *
+     * @param name  name
+     * @param value float值 会被转换（但是不做正确性判断
+     * @return command data
+     */
+    private def generator_float_command(name: String, value: String): CommandData = {
+        this._used_words = 2
+        CommandData(name, CommandData.FLOAT_TYPE, value.toFloat)
+    }
+    
+    /**
+     * 生成string类型的command data
+     *
+     * @param name  name
+     * @param value value
+     * @return command data
+     */
+    private def generator_str_command(name: String, value: String): CommandData = {
+        this._used_words = 2
+        CommandData(name, CommandData.STRING_TYPE, value)
+    }
+    
+    /**
+     * 生成zero类型的command data
+     *
+     * @param name name
+     * @return command data
+     */
+    private def generator_zero_command(name: String): CommandData = {
+        this._used_words = 1
+        CommandData(name, CommandData.ZERO_TYPE, "")
+    }
+    
+    
+    /**
+     * 获取当前用户输入的命令。
+     * 解析优先级是：1.出现对应符号2.最长。
+     * 首先检查list:[xxx] int:[xxx] str:[xxx] \ 中是否出现对应项
+     *
+     * 没有只要有能匹配list，那除非遇到"|"或终止就一路一直匹配
+     * 不能匹配list，那就按int float string zero的顺序匹配
+     *
+     * 同时修改本地的_used_words
+     *
+     * @return Command
+     */
+    def get_command(words: util.List[String]): CommandData = {
+        val word = words.get(0)
+        if (this.parser_struct.keySet().contains(word)) {
+            // 如果这一组字符串的最后一个词 zero command
+            if (words.size() == 1) {
+                return generator_zero_command(word)
+            }
+            // 下一个词
+            val next_word = words.get(1)
+            // 下一个词是"|" 同样zero command
+            if (next_word.equals(end_token)) {
+                return generator_zero_command(word)
+            }
+            
+            // 获取parser_struct中word的json object
+            val command_jo = this.parser_struct.getJSONObject(word)
+            
+            // 获取各类型的默认值
+            val int_arr = if (command_jo.has(INT_TOKEN)) command_jo.getJSONArray(INT_TOKEN) else new JSONArray()
+            val str_arr = if (command_jo.has(STR_TOKEN)) command_jo.getJSONArray(STR_TOKEN) else new JSONArray()
+            val list_arr = if (command_jo.has(LIST_TOKEN)) command_jo.getJSONArray(LIST_TOKEN) else new JSONArray()
+            
+            //被包含在list_arr内，那就是list
+            if (list_arr.toList.contains(next_word)) {
+                // 切出list
+                return generator_list_command(word, words.subList(1, words.size()))
+            }
+            //被包含在int_arr内，那就是int
+            else if (next_word.toIntOption.isDefined && int_arr.toList.contains(next_word.toInt)) {
+                return generator_int_command(word, next_word)
+            }
+            //被包含在str_arr内，那就是str
+            else if (str_arr.toList.contains(next_word)) {
+                return generator_str_command(word, next_word)
+            }
+            
+            // 第一优先匹配list
+            if (command_jo.has(LIST_TOKEN)) {
+                // 切出list
+                return generator_list_command(word, words.subList(1, words.size()))
+            }
+            // 第二优先匹配int
+            else if (command_jo.has(INT_TOKEN) && next_word.toIntOption.isDefined) {
+                return generator_int_command(word, next_word)
+            }
+            // 第三优先匹配float
+            else if (command_jo.has(FLOAT_TOKEN) && next_word.toFloatOption.isDefined) {
+                return generator_float_command(word, next_word)
+            }
+            // 第四优先匹配str
+            else if (command_jo.has(STR_TOKEN)) {
+                return generator_str_command(word, next_word)
+            }
+            // 再不济就zero了
+            else if (command_jo.has(ZERO_TOKEN)) {
+                return generator_zero_command(word)
+            }
+            
+        } // 如果word不存在于parser中，那就直接返回zero type
+        else {
+            return generator_zero_command(word)
+        }
+        CommandData.null_command()
+        
+    }
+    
 }
