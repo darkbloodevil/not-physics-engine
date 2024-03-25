@@ -16,7 +16,7 @@ import org.jline.widget.AutosuggestionWidgets
  * 用于解析输入的内容。和应用绑定。注意，这边不判断用户输入合规与否
  *
  */
-class InputParser() {
+class InputParser {
     /**
      * 解析结构。
      * 譬如：
@@ -243,16 +243,16 @@ class InputParser() {
      */
     private def generator_list_command(name: String, values: util.List[String]): CommandData = {
         for (i <- 0 until values.size()) {
-            // 遇到end token，那就提前打断截止value
+            // 遇到end token，那就提前打断截止value。并且跳过"|"
             if (values.get(i).equals(end_token)) {
-                _used_words = 1 + i
-                return CommandData(name, CommandData.LIST_TYPE, for v <- 0 until i yield values.get(v))
+                _used_words = 2 + i
+                return CommandData(name, CommandData.LIST_TYPE, values.subList(0, i).toArray)
                 
             }
         }
         // 未遇到end token 那就一路用完values
         _used_words = 1 + values.size()
-        CommandData(name, CommandData.LIST_TYPE, for v <- values.toArray yield v)
+        CommandData(name, CommandData.LIST_TYPE, values.toArray)
     }
     
     /**
@@ -316,6 +316,10 @@ class InputParser() {
      * @return Command
      */
     def get_command(words: util.List[String]): CommandData = {
+        if (words == null || words.size() == 0) {
+            this._used_words = 0
+            return CommandData.null_command()
+        }
         val word = words.get(0)
         if (this.parser_struct.keySet().contains(word)) {
             // 如果这一组字符串的最后一个词 zero command

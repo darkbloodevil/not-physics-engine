@@ -21,23 +21,57 @@ class CmdInput {
     var user_inputs: util.ArrayList[String] = util.ArrayList[String]()
     // Create a terminal
     private var parser: InputParser = InputParser()
-    parser.add_str_command("fire", Array("holy", "evil"))
-    parser.add_list_command("heal")
-    parser.add_list_command("eat", Array("apple", "pear"))
+    val terminal: Terminal = TerminalBuilder.terminal
+    var words: java.util.List[String] = _
     var app_name = "Cli"
     
     /**
      * 获取用户指令。对于用户一次输入了多个指令来说，程序可以逐步调用这个依次取出，直到没有任何指令后，再去请求用户新的输入。
+     * 会存储words的历史记录
      * 使用默认的解析规则
+     *
+     * @return command data
      */
-    def next_command(): Unit = {
-        val terminal: Terminal = TerminalBuilder.terminal
-        val lineReader: LineReader = LineReaderBuilder.builder.terminal(terminal).completer(this.parser.get_completer()).build
-        val input = lineReader.readLine("%s> ".formatted(app_name))
-        var input_words = lineReader.getParsedLine.words
-        this.parser.get_command(input_words)
+    def next_command(): CommandData = {
+        if (words == null || words.size() == 0) {
+            
+            val lineReader: LineReader = LineReaderBuilder.builder.terminal(terminal).completer(this.parser.get_completer()).build
+            val autosuggestionWidgets = new AutosuggestionWidgets(lineReader)
+            autosuggestionWidgets.enable()
+            val input = lineReader.readLine("%s> ".formatted(app_name))
+            val temp = util.ArrayList[String]()
+            temp.addAll(lineReader.getParsedLine.words)
+            
+            temp.remove("")
+            words = temp
+        } else {
+            println(words)
+        }
+        val command_data = this.parser.get_command(words)
+        // 去掉用过的部分
+        if (words != null && words.size() != 0) {
+            this.words = words.subList(this.parser.used_words, words.size())
+        }
         
-        
+        command_data
     }
     
+    /**
+     * 设置解析规则，其余和next_command想通
+     *
+     * @return command data
+     */
+    def next_command(parser: InputParser): CommandData = {
+        this.parser = parser
+        next_command()
+    }
+    
+    /**
+     * 设置parser
+     *
+     * @param parser parser
+     */
+    def set_parser(parser: InputParser): Unit = {
+        this.parser = parser
+    }
 }

@@ -1,5 +1,8 @@
 package npe.tools.cmdLine
 
+import npe.tools.cmdLine.CommandData.{FLOAT_TYPE, INT_TYPE, LIST_TYPE, STRING_TYPE}
+import org.json.{JSONArray, JSONObject}
+
 object CommandData {
     val NULL_COMMAND = "null_command"
     val NULL_TYPE = "null_type"
@@ -10,7 +13,7 @@ object CommandData {
     /**
      * 只要命令名字没有value的类型
      */
-    val ZERO_TYPE="zero_type"
+    val ZERO_TYPE = "zero_type"
     
     
     def null_command(): CommandData = {
@@ -54,6 +57,40 @@ class CommandData(command_name: String, value_type: String, command_value: Any) 
     
     def get_list(): Array[Any] = {
         command_value.asInstanceOf[Array[Any]]
+    }
+    
+    /**
+     * 以json的格式输出
+     * {
+     * "command_name":<command_name>,
+     * "value_type":<value_type>,
+     * "command_value":<command_value>
+     * }
+     *
+     * @return json
+     */
+    def as_json_object(): JSONObject = {
+        val result = new JSONObject()
+        result.put("command_name", command_name)
+        result.put("value_type", value_type)
+        value_type match
+            case STRING_TYPE =>
+                result.put("command_value", get_str())
+            case INT_TYPE =>
+                result.put("command_value", get_int())
+            case FLOAT_TYPE =>
+                result.put("command_value", get_float())
+            case LIST_TYPE => {
+                val ja = new JSONArray()
+                for i <- get_list() do {
+                    ja.put(i)
+                }
+                result.put("command_value", ja)
+            }
+            case _ => {
+                result.put("command_value", JSONObject.NULL)
+            }
+        result
     }
 }
 
