@@ -9,26 +9,28 @@ import scala.jdk.CollectionConverters._
  * @tparam v value
  */
 class MapForJava[k, v] {
-    private var map: Map[k, v] = Map()
+    private[this] var _map: Map[k, v] = Map()
+    
+    private def map: Map[k, v] = _map
     
     def put(key: k, value: v): Unit = {
-        map += (key -> value)
+        _map += (key -> value)
     }
     
     def keys(): java.util.List[k] = {
-        map.keySet.toList.asJava
+        _map.keySet.toList.asJava
     }
     
     def get(key: k): v = {
-        map.apply(key)
+        _map.apply(key)
     }
     
     def remove(key: k): Unit = {
-        map = map.removed(key)
+        _map = _map.removed(key)
     }
     
     def clear(): Unit = {
-        map = Map()
+        _map = Map()
     }
     
 }
