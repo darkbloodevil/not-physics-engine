@@ -1,6 +1,7 @@
 package npe.NotBox2D;
 
 import npe.tools.JsonReader;
+import npe.tools.JsonToolkits;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class StandardBuilder {
                     }
                 }
                 // 将链接的文件与现有的合并
-                this.standard_basic_entities_jo = JsonReader.merge_json(this.standard_basic_entities_jo, temp);
+                this.standard_basic_entities_jo = JsonToolkits.merge_json(this.standard_basic_entities_jo, temp);
 
             }
         }
@@ -131,7 +132,7 @@ public class StandardBuilder {
      * @return 合并后完整的内容
      */
     public JSONObject merge_prototype_json(JSONObject world_origin) {
-        return JsonReader.merge_json(world_origin, this.standard_basic_entities_jo);
+        return JsonToolkits.merge_json(world_origin, this.standard_basic_entities_jo);
     }
 
 }

@@ -1,6 +1,6 @@
-package npe.tools.cmdLine
+package npe.cmdLine
 
-import npe.tools.cmdLine.CommandData.{FLOAT_TYPE, INT_TYPE, LIST_TYPE, STRING_TYPE}
+import CommandData.{FLOAT_TYPE, INT_TYPE, LIST_TYPE, STRING_TYPE}
 import org.json.{JSONArray, JSONObject}
 
 object CommandData {

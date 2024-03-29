@@ -1,20 +1,42 @@
 package npe.game;
 
-import java.awt.*;
-
-import npe.tools.cmdLine.AnsiWrapper;
-import npe.tools.cmdLine.CmdCanvas;
-
-import java.awt.image.BufferedImage;
+import npe.cmdLine.*;
 
 public class NotPhysicsEngineCLI {
+    GameWorld gameWorld;
+    InputParser parser;
 
     public NotPhysicsEngineCLI() {
+        parser = new InputParser();
+        gameWorld = new GameWorld();
+        gameWorld.create();
+        parser.add_int_command("charge");
+        parser.add_str_command("fire", new String[]{
+                "holy", "evil"
+        });
+        parser.add_list_command("heal");
+        parser.add_list_command("eat", new String[]{
+                "apple", "pear"
+        });
+        var input = new CmdInput();
+        input.set_parser(parser);
+        while (true) {
+            this.gameWorld.update();
+            var command = input.next_command();
 
-        CmdCanvas cc=new CmdCanvas(128,16);
-//        cc.graphics2D().drawRect(3,3,10,5);
-        cc.render();
-
-
+            if (command.isDefined()) {
+                if (command.get().get_name().equals("exit")) {
+                    break;
+                }
+                if (command.get().get_name().equals("charge")) {
+                    parser.clear();
+                    parser.add_int_command("target");
+                    input.set_parser(parser);
+                }
+            } else {
+                System.out.println("null");
+            }
+        }
     }
+
 }

@@ -71,9 +71,7 @@ public class MessageProcessingSystem extends EntitySystem {
                                     msg.getJSONObject("position").toString())));
                 }
             }
-
         }
-
     }
 
     /**

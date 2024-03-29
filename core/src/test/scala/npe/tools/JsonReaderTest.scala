@@ -92,7 +92,7 @@ class JsonReaderTest{
               |     "triangle":30
               |}
               |""".stripMargin)
-        val merge_result=JsonReader.merge_json(ja,jb)
+        val merge_result=JsonToolkits.merge_json(ja,jb)
         Assertions.assertTrue(merge_result.has("square"),"has ja")
         Assertions.assertTrue(merge_result.has("triangle"),"has jb")
         Assertions.assertTrue(merge_result.getInt("circle")==30,"jb override ja")

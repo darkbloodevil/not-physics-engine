@@ -1,6 +1,5 @@
 package npe.NotBox2D;
 
-import npe.NotBox2D.EntityGeneratorManager;
 import com.artemis.Entity;
 import com.artemis.WorldConfiguration;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,16 +9,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import npe.components.PhysicsBodyComponent;
 import npe.components.PropertyComponent;
 import npe.game.NotPhysicsEngineGUI;
-import npe.tools.JsonReader;
+import npe.tools.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import npe.systems.MessageProcessingSystem;
 import npe.systems.PhysicsSystem;
-import npe.tools.DeltaTimeRecorder;
-import npe.tools.ExcelReader;
-import npe.tools.IdGenerator;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,7 +57,7 @@ class TabularToMap {
                 //在原型上给予对应的改变量
                 JSONObject alter = new JSONObject("{\"position\":[" + x + "," + y + "]}");
                 if (alterMap.containsKey(tag)) {
-                    alter = JsonReader.merge_json(alter, alterMap.get(tag));
+                    alter = JsonToolkits.merge_json(alter, alterMap.get(tag));
                 }
                 gameWorld.getAlteredBody(body_name, alter);
 
@@ -163,7 +159,7 @@ public class GameWorld {
 
         // 实体间距
         tabularToMap.interval = world_prototype_json.getJSONObject("intervals").getFloat(entity_size) *
-                                world_prototype_json.getJSONObject("intervals").getFloat("scale");
+                world_prototype_json.getJSONObject("intervals").getFloat("scale");
         tabularToMap.tabular_to_map(test_tabular, representation, alterMap);
 
 //        id_to_body.keySet().forEach(System.out::println);
@@ -189,12 +185,12 @@ public class GameWorld {
     }
 
     /**
-     * get a altered body
-     * 通过输入的改变量调整body
-     *
      * @param description the body name
      * @param alter       the alter, for example, position : [0,10]
      * @return the body
+     * @TODO 根本不应该放在game world
+     * get a altered body
+     * 通过输入的改变量调整body
      */
     public Body getAlteredBody(String description, JSONObject alter) {
         // 改变量

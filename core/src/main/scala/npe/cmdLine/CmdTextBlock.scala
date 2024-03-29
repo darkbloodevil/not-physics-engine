@@ -1,8 +1,8 @@
-package npe.tools.cmdLine
+package npe.cmdLine
 
 import java.util.regex._
 import scala.util.control.Breaks._
-
+import scala.jdk.CollectionConverters._
 
 object CmdTextBlock {
     val EDGE_TAR = "EDGE"
@@ -21,7 +21,7 @@ object CmdTextBlock {
  * ||===================||
  *
  */
-class CmdTextBlock(width: Int, height: Int) extends CmdRender {
+class CmdTextBlock(width: Int, height: Int) extends CmdRenderer {
     /**
      * 这个text block有什么properties
      */

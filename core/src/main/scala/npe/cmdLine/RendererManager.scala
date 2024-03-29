@@ -1,12 +1,12 @@
-package npe.tools.cmdLine
+package npe.cmdLine
 
 import java.util
 
 /**
- * RenderManager
+ * RendererManager
  */
-class RenderManager extends CmdRender {
-    private val render_map: Map[String, CmdRender] = Map[String, CmdRender]()
+class RendererManager extends CmdRenderer {
+    private val render_map: Map[String, CmdRenderer] = Map[String, CmdRenderer]()
     private val order_list: util.ArrayList[String] = util.ArrayList[String]();
     
     /**

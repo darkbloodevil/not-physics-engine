@@ -1,4 +1,4 @@
-package npe.tools.cmdLine
+package npe.cmdLine
 
 import AnsiWrapper.{RESET, allow_ansi}
 

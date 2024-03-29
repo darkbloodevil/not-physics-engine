@@ -1,4 +1,4 @@
-package npe.tools.cmdLine
+package npe.cmdLine
 
 import org.json.{JSONArray, JSONObject}
 import org.jline.reader.{Completer, LineReader, LineReaderBuilder}
@@ -10,7 +10,7 @@ import org.jline.reader.impl.completer.*
 import scala.jdk.CollectionConverters.*
 import java.util
 import org.jline.widget.AutosuggestionWidgets
-
+import npe.tools.JsonToolkits
 
 /**
  * 用于解析输入的内容。和应用绑定。注意，这边不判断用户输入合规与否
@@ -26,19 +26,27 @@ class InputParser {
      * “zero”:[], --表明也可以是zero类型
      * "str":["ala"], --表明可以接受ala作为一个指定名称
      * "list":["red","blue","green"], --表明可以接受red/blue/green 作为列表的指
+     * "specials":{xx,xx}, --特殊符号集合
      * }
      * }
      *
      * 通过把结构存入该json来设定
      * ps. 上述列的结构中，不要在意列表可能的重复。simply ignore it
      */
-    private val parser_struct: JSONObject = new JSONObject()
+    private var parser_struct: JSONObject = new JSONObject()
     private val end_token: String = "|"
     private val ZERO_TOKEN = "zero"
     private val STR_TOKEN = "str"
     private val INT_TOKEN = "int"
     private val FLOAT_TOKEN = "float"
     private val LIST_TOKEN = "list"
+    
+    // 特色的符号 放于specials中
+    /**
+     * 表明该列表的元素都只出现一次
+     */
+    private val UNIQUE_LIST="unique_list"
+    
     private[this] var _used_words: Int = -1
     
     def used_words: Int = _used_words
@@ -136,6 +144,23 @@ class InputParser {
      * @param command_name command_name
      * @param value_range  指定列表中可能的的取值（不过没法决定顺序）
      */
+    def add_unique_list_command(command_name: String, value_range: Array[Any]): Unit = {
+        this.init_command_in_parser_struct(command_name)
+        if (!this.parser_struct.getJSONObject(command_name).has(LIST_TOKEN)) {
+            this.parser_struct.getJSONObject(command_name).put(LIST_TOKEN, new JSONArray())
+        }
+        val list_arr: JSONArray = this.parser_struct.getJSONObject(command_name).getJSONArray(LIST_TOKEN)
+        value_range.foreach((item: Any) => {
+            list_arr.put(item)
+        })
+    }
+    
+    /**
+     * list 型指令（带有指定类型。不过注意，对于list任意内容可以重复任意次以任意顺序）
+     *
+     * @param command_name command_name
+     * @param value_range  指定列表中可能的的取值（不过没法决定顺序）
+     */
     def add_list_command(command_name: String, value_range: Array[Any]): Unit = {
         this.add_list_command(command_name)
         val list_arr: JSONArray = this.parser_struct.getJSONObject(command_name).getJSONArray(LIST_TOKEN)
@@ -154,6 +179,42 @@ class InputParser {
         if (!this.parser_struct.getJSONObject(command_name).has(LIST_TOKEN)) {
             this.parser_struct.getJSONObject(command_name).put(LIST_TOKEN, new JSONArray())
         }
+    }
+    
+    /**
+     * 传入一个json，然后解析出各类command格式（其实就是加入parser_struct）
+     * 例如：
+     * {
+     * "fire":{
+     * "int":[1,2,3], --表明含有int类型，可以接受1、2、3
+     * “zero”:[], --表明也可以是zero类型
+     * "str":["ala"], --表明可以接受ala作为一个指定名称
+     * "list":["red","blue","green"], --表明可以接受red/blue/green 作为列表的指
+     * }
+     * }
+     *
+     * @param commands 用于解析的json
+     */
+    def add_commands(commands: JSONObject): Unit = {
+        JsonToolkits.append_json(this.parser_struct, commands)
+    }
+    
+    /**
+     * 重置parser_struct
+     * 格式例如】
+     * {
+     * "fire":{
+     * "int":[1,2,3], --表明含有int类型，可以接受1、2、3
+     * “zero”:[], --表明也可以是zero类型
+     * "str":["ala"], --表明可以接受ala作为一个指定名称
+     * "list":["red","blue","green"], --表明可以接受red/blue/green 作为列表的指
+     * }
+     * }
+     *
+     * @param parser_struct new parser struct
+     */
+    def set_parser_struct(parser_struct: JSONObject): Unit = {
+        this.parser_struct = parser_struct
     }
     
     /**
@@ -315,22 +376,22 @@ class InputParser {
      *
      * @return Command
      */
-    def get_command(words: util.List[String]): CommandData = {
+    def get_command(words: util.List[String]): Option[CommandData] = {
         if (words == null || words.size() == 0) {
             this._used_words = 0
-            return CommandData.null_command()
+            return Option[CommandData](null)
         }
         val word = words.get(0)
         if (this.parser_struct.keySet().contains(word)) {
             // 如果这一组字符串的最后一个词 zero command
             if (words.size() == 1) {
-                return generator_zero_command(word)
+                return Option[CommandData](generator_zero_command(word))
             }
             // 下一个词
             val next_word = words.get(1)
             // 下一个词是"|" 同样zero command
             if (next_word.equals(end_token)) {
-                return generator_zero_command(word)
+                return Option[CommandData](generator_zero_command(word))
             }
             
             // 获取parser_struct中word的json object
@@ -344,44 +405,44 @@ class InputParser {
             //被包含在list_arr内，那就是list
             if (list_arr.toList.contains(next_word)) {
                 // 切出list
-                return generator_list_command(word, words.subList(1, words.size()))
+                return Option[CommandData](generator_list_command(word, words.subList(1, words.size())))
             }
             //被包含在int_arr内，那就是int
             else if (next_word.toIntOption.isDefined && int_arr.toList.contains(next_word.toInt)) {
-                return generator_int_command(word, next_word)
+                return Option[CommandData](generator_int_command(word, next_word))
             }
             //被包含在str_arr内，那就是str
             else if (str_arr.toList.contains(next_word)) {
-                return generator_str_command(word, next_word)
+                return Option[CommandData](generator_str_command(word, next_word))
             }
             
             // 第一优先匹配list
             if (command_jo.has(LIST_TOKEN)) {
                 // 切出list
-                return generator_list_command(word, words.subList(1, words.size()))
+                return Option[CommandData](generator_list_command(word, words.subList(1, words.size())))
             }
             // 第二优先匹配int
             else if (command_jo.has(INT_TOKEN) && next_word.toIntOption.isDefined) {
-                return generator_int_command(word, next_word)
+                return Option[CommandData](generator_int_command(word, next_word))
             }
             // 第三优先匹配float
             else if (command_jo.has(FLOAT_TOKEN) && next_word.toFloatOption.isDefined) {
-                return generator_float_command(word, next_word)
+                return Option[CommandData](generator_float_command(word, next_word))
             }
             // 第四优先匹配str
             else if (command_jo.has(STR_TOKEN)) {
-                return generator_str_command(word, next_word)
+                return Option[CommandData](generator_str_command(word, next_word))
             }
             // 再不济就zero了
             else if (command_jo.has(ZERO_TOKEN)) {
-                return generator_zero_command(word)
+                return Option[CommandData](generator_zero_command(word))
             }
             
         } // 如果word不存在于parser中，那就直接返回zero type
         else {
-            return generator_zero_command(word)
+            return Option[CommandData](generator_zero_command(word))
         }
-        CommandData.null_command()
+        Option[CommandData](CommandData.null_command())
         
     }
     

@@ -11,7 +11,7 @@ import scala.jdk.CollectionConverters._
 class MapForJava[k, v] {
     private[this] var _map: Map[k, v] = Map()
     
-    private def map: Map[k, v] = _map
+    def get_map: Map[k, v] = _map
     
     def put(key: k, value: v): Unit = {
         _map += (key -> value)

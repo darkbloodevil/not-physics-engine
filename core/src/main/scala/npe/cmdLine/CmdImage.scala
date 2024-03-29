@@ -1,4 +1,4 @@
-package npe.tools.cmdLine
+package npe.cmdLine
 
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO

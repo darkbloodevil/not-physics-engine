@@ -1,4 +1,4 @@
-package npe.tools.cmdLine
+package npe.cmdLine
 
 import org.jline.builtins.Completers
 import org.jline.reader.{Completer, LineReader, LineReaderBuilder}
@@ -8,6 +8,7 @@ import org.jline.widget.AutosuggestionWidgets
 
 import java.util
 import java.util.{ArrayList, HashMap, List, Map}
+import scala.jdk.CollectionConverters._
 
 /**
  * 对于玩家输入进行解析
@@ -23,7 +24,12 @@ class CmdInput {
     private var parser: InputParser = InputParser()
     val terminal: Terminal = TerminalBuilder.terminal
     var words: java.util.List[String] = _
-    var app_name = "Cli"
+    private[this] var _app_name: String = "Cli"
+    
+    def app_name: String = _app_name
+    
+    def app_name_=(value: String): Unit =
+        _app_name = value
     
     /**
      * 获取用户指令。对于用户一次输入了多个指令来说，程序可以逐步调用这个依次取出，直到没有任何指令后，再去请求用户新的输入。
@@ -32,22 +38,22 @@ class CmdInput {
      *
      * @return command data
      */
-    def next_command(): CommandData = {
+    def next_command(): Option[CommandData] = {
         if (words == null || words.size() == 0) {
             
             val lineReader: LineReader = LineReaderBuilder.builder.terminal(terminal).completer(this.parser.get_completer()).build
             val autosuggestionWidgets = new AutosuggestionWidgets(lineReader)
             autosuggestionWidgets.enable()
-            val input = lineReader.readLine("%s> ".formatted(app_name))
+            val input = lineReader.readLine("%s> ".formatted(_app_name))
             val temp = util.ArrayList[String]()
             temp.addAll(lineReader.getParsedLine.words)
-            
-            temp.remove("")
+            temp.removeIf((s: String) => s.isEmpty)
+            //            temp.remove("")
             words = temp
         } else {
             println(words)
         }
-        val command_data = this.parser.get_command(words)
+        val command_data: Option[CommandData] = this.parser.get_command(words)
         // 去掉用过的部分
         if (words != null && words.size() != 0) {
             this.words = words.subList(this.parser.used_words, words.size())
@@ -61,7 +67,7 @@ class CmdInput {
      *
      * @return command data
      */
-    def next_command(parser: InputParser): CommandData = {
+    def next_command(parser: InputParser): Option[CommandData] = {
         this.parser = parser
         next_command()
     }
