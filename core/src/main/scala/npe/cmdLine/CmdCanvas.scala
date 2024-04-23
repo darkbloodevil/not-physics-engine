@@ -8,7 +8,13 @@ import scala.jdk.CollectionConverters._
 import java.io.File
 import java.util
 
-
+/**
+ * cmd的画布。
+ * 提供add_renderer()来添加渲染器，然后render()渲染
+ *
+ * @param width  宽
+ * @param height 高
+ */
 class CmdCanvas(width: Int, height: Int) {
     val image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
     val graphics: Graphics = image.getGraphics
@@ -35,6 +41,13 @@ class CmdCanvas(width: Int, height: Int) {
         for builder <- builders do {
             builder.clear()
         }
+    }
+    
+    /**
+     * 清理掉所有renders
+     */
+    def clean_renders(): Unit = {
+        this.renderer_list.clear()
     }
     
     def add_renderer(renderer: CmdRenderer): Unit = {

@@ -1,14 +1,16 @@
 package npe.cmdLine
 
+import npe.cmdLine.completers.JSONCompleter
 import org.jline.builtins.Completers
 import org.jline.reader.{Completer, LineReader, LineReaderBuilder}
 import org.jline.reader.impl.completer.{ArgumentCompleter, NullCompleter, StringsCompleter}
 import org.jline.terminal.{Terminal, TerminalBuilder}
 import org.jline.widget.AutosuggestionWidgets
+import org.json.JSONObject
 
 import java.util
 import java.util.{ArrayList, HashMap, List, Map}
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 /**
  * 对于玩家输入进行解析
@@ -41,7 +43,7 @@ class CmdInput {
     def next_command(): Option[CommandData] = {
         if (words == null || words.size() == 0) {
             
-            val lineReader: LineReader = LineReaderBuilder.builder.terminal(terminal).completer(this.parser.get_completer()).build
+            val lineReader: LineReader = LineReaderBuilder.builder.terminal(terminal).completer(new JSONCompleter(this.parser.get_parser_struct())).build
             val autosuggestionWidgets = new AutosuggestionWidgets(lineReader)
             autosuggestionWidgets.enable()
             val input = lineReader.readLine("%s> ".formatted(_app_name))

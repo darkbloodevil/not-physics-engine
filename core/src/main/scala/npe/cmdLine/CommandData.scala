@@ -55,8 +55,8 @@ class CommandData(command_name: String, value_type: String, command_value: Any) 
         String.valueOf(command_value)
     }
     
-    def get_list(): Array[Any] = {
-        command_value.asInstanceOf[Array[Any]]
+    def get_list(): scala.Array[Any] = {
+        command_value.asInstanceOf[scala.Array[Any]]
     }
     
     /**
